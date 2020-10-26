@@ -24,8 +24,8 @@ le bas et le haut tue l'oiseau
 la droite donne un point d'apparaission des tuyaux, la gauche donne un point de destruction des tuyaux
 
 ## Les classes :
-![Classe : Tuyau](\img\classe_tuyau.png)
+![Classe : Tuyau](/img/classe_tuyau.png)
 
-![Classe : Oiseau](\img\classe_oiseau.png)
+![Classe : Oiseau](/img/classe_oiseau.png)
 
-![Classe : Oiseau](\img\classe_scorejoueur.png)
+![Classe : Oiseau](/img/classe_scorejoueur.png)
