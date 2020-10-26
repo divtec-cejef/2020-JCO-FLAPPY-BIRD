@@ -1,19 +1,5 @@
 # 2020-JCO-FLAPPY-BIRD
 
-FLAPPY BIRD
-
-
-|||   |||   ||| TUYAU HAUT
-^^^   |||   |||
-      |||   ^^^
-      ^^^
-       _   	
-vvv   /v\       OISEAU     
-|||    ``   vvv
-|||   vvv   |||
-|||   |||   |||	TUYAU BAS
-
-
 LE BUT :
 un oiseau vole entre l'espace créé par un tuyau supérieur et un tuyau inférieur, s'il en touche un il meurt.
 l'oiseau tombe en continue vers le bas, s'il touche le bas il meurt.
