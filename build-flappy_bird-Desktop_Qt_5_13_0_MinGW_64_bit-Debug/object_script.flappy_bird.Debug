@@ -1,0 +1,10 @@
+debug/bird.o
+debug/gamecore.o
+debug/gamescene.o
+debug/main.o
+debug/flappybird.o
+debug/pipe.o
+debug/playerscore.o
+debug/sprite.o
+debug/spritetickhandler.o
+debug/moc_flappybird.o
