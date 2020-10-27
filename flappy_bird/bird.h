@@ -19,7 +19,6 @@ private:
     int posX;
     int posY;
     bool isAlive;
-
 };
 
 #endif // BIRD_H

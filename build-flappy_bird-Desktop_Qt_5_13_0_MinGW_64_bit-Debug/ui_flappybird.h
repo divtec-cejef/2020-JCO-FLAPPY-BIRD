@@ -14,7 +14,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -22,28 +21,25 @@ QT_BEGIN_NAMESPACE
 class Ui_FlappyBird
 {
 public:
-    QMenuBar *menuBar;
-    QToolBar *mainToolBar;
     QWidget *centralWidget;
     QStatusBar *statusBar;
+    QMenuBar *menuBar;
 
     void setupUi(QMainWindow *FlappyBird)
     {
         if (FlappyBird->objectName().isEmpty())
             FlappyBird->setObjectName(QString::fromUtf8("FlappyBird"));
-        FlappyBird->resize(400, 300);
-        menuBar = new QMenuBar(FlappyBird);
-        menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        FlappyBird->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(FlappyBird);
-        mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
-        FlappyBird->addToolBar(mainToolBar);
+        FlappyBird->resize(800, 600);
         centralWidget = new QWidget(FlappyBird);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         FlappyBird->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(FlappyBird);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         FlappyBird->setStatusBar(statusBar);
+        menuBar = new QMenuBar(FlappyBird);
+        menuBar->setObjectName(QString::fromUtf8("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 800, 20));
+        FlappyBird->setMenuBar(menuBar);
 
         retranslateUi(FlappyBird);
 

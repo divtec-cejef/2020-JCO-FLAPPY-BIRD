@@ -1,3 +1,10 @@
+/**
+  \file
+  \brief    Déclaration de la classe Pipe
+  \author   Louis Bovay
+  \date     27.10.2020
+*/
+
 #ifndef PIPE_H
 #define PIPE_H
 
@@ -22,8 +29,6 @@ private:
 
     // Fonctions
     void setRota(int angle);
-
-
 };
 
 #endif // PIPE_H

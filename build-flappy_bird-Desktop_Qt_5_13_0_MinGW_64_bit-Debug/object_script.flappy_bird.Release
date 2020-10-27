@@ -1,10 +1,10 @@
 release/bird.o
-release/gamecore.o
-release/gamescene.o
 release/main.o
 release/flappybird.o
+release/menu.o
 release/pipe.o
 release/playerscore.o
-release/sprite.o
-release/spritetickhandler.o
+release/.o
+release/resources.o
 release/moc_flappybird.o
+release/moc_menu.o

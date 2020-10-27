@@ -17,10 +17,18 @@ PlayerScore::PlayerScore(std::string playerName)
     this->nbPoints = 0;
 }
 
+//!
+//! \brief Ajoute des points au score du joueur
+//! \param points nombre de points à ajouter
+//!
 void PlayerScore::addPoints(int points){
     this->nbPoints += points;
 }
 
+//!
+//! \brief Retourne le nombre de point du joueur
+//! \return le nombre de points du joueur
+//!
 int PlayerScore::getPoints(){
     return this->nbPoints;
 }

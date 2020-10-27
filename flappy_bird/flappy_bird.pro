@@ -28,17 +28,20 @@ SOURCES += \
         bird.cpp \
         main.cpp \
         flappybird.cpp \
+    menu.cpp \
         pipe.cpp \
         playerscore.cpp \
 
 HEADERS += \
         bird.h \
         flappybird.h \
+    menu.h \
         pipe.h \
         playerscore.h \
 
 FORMS += \
-        flappybird.ui
+        flappybird.ui \
+        menu.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
