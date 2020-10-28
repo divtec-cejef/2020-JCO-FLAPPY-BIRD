@@ -14,6 +14,15 @@ public class Oiseau extends Sprite {
     private boolean isAlive;
     public boolean isFlap = false;
 
+    /**
+     * Crée et instantie un oiseau
+     *
+     * @param x     coordonnée X
+     * @param y     coordonnée Y
+     * @param w     Largeur
+     * @param h     Hauteur
+     * @param color Couleur
+     */
     public Oiseau(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
@@ -36,22 +45,24 @@ public class Oiseau extends Sprite {
     }
 
 
-/**
- * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
- * plus la gravité est élevée, plus il tombera vite
- * @param gravity force de gravité
- */
-public void undergoGravity(int gravity) {
+    /**
+     * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
+     * plus la gravité est élevée, plus il tombera vite
+     *
+     * @param gravity force de gravité
+     */
+    public void undergoGravity(int gravity) {
         this.moveDown(gravity);
-}
+    }
 
-/**
- * L'oiseau monte l'axe Y en fonction de sa force
- * @param strengh force de l'oiseau, plus elle est haute, plus il montera haut
- */
-public void flap(int strengh) {
-    this.setTranslateY(this.getTranslateY() - strengh);
-}
+    /**
+     * L'oiseau monte l'axe Y en fonction de sa force
+     *
+     * @param strengh force de l'oiseau, plus elle est haute, plus il montera haut
+     */
+    public void flap(int strengh) {
+        this.setTranslateY(this.getTranslateY() - strengh);
+    }
 }
 
 

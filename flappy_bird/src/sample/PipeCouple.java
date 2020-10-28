@@ -1,12 +1,19 @@
 package sample;
 
+/**
+ * Classe qui représente un couple de tuyau
+ */
 public class PipeCouple {
     public Pipe pipe1;
     public Pipe pipe2;
     private int spaceBetween = 200;
     private boolean finish = false;
 
-
+    /**
+     * Crée et instantie un couple de tuyau
+     * @param pipe1 tuyau du haut
+     * @param pipe2 tuyau du bas
+     */
     public PipeCouple(Pipe pipe1, Pipe pipe2){
         this.pipe1 = pipe1;
         this.pipe2 = pipe2;
@@ -20,6 +27,12 @@ public class PipeCouple {
         formatCouples();
     }
 
+    /**
+     * Génère un nombre aléatoire entre une range donnée
+     * @param min range inférieure
+     * @param max range supérieure
+     * @return un nombre aléatoire
+     */
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
@@ -33,24 +46,33 @@ public class PipeCouple {
         this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
     }
 
+    /**
+     * Fait bouger le couple de droite à gauche, si arrivé a droite, il se réinitialise
+     */
     public void move(){
-        if(finish){
+        //Arrivé
+        if(isOut()){
             formatCouples();
             finish = !finish;
-
-        }else{
+        }
+        //Pas arrivé
+        else{
             this.pipe1.moveLeft(5);
             this.pipe2.moveLeft(5);
-            if(isOut()){
-                finish = true;
-            }
         }
     }
 
+    /**
+     * Observe si le couple à atteint de côté gauche
+     * @return true : est arrivé / False : n'est pas arrivé
+     */
     public boolean isOut(){
         return this.pipe1.getTranslateX() < -600;
     }
 
+    /**
+     * Réinitialise le couple, le replaçant à droit de l'écran et en recréant un espace entre les deux tuyaux
+     */
     public void formatCouples(){
         //en haut
         this.pipe1.setTranslateX(550);

@@ -14,19 +14,26 @@ import java.util.ArrayList;
 
 public class Main extends Application {
 
+    //Indice de temps
     float t = 0;
+    //Si oui ou non la barre espace est appuyée
     boolean isSpacePressed = false;
+    //Hauteur max de la fenêtre
     final float MAX_HEIGHT = 700;
+    //Largeur max de la fenêtre
     final float MAX_WIDTH = 1000;
+    //Pane principale
     StackPane root = new StackPane();
+    //L'oiseau
     Oiseau oiseau = new Oiseau(-250,-200,50,50,Color.RED);
-    Pipe pipe = new Pipe(500,250,50,300,Color.LIGHTGREEN);
+    //Liste de couple de tuyau
     ArrayList<PipeCouple> listeCouples;
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    //Initialisation de la pane
     private Parent createContent() {
         root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
 
@@ -46,8 +53,11 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        //Initialisé la liste de couple de tuyau
         listeCouples = createCouplesList(4);
+        //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
+
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
@@ -63,18 +73,19 @@ public class Main extends Application {
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
             if(keyCode.equals(KeyCode.SPACE)){
-                System.out.println("SPACE RELEASE");
                 isSpacePressed = false;
             }
         });
+        //Ajout de tout les couple de tuyaux
         addCouples(root);
+        //Ajout de l'oiseau
         root.getChildren().add(oiseau);
 
         //Récupération de la feuille de style css
         scene.getStylesheets().add("css/style.css");
         // Sélectionner la scene
         stage.setScene(scene);
-        // Donne rune titre à la scène
+        // Donner une titre à la scène
         stage.setTitle("FlappyBird");
         //rendre la fenetre non redimentionnable
         stage.setResizable(false);
@@ -84,44 +95,61 @@ public class Main extends Application {
 
     private void update() {
         t += 0.0016;
+        //Le couple 0 bouge
         listeCouples.get(0).move();
+        //L'oiseau subit la gravité
         oiseau.undergoGravity(4);
+        //Le couple 1 bouge
         if(t > 0.100){
             listeCouples.get(1).move();
         }
+        //Le couple 2 bouge
         if(t>0.200){
             listeCouples.get(2).move();
         }
+        //Le couple 3 bouge
         if(t>0.300){
             listeCouples.get(3).move();
         }
 
-        System.out.println(listeCouples.get(2).pipe1.getTranslateY());
+        if (oiseau.getTranslateY() > 350 || oiseau.getTranslateY() < -350) {
+            oiseau.kill();
+        }
 
+        if(!oiseau.isAlive()){
+            //FIN DU JEU ICI
+            
+        }
     }
 
+    /**
+     * Créer une liste de couple de tuyaux
+     * @param nombreCouple nombre de couple voulu
+     * @return une liste de couple de tuyaux
+     */
     public ArrayList<PipeCouple> createCouplesList(int nombreCouple){
         ArrayList<PipeCouple> list = new ArrayList<>();
         for(int i = 0; i < nombreCouple;i++){
             list.add(
                     new PipeCouple(
                             //Les pipes sont formaté à leur création, donc pas besoin de donnée de paramètres
-                            new Pipe(0,0,0,0,Color.GREEN),
-                            new Pipe(0,0,0,0,Color.BLUE)
+                            new Pipe(0,0,0,0,Color.LIGHTGREEN),
+                            new Pipe(0,0,0,0,Color.LIGHTGREEN)
                     ));
         }
         return list;
 
     }
-    
+
+    /**
+     * Ajout chaque tuyaux de chaque couple à la pane
+     * @param root la pane
+     */
     public void addCouples(StackPane root){
         for (PipeCouple couple: listeCouples) {
             root.getChildren().add(couple.pipe1);
             root.getChildren().add(couple.pipe2);
         }
     }
-
-
-
 }
 
