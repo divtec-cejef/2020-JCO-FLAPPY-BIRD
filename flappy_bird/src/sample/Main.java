@@ -38,7 +38,6 @@ public class Main extends Application {
                 update();
             }
         };
-
         timer.start();
 
         return root;
@@ -47,7 +46,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        listeCouples = createCouplesList(10);
+        listeCouples = createCouplesList(4);
         Scene scene = new Scene(createContent());
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
@@ -85,17 +84,18 @@ public class Main extends Application {
 
     private void update() {
         t += 0.0016;
+        listeCouples.get(0).move();
         oiseau.undergoGravity(4);
         if(t > 0.100){
             listeCouples.get(1).move();
         }
         if(t>0.200){
-            listeCouples.get(0).move();
+            listeCouples.get(2).move();
         }
         if(t>0.300){
             listeCouples.get(3).move();
         }
-        listeCouples.get(2).move();
+
         System.out.println(listeCouples.get(2).pipe1.getTranslateY());
 
     }

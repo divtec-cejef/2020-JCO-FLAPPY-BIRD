@@ -18,18 +18,19 @@ public class PipeCouple {
         this.pipe2.setHeight(700);
 
         formatCouples();
-
-
     }
 
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
 
+    /**
+     * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
+     */
     public void createSpace(){
-        int rndNum = getRandomNumber(0,200);
+        int rndNum = getRandomNumber(0,spaceBetween);
         this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
-        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (200-rndNum));
+        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
     }
 
     public void move(){

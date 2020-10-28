@@ -21,8 +21,39 @@ il doit y avoir un écart de 300 entre les deux tuyaux, a chaque apparition de c
 depuis le millieu de l'écran en augmente la valeur Y du tuyau du haut par la valeur tirée,
 et on réduit la valeur Y du tuyau du bas par 300 - la valeur tirée, ce qui donnera un écart de 300 + un position aléatoir de l'espace.
 
+```java
+/**
+ * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
+ */
+public void createSpace(){
+int rndNum = getRandomNumber(0,spaceBetween);
+this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
+this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
+}
+```
+
 ## L'oiseau :
--l'oiseau tombe de base, en appuyant sur un touche, il mont progressivement d'une valeur fixe vers le haut, puis recommence a tombé
+-l'oiseau tombe de base, en appuyant sur un touche, il monte progressivement d'une valeur fixe vers le haut, puis recommence a tombé
+
+```java
+/**
+ * L'oiseau monte l'axe Y en fonction de sa force
+ * @param strengh force de l'oiseau, plus elle est haute, plus il montera haut
+ */
+public void flap(int strengh) {
+    this.setTranslateY(this.getTranslateY() - strengh);
+}
+
+/**
+ * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
+ * plus la gravité est élevée, plus il tombera vite
+ * @param gravity force de gravité
+ */
+public void undergoGravity(int gravity) {
+        this.moveDown(gravity);
+}
+```
+
 
 ## La scene :
 la scène est un simple rectangle.
@@ -32,8 +63,4 @@ le bas et le haut tue l'oiseau.
 la droite donne un point d'apparaission des tuyaux, la gauche donne un point de destruction des tuyaux.
 
 ## Les classes :
-![Classe : Tuyau](/img/classe_tuyau.png)
-
-![Classe : Oiseau](/img/classe_oiseau.png)
-
-![Classe : Oiseau](/img/classe_scorejoueur.png)
+UML des classes

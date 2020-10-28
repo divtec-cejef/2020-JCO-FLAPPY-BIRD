@@ -35,17 +35,23 @@ public class Oiseau extends Sprite {
         this.isAlive = false;
     }
 
-    /**
-     * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
-     * plus la gravité est élevée, plus il tombera vite
-     */
-    public void undergoGravity(int gravity) {
-            this.moveDown(gravity);
-    }
 
-    public void flap(int strengh) {
-        this.setTranslateY(this.getTranslateY() - strengh);
-    }
+/**
+ * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
+ * plus la gravité est élevée, plus il tombera vite
+ * @param gravity force de gravité
+ */
+public void undergoGravity(int gravity) {
+        this.moveDown(gravity);
+}
+
+/**
+ * L'oiseau monte l'axe Y en fonction de sa force
+ * @param strengh force de l'oiseau, plus elle est haute, plus il montera haut
+ */
+public void flap(int strengh) {
+    this.setTranslateY(this.getTranslateY() - strengh);
+}
 }
 
 
