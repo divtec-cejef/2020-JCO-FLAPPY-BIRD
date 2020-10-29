@@ -12,7 +12,6 @@ import javafx.scene.paint.Color;
  */
 public class Oiseau extends Sprite {
     private boolean isAlive;
-    public boolean isFlap = false;
 
     /**
      * Crée et instantie un oiseau

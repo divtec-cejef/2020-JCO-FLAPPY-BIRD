@@ -19,7 +19,10 @@ public class Pipe extends Sprite{
      */
     Pipe(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
+
     }
+
+
 
 
 

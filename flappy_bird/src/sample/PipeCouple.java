@@ -7,7 +7,6 @@ public class PipeCouple {
     public Pipe pipe1;
     public Pipe pipe2;
     private int spaceBetween = 200;
-    private boolean finish = false;
 
     /**
      * Crée et instantie un couple de tuyau
@@ -40,7 +39,7 @@ public class PipeCouple {
     /**
      * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
      */
-    public void createSpace(){
+    private void createSpace(){
         int rndNum = getRandomNumber(0,spaceBetween);
         this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
         this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
@@ -53,7 +52,6 @@ public class PipeCouple {
         //Arrivé
         if(isOut()){
             formatCouples();
-            finish = !finish;
         }
         //Pas arrivé
         else{
@@ -66,14 +64,14 @@ public class PipeCouple {
      * Observe si le couple à atteint de côté gauche
      * @return true : est arrivé / False : n'est pas arrivé
      */
-    public boolean isOut(){
+    private boolean isOut(){
         return this.pipe1.getTranslateX() < -600;
     }
 
     /**
      * Réinitialise le couple, le replaçant à droit de l'écran et en recréant un espace entre les deux tuyaux
      */
-    public void formatCouples(){
+    private void formatCouples(){
         //en haut
         this.pipe1.setTranslateX(550);
         this.pipe1.setTranslateY(-350);
