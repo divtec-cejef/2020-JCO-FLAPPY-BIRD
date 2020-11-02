@@ -10,7 +10,7 @@ l'oiseau meurt.
 
 le but est de passer le plus de couple de tuyaux
 
-![Première Version du jeu](/img/premiere_version.png)
+![Première Version du jeu](./img/premiere_version.png =500x500)
 
 ## Sprite :
 
