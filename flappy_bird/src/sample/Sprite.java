@@ -10,6 +10,7 @@ public class Sprite extends Rectangle {
 
     private Area area = new Area();
     public int largeur = 0;
+    public int hauteur = 0;
 
     /**
      * Créer et instantie un Sprite
@@ -26,12 +27,18 @@ public class Sprite extends Rectangle {
         setTranslateX(x);
         setTranslateY(y);
 
+        //simplification de la variable, remplace getWidth/getHeight
         largeur = w;
+        hauteur = h;
 
-        area.setTopLeft(new CoordXY(w / 2 * -1, h / 2 * -1));
-        area.setTopRight(new CoordXY(w / 2, h / 2 * -1));
-        area.setDownLeft(new CoordXY(w / 2 * -1, h / 2));
-        area.setDownRight(new CoordXY(w / 2, h / 2));
+        //Initialisation des coins
+        //area.setTopLeft(new CoordXY(w / 2 * -1, h / 2 * -1));
+        //area.setTopRight(new CoordXY(w / 2, h / 2 * -1));
+        //area.setDownLeft(new CoordXY(w / 2 * -1, h / 2));
+        //area.setDownRight(new CoordXY(w / 2, h / 2));
+
+        //Mise à jours des coins
+        refreshCoord();
     }
 
     /**
@@ -41,7 +48,6 @@ public class Sprite extends Rectangle {
      */
     void moveLeft(int speed) {
         setTranslateX(getTranslateX() - speed);
-
         //Mise à jours des coordonnées des quatre coins
         refreshCoord();
     }
@@ -83,12 +89,14 @@ public class Sprite extends Rectangle {
      * met à jours les coordonnée des quatre coins du Sprite
      */
     private void refreshCoord() {
-        area.getTopLeft().setY((int) getTranslateY()  + ((int) this.getHeight() / 2));
-        area.getTopRight().setY((int) getTranslateY() - ((int) this.getHeight() / 2));
-        area.getDownLeft().setY((int) getTranslateY() + ((int) this.getHeight() / 2));
-        area.getDownRight().setY((int) getTranslateY() - ((int) this.getHeight() / 2));
+        //Y
+        area.getTopLeft().setY((int) getTranslateY()  - (hauteur / 2));
+        area.getTopRight().setY((int) getTranslateY()  - (hauteur / 2));
+        area.getDownLeft().setY((int) getTranslateY()  + (hauteur / 2));
+        area.getDownRight().setY((int) getTranslateY()  + (hauteur / 2));
 
-        area.getTopLeft().setX((int) getTranslateX() - ((int) this.getWidth() / 2));
+        //X
+        area.getTopLeft().setX((int) getTranslateX() - (this.largeur / 2));
         area.getTopRight().setX((int) getTranslateX() + (this.largeur / 2));
         area.getDownLeft().setX((int) getTranslateX() - (this.largeur / 2));
         area.getDownRight().setX((int) getTranslateX() + (this.largeur / 2));
