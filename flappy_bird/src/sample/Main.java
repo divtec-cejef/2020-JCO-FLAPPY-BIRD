@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 
 import javafx.animation.AnimationTimer;
@@ -26,7 +27,9 @@ public class Main extends Application {
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
-    Oiseau oiseau = new Oiseau(-250, -200, 30, 30, Color.YELLOW);
+    Oiseau oiseau = new Oiseau(-250, -200, 30, 30, Color.DARKVIOLET);
+
+    Label label1 = new Label("");
 
     //Liste de couple de tuyau
     ArrayList<PipeCouple> listeCouples;
@@ -66,6 +69,8 @@ public class Main extends Application {
         addCouples(root);
         //Ajout de l'oiseau
         root.getChildren().add(oiseau);
+
+
         //Récupération de la feuille de style css
         scene.getStylesheets().add("css/style.css");
         // Sélectionner la scene
@@ -73,7 +78,7 @@ public class Main extends Application {
         // Donner une titre à la scène
         stage.setTitle("FlappyBird");
         //rendre la fenetre non redimentionnable
-        // stage.setResizable(false);
+        stage.setResizable(false);
         // Lancer la scène
         stage.show();
     }
@@ -98,21 +103,19 @@ public class Main extends Application {
         }
 
         // tue l'oiseau si trop haut ou trop bas
-        if (oiseau.getTranslateY() > 350 || oiseau.getTranslateY() < -350) {
+        if (checkBounds()) {
             oiseau.kill();
         }
 
-        //System.out.println(oiseau.getTranslateX());
+        // si l'oiseau touche un tuyau, il meurt
+        if (isAPipeTouched(listeCouples, oiseau)) {
+            oiseau.kill();
+        }
 
         // si l'oiseau meurt, fin du jeu
         if (!oiseau.isAlive()) {
-            //FIN DU JEU ICI
+            System.out.println("IS KILL");
         }
-
-        if (isAPipeTouched(listeCouples, oiseau)) {
-            oiseau.setFill(Color.BLUE);
-        }
-
     }
 
     //Initialisation de la pane
@@ -143,19 +146,20 @@ public class Main extends Application {
         for (int i = 0; i < nombreCouple; i++) {
             list.add(
                     new PipeCouple(
-                            //Les pipes sont formaté à leur création, donc pas besoin de donnée de paramètres
-                            new Pipe(0, 0, 0, 0, Color.LIGHTGREEN),
-                            new Pipe(0, 0, 0, 0, Color.LIGHTGREEN)
+                            //Les pipes sont formaté à leur création, donc pas besoin de donnée de position
+                            //Parcontre la taille est importante vu que l'area d'un sprite se génére lors de la création
+                            new Pipe(0, 0, 60, 700, Color.LIGHTGREEN),
+                            new Pipe(0, 0, 60, 700, Color.LIGHTGREEN)
                     ));
         }
         return list;
-
     }
 
     /**
      * Parcours chaque tuyau de chaque couple de tuyaux présent dans la liste et vérifie s'il touche l'oiseau
+     *
      * @param ListeCouple liste de couple de tuyaux
-     * @param oiseau
+     * @param oiseau      qui peut ou non toucher un tuyau
      * @return ture = touché // False = non touché
      */
     public boolean isAPipeTouched(ArrayList<PipeCouple> ListeCouple, Oiseau oiseau) {
@@ -180,8 +184,8 @@ public class Main extends Application {
         }
     }
 
-    private void checkBounds(Rectangle block) {
-
+    public boolean checkBounds() {
+        return oiseau.getTranslateY() > 350 || oiseau.getTranslateY() < -350;
     }
 }
 

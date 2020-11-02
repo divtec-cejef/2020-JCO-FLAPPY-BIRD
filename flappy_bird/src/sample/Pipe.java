@@ -31,10 +31,28 @@ public class Pipe extends Sprite {
      */
     public boolean isHit(Oiseau oiseau) {
         boolean isTouched = false;
-        if (oiseau.getArea().getTopRight().getX() < this.getArea().getDownRight().getX()
-                && oiseau.getArea().getTopRight().getX() > this.getArea().getDownLeft().getX()
-                && oiseau.getArea().getTopRight().getY() < this.getArea().getDownLeft().getY()
-                && oiseau.getArea().getTopRight().getY() > this.getArea().getTopLeft().getY()) {
+        if (
+            //topRight de l'oiseau
+                oiseau.getArea().getTopRight().getX() < this.getArea().getDownRight().getX()
+                        && oiseau.getArea().getTopRight().getX() > this.getArea().getDownLeft().getX()
+                        && oiseau.getArea().getTopRight().getY() < this.getArea().getDownLeft().getY()
+                        && oiseau.getArea().getTopRight().getY() > this.getArea().getTopLeft().getY()
+                        //topLeft de l'oiseau
+                        || oiseau.getArea().getTopLeft().getX() < this.getArea().getDownRight().getX()
+                        && oiseau.getArea().getTopLeft().getX() > this.getArea().getDownLeft().getX()
+                        && oiseau.getArea().getTopLeft().getY() < this.getArea().getDownLeft().getY()
+                        && oiseau.getArea().getTopLeft().getY() > this.getArea().getTopLeft().getY()
+                        //downRight de l'oiseau
+                        || oiseau.getArea().getDownRight().getX() < this.getArea().getDownRight().getX()
+                        && oiseau.getArea().getDownRight().getX() > this.getArea().getDownLeft().getX()
+                        && oiseau.getArea().getDownRight().getY() < this.getArea().getDownLeft().getY()
+                        && oiseau.getArea().getDownRight().getY() > this.getArea().getTopLeft().getY()
+                        //downLeft de l'oiseau
+                        || oiseau.getArea().getDownLeft().getX() < this.getArea().getDownRight().getX()
+                        && oiseau.getArea().getDownLeft().getX() > this.getArea().getDownLeft().getX()
+                        && oiseau.getArea().getDownLeft().getY() < this.getArea().getDownLeft().getY()
+                        && oiseau.getArea().getDownLeft().getY() > this.getArea().getTopLeft().getY()
+        ) {
             isTouched = true;
         }
         return isTouched;
