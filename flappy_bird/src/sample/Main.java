@@ -27,6 +27,7 @@ public class Main extends Application {
     StackPane root = new StackPane();
     //L'oiseau
     Oiseau oiseau = new Oiseau(-250, -200, 30, 30, Color.YELLOW);
+
     //Liste de couple de tuyau
     ArrayList<PipeCouple> listeCouples;
 
@@ -34,28 +35,12 @@ public class Main extends Application {
         launch(args);
     }
 
-    //Initialisation de la pane
-    private Parent createContent() {
-        root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
-
-        root.setId("pane");
-
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                update();
-            }
-        };
-        timer.start();
-
-        return root;
-    }
-
     @Override
     public void start(Stage stage) throws Exception {
 
         //Initialisé la liste de couple de tuyau
         listeCouples = createCouplesList(4);
+
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
 
@@ -81,7 +66,6 @@ public class Main extends Application {
         addCouples(root);
         //Ajout de l'oiseau
         root.getChildren().add(oiseau);
-
         //Récupération de la feuille de style css
         scene.getStylesheets().add("css/style.css");
         // Sélectionner la scene
@@ -89,20 +73,12 @@ public class Main extends Application {
         // Donner une titre à la scène
         stage.setTitle("FlappyBird");
         //rendre la fenetre non redimentionnable
-        stage.setResizable(false);
+        // stage.setResizable(false);
         // Lancer la scène
         stage.show();
     }
 
     private void update() {
-        System.out.println(
-                "centre : (" + oiseau.getTranslateX() + ";" + oiseau.getTranslateY()
-                        + ") topLeft : (" + oiseau.getArea().getTopLeft().getX() + ";" + oiseau.getArea().getTopLeft().getY()
-                        + ") topRight : (" + oiseau.getArea().getTopRight().getX() + ";" + oiseau.getArea().getTopRight().getY()
-                        + ") downLeft : (" + oiseau.getArea().getDownLeft().getX() + ";" + oiseau.getArea().getDownLeft().getY()
-                        + ") downRight : (" + oiseau.getArea().getDownRight().getX() + ";" + oiseau.getArea().getTopRight().getY()
-                        + ")"
-        );
         t += 0.0016;
         //Le couple 0 bouge
         listeCouples.get(0).move();
@@ -126,14 +102,35 @@ public class Main extends Application {
             oiseau.kill();
         }
 
-
-
         //System.out.println(oiseau.getTranslateX());
 
         // si l'oiseau meurt, fin du jeu
         if (!oiseau.isAlive()) {
             //FIN DU JEU ICI
         }
+
+        if (isAPipeTouched(listeCouples, oiseau)) {
+            oiseau.setFill(Color.BLUE);
+        }
+
+        System.out.println(listeCouples.get(0).pipe1.getArea().getDownLeft().getX());
+    }
+
+    //Initialisation de la pane
+    private Parent createContent() {
+        root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
+
+        root.setId("pane");
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                update();
+            }
+        };
+        timer.start();
+
+        return root;
     }
 
     /**
@@ -154,6 +151,22 @@ public class Main extends Application {
         }
         return list;
 
+    }
+
+    /**
+     * Parcours chaque tuyau de chaque couple de tuyaux présent dans la liste et vérifie s'il touche l'oiseau
+     * @param ListeCouple liste de couple de tuyaux
+     * @param oiseau
+     * @return ture = touché // False = non touché
+     */
+    public boolean isAPipeTouched(ArrayList<PipeCouple> ListeCouple, Oiseau oiseau) {
+        boolean isTouched = false;
+        for (PipeCouple couple : ListeCouple) {
+            if (couple.pipe1.isHit(oiseau) || couple.pipe2.isHit(oiseau)) {
+                isTouched = true;
+            }
+        }
+        return isTouched;
     }
 
     /**
