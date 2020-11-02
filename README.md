@@ -32,6 +32,10 @@ this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
 }
 ```
 
+## Sprite :
+
+-vide-
+
 ## L'oiseau :
 -l'oiseau tombe de base, en appuyant sur un touche, il monte progressivement d'une valeur fixe vers le haut, puis recommence a tombé
 
