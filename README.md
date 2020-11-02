@@ -10,6 +10,44 @@ l'oiseau meurt.
 
 le but est de passer le plus de couple de tuyaux
 
+## Sprite :
+
+La classe Sprite hérite de la classe JavaFX Rectangle qui permet de créer des rectangles de taille voulue, de les placer à une coordonnée x/y souhaitée, ainsi que de choisir leur couleur.
+
+La classe sprite ajoute 4 nouvelles fonctions qui permettent de déplacer le rectangle :
+* moveLeft()
+* moveRight()
+* moveUp()
+* moveDown()
+
+Chaque sprite a comme varial membre une zone(area) de type Area.
+
+la zone permet d'accéder à :
+* getTopLeft()
+* getTopRight()
+* getDownLeft()
+* getDownRight()
+
+chacune de ces fonctions permettent d'accéder à un point X(.getX()) et Y(.getY()) qui forme ensemble la coordonnée représentant un des 4 coins du sprite.
+
+```java 
+public class Area {
+    private CoordXY topLeft = new CoordXY();
+    private CoordXY topRight = new CoordXY();
+    private CoordXY downLeft = new CoordXY();
+    private CoordXY downRight = new CoordXY();
+    ...
+```
+
+Exemple : obtenir le coin supérieur gauche d'un oiseau :
+```java
+CoordXY topLeftOiseau = new CoordXy(oiseau.getArea().getTopLeft().getX(),oiseau.getArea().getTopLeft().getY())
+```
+
+C'est fonction principal de la variable area sera de déterminer si deux object se touche ou non.
+
+**Ajouter fonction IsHit() de Pipe**
+
 ## Les tuyaux :
 
 les tuyaux détectent si l'oiseau passe dessus, si oui, c'est perdu.
@@ -31,10 +69,6 @@ this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
 this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
 }
 ```
-
-## Sprite :
-
--vide-
 
 ## L'oiseau :
 -l'oiseau tombe de base, en appuyant sur un touche, il monte progressivement d'une valeur fixe vers le haut, puis recommence a tombé
