@@ -113,7 +113,6 @@ public class Main extends Application {
             oiseau.setFill(Color.BLUE);
         }
 
-        System.out.println(listeCouples.get(0).pipe1.getArea().getDownLeft().getX());
     }
 
     //Initialisation de la pane
