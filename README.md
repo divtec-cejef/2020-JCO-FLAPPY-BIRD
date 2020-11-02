@@ -10,6 +10,8 @@ l'oiseau meurt.
 
 le but est de passer le plus de couple de tuyaux
 
+![Première Version du jeu](/img/premiere_version.png)
+
 ## Sprite :
 
 La classe Sprite hérite de la classe JavaFX Rectangle qui permet de créer des rectangles de taille voulue, de les placer à une coordonnée x/y souhaitée, ainsi que de choisir leur couleur.
@@ -39,12 +41,14 @@ public class Area {
     ...
 ```
 
-Exemple : obtenir le coin supérieur gauche d'un oiseau :
+Exemple : obtenir le coin supérieur gauche d'un carré :
 ```java
-CoordXY topLeftOiseau = new CoordXy(oiseau.getArea().getTopLeft().getX(),oiseau.getArea().getTopLeft().getY())
+CoordXY topLeftCarré = new CoordXY(carré.getArea().getTopLeft().getX(),carré.getArea().getTopLeft().getY())
 ```
 
-C'est fonction principal de la variable area sera de déterminer si deux object se touche ou non.
+Chaque fois qu'un Sprite bouge, les coordonnées de area sont rafraîchies par le biais de refreshCoord() 
+
+La fonction principal de la variable area sera de déterminer si deux object se touche ou non.
 
 **Ajouter fonction IsHit() de Pipe**
 
