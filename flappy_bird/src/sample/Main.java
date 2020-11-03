@@ -1,7 +1,9 @@
 package sample;
 
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
+import javafx.scene.image.Image;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -9,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -26,8 +27,6 @@ public class Main extends Application {
     StackPane root = new StackPane();
     //L'oiseau
     Bird bird = new Bird(-250, -200, 30, 30, Color.DARKVIOLET);
-
-    int currentMenu = 1;
 
     //Liste de couple de tuyau
     ArrayList<PipeCouple> couplesList;
@@ -67,7 +66,7 @@ public class Main extends Application {
         addCouples(root);
         //Ajout de l'oiseau
         root.getChildren().add(bird);
-
+        root.getChildren().add(bird.getBirdSprite());
 
         //Récupération de la feuille de style css
         scene.getStylesheets().add("css/style.css");
@@ -82,6 +81,7 @@ public class Main extends Application {
     }
 
     private void update() {
+
         if (t < 1) {
             t += 0.0016;
         }
@@ -180,12 +180,19 @@ public class Main extends Application {
     public void addCouples(StackPane root) {
         for (PipeCouple couple : couplesList) {
             root.getChildren().add(couple.pipe1);
+            root.getChildren().add(couple.pipe1.getPipeSprite());
             root.getChildren().add(couple.pipe2);
+            root.getChildren().add(couple.pipe2.getPipeSprite());
         }
     }
 
     public boolean checkBounds() {
         return bird.getTranslateY() > 350 || bird.getTranslateY() < -350;
+    }
+
+    public void linkImageToBird(ImageView image, Bird bird){
+        image.setX(bird.getTranslateX());
+        image.setY(bird.getTranslateX());
     }
 }
 
