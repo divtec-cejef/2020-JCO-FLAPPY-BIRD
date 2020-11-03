@@ -39,10 +39,12 @@ public class PipeCouple {
      * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
      */
     private void createSpace(){
-        int spaceBetween = 200;
+        int spaceBetween = 250;
         int rndNum = getRandomNumber(0, spaceBetween);
         this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
         this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween -rndNum));
+        this.pipe1.refreshPipeSprite();
+        this.pipe2.refreshPipeSprite();
     }
 
     /**
@@ -56,7 +58,9 @@ public class PipeCouple {
         //Pas arrivé
         else{
             this.pipe1.moveLeft(5);
+            this.pipe1.refreshPipeSprite();
             this.pipe2.moveLeft(5);
+            this.pipe2.refreshPipeSprite();
         }
     }
 
