@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -100,9 +102,11 @@ public class Sprite extends Rectangle {
         area.getTopRight().setX((int) getTranslateX() + (this.largeur / 2));
         area.getDownLeft().setX((int) getTranslateX() - (this.largeur / 2));
         area.getDownRight().setX((int) getTranslateX() + (this.largeur / 2));
+
     }
 
     public Area getArea() {
         return area;
     }
+
 }
