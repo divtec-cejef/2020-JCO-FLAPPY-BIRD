@@ -13,7 +13,7 @@ public class Sprite extends Rectangle {
     public int hauteur = 0;
 
     /**
-     * Créer et instantie un Sprite
+     * Crée et instantie un Sprite
      *
      * @param x     coordonnée X
      * @param y     coordonnée Y

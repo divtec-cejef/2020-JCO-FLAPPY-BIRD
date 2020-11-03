@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 /**
  * Classe qui représente un Oiseau
  */
-public class Oiseau extends Sprite {
+public class Bird extends Sprite {
     private boolean isAlive;
 
     /**
@@ -22,7 +22,7 @@ public class Oiseau extends Sprite {
      * @param h     Hauteur
      * @param color Couleur
      */
-    public Oiseau(int x, int y, int w, int h, Color color) {
+    public Bird(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
     }

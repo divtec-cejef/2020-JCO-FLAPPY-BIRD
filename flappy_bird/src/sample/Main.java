@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 
 import javafx.animation.AnimationTimer;
@@ -11,7 +10,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -27,12 +25,12 @@ public class Main extends Application {
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
-    Oiseau oiseau = new Oiseau(-250, -200, 30, 30, Color.DARKVIOLET);
+    Bird bird = new Bird(-250, -200, 30, 30, Color.DARKVIOLET);
 
     int currentMenu = 1;
 
     //Liste de couple de tuyau
-    ArrayList<PipeCouple> listeCouples;
+    ArrayList<PipeCouple> couplesList;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,7 +40,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         //Initialisé la liste de couple de tuyau
-        listeCouples = createCouplesList(4);
+        couplesList = createCouplesList(4);
 
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
@@ -52,7 +50,7 @@ public class Main extends Application {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 if (!isSpacePressed) {
-                    oiseau.flap(150);
+                    bird.flap(150);
                     isSpacePressed = true;
                 }
             }
@@ -68,7 +66,7 @@ public class Main extends Application {
         //Ajout de tout les couple de tuyaux
         addCouples(root);
         //Ajout de l'oiseau
-        root.getChildren().add(oiseau);
+        root.getChildren().add(bird);
 
 
         //Récupération de la feuille de style css
@@ -84,50 +82,40 @@ public class Main extends Application {
     }
 
     private void update() {
+        if (t < 1) {
+            t += 0.0016;
+        }
+        //Le couple 0 bouge
+        couplesList.get(0).move();
+        //L'oiseau subit la gravité
+        bird.undergoGravity(5);
+        //Le couple 1 bouge
+        if (t > 0.100) {
+            couplesList.get(1).move();
+        }
+        //Le couple 2 bouge
+        if (t > 0.200) {
+            couplesList.get(2).move();
+        }
+        //Le couple 3 bouge
+        if (t > 0.300) {
+            couplesList.get(3).move();
+        }
 
-        switch (currentMenu) {
-            case 0:
-                System.out.println("menu");
-                break;
-            case 1:
+        // tue l'oiseau si trop haut ou trop bas
+        if (checkBounds()) {
+            bird.kill();
+        }
 
-                t += 0.0016;
-                //Le couple 0 bouge
-                listeCouples.get(0).move();
-                //L'oiseau subit la gravité
-                oiseau.undergoGravity(5);
-                //Le couple 1 bouge
-                if (t > 0.100) {
-                    listeCouples.get(1).move();
-                }
-                //Le couple 2 bouge
-                if (t > 0.200) {
-                    listeCouples.get(2).move();
-                }
-                //Le couple 3 bouge
-                if (t > 0.300) {
-                    listeCouples.get(3).move();
-                }
+        // si l'oiseau touche un tuyau, il meurt
+        if (isAPipeTouched(couplesList, bird)) {
+            bird.kill();
+        }
 
-                // tue l'oiseau si trop haut ou trop bas
-                if (checkBounds()) {
-                    oiseau.kill();
-                }
-
-                // si l'oiseau touche un tuyau, il meurt
-                if (isAPipeTouched(listeCouples, oiseau)) {
-                    oiseau.kill();
-                }
-
-                // si l'oiseau meurt, fin du jeu
-                if (!oiseau.isAlive()) {
-                    System.out.println("GAME OVER");
-                    oiseau.setFill(Color.BLACK);
-                }
-                break;
-            case 2:
-                System.out.println("fin du jeu");
-                break;
+        // si l'oiseau meurt, fin du jeu
+        if (!bird.isAlive()) {
+            System.out.println("GAME OVER");
+            bird.setFill(Color.BLACK);
         }
     }
 
@@ -170,14 +158,14 @@ public class Main extends Application {
     /**
      * Parcours chaque tuyau de chaque couple de tuyaux présent dans la liste et vérifie s'il touche l'oiseau
      *
-     * @param ListeCouple liste de couple de tuyaux
-     * @param oiseau      qui peut ou non toucher un tuyau
+     * @param coupleList liste de couple de tuyaux
+     * @param bird       qui peut ou non toucher un tuyau
      * @return ture = touché // False = non touché
      */
-    public boolean isAPipeTouched(ArrayList<PipeCouple> ListeCouple, Oiseau oiseau) {
+    public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, Bird bird) {
         boolean isTouched = false;
-        for (PipeCouple couple : ListeCouple) {
-            if (couple.pipe1.isHit(oiseau) || couple.pipe2.isHit(oiseau)) {
+        for (PipeCouple couple : coupleList) {
+            if (couple.pipe1.isHit(bird) || couple.pipe2.isHit(bird)) {
                 isTouched = true;
             }
         }
@@ -190,14 +178,14 @@ public class Main extends Application {
      * @param root la pane
      */
     public void addCouples(StackPane root) {
-        for (PipeCouple couple : listeCouples) {
+        for (PipeCouple couple : couplesList) {
             root.getChildren().add(couple.pipe1);
             root.getChildren().add(couple.pipe2);
         }
     }
 
     public boolean checkBounds() {
-        return oiseau.getTranslateY() > 350 || oiseau.getTranslateY() < -350;
+        return bird.getTranslateY() > 350 || bird.getTranslateY() < -350;
     }
 }
 

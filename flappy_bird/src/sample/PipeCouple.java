@@ -6,7 +6,6 @@ package sample;
 public class PipeCouple {
     public Pipe pipe1;
     public Pipe pipe2;
-    private int spaceBetween = 200;
 
     /**
      * Crée et instantie un couple de tuyau
@@ -40,9 +39,10 @@ public class PipeCouple {
      * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
      */
     private void createSpace(){
-        int rndNum = getRandomNumber(0,spaceBetween);
+        int spaceBetween = 200;
+        int rndNum = getRandomNumber(0, spaceBetween);
         this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
-        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
+        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween -rndNum));
     }
 
     /**
