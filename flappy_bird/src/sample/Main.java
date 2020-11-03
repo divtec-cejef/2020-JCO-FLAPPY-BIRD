@@ -29,7 +29,7 @@ public class Main extends Application {
     //L'oiseau
     Oiseau oiseau = new Oiseau(-250, -200, 30, 30, Color.DARKVIOLET);
 
-    Label label1 = new Label("");
+    int currentMenu = 1;
 
     //Liste de couple de tuyau
     ArrayList<PipeCouple> listeCouples;
@@ -84,44 +84,56 @@ public class Main extends Application {
     }
 
     private void update() {
-        t += 0.0016;
-        //Le couple 0 bouge
-        listeCouples.get(0).move();
-        //L'oiseau subit la gravité
-        oiseau.undergoGravity(5);
-        //Le couple 1 bouge
-        if (t > 0.100) {
-            listeCouples.get(1).move();
-        }
-        //Le couple 2 bouge
-        if (t > 0.200) {
-            listeCouples.get(2).move();
-        }
-        //Le couple 3 bouge
-        if (t > 0.300) {
-            listeCouples.get(3).move();
-        }
 
-        // tue l'oiseau si trop haut ou trop bas
-        if (checkBounds()) {
-            oiseau.kill();
-        }
+        switch (currentMenu) {
+            case 0:
+                System.out.println("menu");
+                break;
+            case 1:
 
-        // si l'oiseau touche un tuyau, il meurt
-        if (isAPipeTouched(listeCouples, oiseau)) {
-            oiseau.kill();
-        }
+                t += 0.0016;
+                //Le couple 0 bouge
+                listeCouples.get(0).move();
+                //L'oiseau subit la gravité
+                oiseau.undergoGravity(5);
+                //Le couple 1 bouge
+                if (t > 0.100) {
+                    listeCouples.get(1).move();
+                }
+                //Le couple 2 bouge
+                if (t > 0.200) {
+                    listeCouples.get(2).move();
+                }
+                //Le couple 3 bouge
+                if (t > 0.300) {
+                    listeCouples.get(3).move();
+                }
 
-        // si l'oiseau meurt, fin du jeu
-        if (!oiseau.isAlive()) {
-            System.out.println("IS KILL");
+                // tue l'oiseau si trop haut ou trop bas
+                if (checkBounds()) {
+                    oiseau.kill();
+                }
+
+                // si l'oiseau touche un tuyau, il meurt
+                if (isAPipeTouched(listeCouples, oiseau)) {
+                    oiseau.kill();
+                }
+
+                // si l'oiseau meurt, fin du jeu
+                if (!oiseau.isAlive()) {
+                    System.out.println("GAME OVER");
+                    oiseau.setFill(Color.BLACK);
+                }
+                break;
+            case 2:
+                System.out.println("fin du jeu");
+                break;
         }
     }
 
     //Initialisation de la pane
     private Parent createContent() {
         root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
-
         root.setId("pane");
 
         AnimationTimer timer = new AnimationTimer() {
