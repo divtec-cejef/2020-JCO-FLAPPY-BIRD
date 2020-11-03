@@ -1,11 +1,16 @@
 package sample;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 /**
  * Classe qui représente un tuyau
  */
 public class Pipe extends Sprite {
+
+    private ImageView pipeSprite;
+    private Image pipeImage;
 
     /**
      * Crée et instantie un tuyau
@@ -18,6 +23,8 @@ public class Pipe extends Sprite {
      */
     Pipe(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
+        pipeImage = new Image("Sprites/longpipe.png");
+        pipeSprite = new ImageView(pipeImage);
     }
 
     /**
@@ -55,5 +62,13 @@ public class Pipe extends Sprite {
         return isTouched;
     }
 
+    public void refreshPipeSprite(){
+        pipeSprite.setTranslateX(this.getTranslateX());
+        pipeSprite.setTranslateY(this.getTranslateY());
+    }
+
+    public ImageView getPipeSprite() {
+        return pipeSprite;
+    }
 
 }

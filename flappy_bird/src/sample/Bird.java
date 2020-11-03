@@ -2,9 +2,12 @@ package sample;
 
 
 import javax.swing.*;
+
+import javafx.scene.image.Image;
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 /**
@@ -12,6 +15,8 @@ import javafx.scene.paint.Color;
  */
 public class Bird extends Sprite {
     private boolean isAlive;
+    private ImageView birdSprite;
+    private Image birdImage;
 
     /**
      * Crée et instantie un oiseau
@@ -25,8 +30,9 @@ public class Bird extends Sprite {
     public Bird(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
+        birdImage = new Image("Sprites/flappy.png");
+        birdSprite = new ImageView(birdImage);
     }
-
 
     /**
      * @return l'état de santé de l'oiseau (true = vivant, false = mort)
@@ -35,14 +41,12 @@ public class Bird extends Sprite {
         return isAlive;
     }
 
-
     /**
      * Tue l'oiseau
      */
     public void kill() {
         this.isAlive = false;
     }
-
 
     /**
      * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
@@ -52,6 +56,7 @@ public class Bird extends Sprite {
      */
     public void undergoGravity(int gravity) {
         this.moveDown(gravity);
+        refreshBirdSprite();
     }
 
     /**
@@ -61,6 +66,16 @@ public class Bird extends Sprite {
      */
     public void flap(int strengh) {
         this.setTranslateY(this.getTranslateY() - strengh);
+        refreshBirdSprite();
+    }
+
+    public ImageView getBirdSprite() {
+        return birdSprite;
+    }
+
+    public void refreshBirdSprite(){
+        birdSprite.setTranslateX(this.getTranslateX());
+        birdSprite.setTranslateY(this.getTranslateY());
     }
 }
 
