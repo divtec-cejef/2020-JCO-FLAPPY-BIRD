@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -32,12 +30,6 @@ public class Sprite extends Rectangle {
         //simplification de la variable, remplace getWidth/getHeight
         largeur = w;
         hauteur = h;
-
-        //Initialisation des coins
-        //area.setTopLeft(new CoordXY(w / 2 * -1, h / 2 * -1));
-        //area.setTopRight(new CoordXY(w / 2, h / 2 * -1));
-        //area.setDownLeft(new CoordXY(w / 2 * -1, h / 2));
-        //area.setDownRight(new CoordXY(w / 2, h / 2));
 
         //Mise à jours des coins
         refreshCoord();
@@ -105,6 +97,10 @@ public class Sprite extends Rectangle {
 
     }
 
+    /**
+     * Permet d'accéder à area
+     * @return area
+     */
     public Area getArea() {
         return area;
     }

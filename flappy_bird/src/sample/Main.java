@@ -1,7 +1,8 @@
 package sample;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.animation.AnimationTimer;
@@ -10,7 +11,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -26,7 +32,11 @@ public class Main extends Application {
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
-    Bird bird = new Bird(-250, -200, 30, 30, Color.DARKVIOLET);
+    Bird bird = new Bird(-250, -200, 30, 30, Color.TRANSPARENT);
+    //LeScore
+    Score score = new Score(-400, -320);
+
+    Label myScore = new Label();
 
     //Liste de couple de tuyau
     ArrayList<PipeCouple> couplesList;
@@ -44,12 +54,26 @@ public class Main extends Application {
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
 
+        //Initialisation du score
+        score.write("Score : " + score.getPts());
+        score.getText().setFont(Font.font("FlappyBirdy", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        score.getText().setStroke(Color.WHITESMOKE);
+        score.getText().setFill(Color.TRANSPARENT);
+
+        myScore.setText("COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU ");
+        myScore.setTranslateX(0);
+        myScore.setTranslateY(0);
+        myScore.setAlignment(Pos.CENTER_LEFT);
+
+
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 if (!isSpacePressed) {
-                    bird.flap(150);
+                    bird.setFlying(true);
+                    bird.setStartAndGoalAreSetup(false);
+                    bird.getBirdSprite().setImage(new Image("Sprites/flappyFlap.png"));
                     isSpacePressed = true;
                 }
             }
@@ -60,6 +84,7 @@ public class Main extends Application {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 isSpacePressed = false;
+                bird.getBirdSprite().setImage(new Image("Sprites/flappy.png"));
             }
         });
         //Ajout de tout les couple de tuyaux
@@ -67,6 +92,10 @@ public class Main extends Application {
         //Ajout de l'oiseau
         root.getChildren().add(bird);
         root.getChildren().add(bird.getBirdSprite());
+        //Ajout du score
+        root.getChildren().add(score.getText());
+
+        root.getChildren().add(myScore);
 
         //Récupération de la feuille de style css
         scene.getStylesheets().add("css/style.css");
@@ -82,21 +111,31 @@ public class Main extends Application {
 
     private void update() {
 
+        //timer de poche
         if (t < 1) {
             t += 0.0016;
         }
+
         //Le couple 0 bouge
         couplesList.get(0).move();
-        //L'oiseau subit la gravité
-        bird.undergoGravity(5);
+
+        //L'oiseau subit la gravité s'il n'est pas en train de volé
+        if (!bird.isFlying()) {
+            bird.undergoGravity(5);
+        } else {
+            bird.flap2();
+        }
+
         //Le couple 1 bouge
         if (t > 0.100) {
             couplesList.get(1).move();
         }
+
         //Le couple 2 bouge
         if (t > 0.200) {
             couplesList.get(2).move();
         }
+
         //Le couple 3 bouge
         if (t > 0.300) {
             couplesList.get(3).move();
@@ -112,10 +151,11 @@ public class Main extends Application {
             bird.kill();
         }
 
-        // si l'oiseau meurt, fin du jeu
-        if (!bird.isAlive()) {
-            System.out.println("GAME OVER");
-            bird.setFill(Color.BLACK);
+        //Tant que l'oiseau est en vie, compte les couples de tuyau
+        if (bird.isAlive()) {
+            coutingPipes();
+        }else{
+            //FIN DU JEU
         }
     }
 
@@ -138,18 +178,18 @@ public class Main extends Application {
     /**
      * Créer une liste de couple de tuyaux
      *
-     * @param nombreCouple nombre de couple voulu
+     * @param couplesNumber nombre de couple voulu
      * @return une liste de couple de tuyaux
      */
-    public ArrayList<PipeCouple> createCouplesList(int nombreCouple) {
+    public ArrayList<PipeCouple> createCouplesList(int couplesNumber) {
         ArrayList<PipeCouple> list = new ArrayList<>();
-        for (int i = 0; i < nombreCouple; i++) {
+        for (int i = 0; i < couplesNumber; i++) {
             list.add(
                     new PipeCouple(
                             //Les pipes sont formaté à leur création, donc pas besoin de donnée de position
                             //Parcontre la taille est importante vu que l'area d'un sprite se génére lors de la création
-                            new Pipe(0, 0, 60, 700, Color.LIGHTGREEN),
-                            new Pipe(0, 0, 60, 700, Color.LIGHTGREEN)
+                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT),
+                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT)
                     ));
         }
         return list;
@@ -190,9 +230,16 @@ public class Main extends Application {
         return bird.getTranslateY() > 350 || bird.getTranslateY() < -350;
     }
 
-    public void linkImageToBird(ImageView image, Bird bird){
-        image.setX(bird.getTranslateX());
-        image.setY(bird.getTranslateX());
+    public void coutingPipes() {
+        for (PipeCouple couple : couplesList) {
+            if (couple.pipe1.getTranslateX() < bird.getTranslateX()) {
+                if (couple.CanGivePts()) {
+                    score.incrementScore();
+                    score.write("Score : " + score.getPts());
+                    couple.setCanGivePts(false);
+                }
+            }
+        }
     }
 }
 

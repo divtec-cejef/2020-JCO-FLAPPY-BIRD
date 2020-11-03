@@ -15,6 +15,11 @@ le but est de passer le plus de couple de tuyaux
     <figcaption>Première version du jeu</figcaption>
 </figure>
 
+<figure>
+<img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
+    <figcaption>Deuxième version du jeu</figcaption>
+</figure>
+
 ## Sprite :
 
 La classe Sprite hérite de la classe JavaFX Rectangle qui permet de créer des rectangles de taille voulue, de les placer à une coordonnée x/y souhaitée, ainsi que de choisir leur couleur.
@@ -53,7 +58,11 @@ Chaque fois qu'un Sprite bouge, les coordonnées de area sont rafraîchies par l
 
 La fonction principal de la variable area sera de déterminer si deux object se touche ou non.
 
-**Ajouter fonction IsHit() de Pipe**
+pour déterminer si deux object se touche, il suffit de comparer chaque coins de l'oiseau avec deux distance d'un tuyau
+<figure>
+<img src="img/schémacollisons.png" alt="première version du jeu" width="200"/>
+</figure>
+Si n'importe quel coin (ici haut-droit) de l'oiseau (en jaune) se situe entre le coin bas-gauche et bas-droit ET AUSSI entre le coin bas-gauche et haut-gauche d'un tuyau (en vert), il sera considéré comme "en collision"
 
 ## Les tuyaux :
 
@@ -61,10 +70,10 @@ les tuyaux détectent si l'bird passe dessus, si oui, c'est perdu.
 
 immaginons que de base le tuyaux de haut et du bas se touche au centre de l'écran.
 
-il doit y avoir un écart de 300 entre les deux tuyaux, a chaque apparition de couple de tuyau un chiffre aléatoir de 0 à 300 est tiré.
+il doit y avoir un écart de **n** entre les deux tuyaux, a chaque apparition de couple de tuyau un chiffre aléatoir de 0 à **n** est tiré.
 
 depuis le millieu de l'écran en augmente la valeur Y du tuyau du haut par la valeur tirée,
-et on réduit la valeur Y du tuyau du bas par 300 - la valeur tirée, ce qui donnera un écart de 300 + un position aléatoir de l'espace.
+et on réduit la valeur Y du tuyau du bas par **n** - la valeur tirée, ce qui donnera un écart de **n** + une position aléatoire de l'espace.
 
 ```java
 /**
@@ -78,7 +87,7 @@ this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
 ```
 
 ## L'oiseau :
--l'bird tombe de base, en appuyant sur un touche, il monte progressivement d'une valeur fixe vers le haut, puis recommence a tombé
+-l'oiseau tombe de base, en appuyant sur un touche, il monte progressivement d'une valeur fixe vers le haut, puis recommence a tombé
 
 ```java
 /**

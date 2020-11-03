@@ -6,6 +6,7 @@ package sample;
 public class PipeCouple {
     public Pipe pipe1;
     public Pipe pipe2;
+    private boolean canGivePts = true;
 
     /**
      * Crée et instantie un couple de tuyau
@@ -54,6 +55,7 @@ public class PipeCouple {
         //Arrivé
         if(isOut()){
             formatCouples();
+            this.canGivePts = true;
         }
         //Pas arrivé
         else{
@@ -85,5 +87,13 @@ public class PipeCouple {
         this.pipe2.setTranslateY(350);
 
         createSpace();
+    }
+
+    public boolean CanGivePts() {
+        return canGivePts;
+    }
+
+    public void setCanGivePts(boolean canGivePts) {
+        this.canGivePts = canGivePts;
     }
 }
