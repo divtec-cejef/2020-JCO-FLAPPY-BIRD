@@ -59,6 +59,8 @@ Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi 
 ## Déroulement de base d'une partie
 Le déroulement de base d'une partie est décrite dans ce [document PDF](docs/Ordinogramme.pdf)
 
+![Image de l'ordinogramme](img/ordinogramme.png)
+
 # Class
 La javaDoc hors-ligne du projet est disponible ici : [JavaDoc](docs/JavaDocs)
 
