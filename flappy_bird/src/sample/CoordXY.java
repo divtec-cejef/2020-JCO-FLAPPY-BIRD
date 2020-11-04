@@ -1,5 +1,6 @@
 package sample;
 
+// Classe qui représente une coordonnée X et Y sur un plan 2D
 public class CoordXY {
     private int X = 0;
     private int Y = 0;
@@ -8,6 +9,11 @@ public class CoordXY {
 
     }
 
+    /**
+     * Constructeur
+     * @param px point X
+     * @param py point Y
+     */
     public CoordXY(int px, int py){
         this.X = px;
         this.Y = py;
