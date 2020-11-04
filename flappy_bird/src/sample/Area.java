@@ -9,6 +9,13 @@ public class Area {
 
     public Area(){}
 
+    /**
+     * Constructeur
+     * @param topLeft coin haut-gauche
+     * @param topRight coin haut-droite
+     * @param downLeft coin bas-gauche
+     * @param downRight coin bas-droite
+     */
     public Area(CoordXY topLeft, CoordXY topRight, CoordXY downLeft, CoordXY downRight) {
         this.topLeft = topLeft;
         this.topRight = topRight;
