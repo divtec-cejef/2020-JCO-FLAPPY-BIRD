@@ -6,12 +6,14 @@ import javafx.scene.paint.Color;
 
 /**
  * Classe qui représente un Oiseau
+ *
+ * @author Louis Bovay
  */
 public class Bird extends Sprite {
     //Si l'oiseau est vivant ou mort
     private boolean isAlive;
     //Sprite de la classe Bird
-    private ImageView birdSprite;
+    private ImageView birdSprite; //haha lol
     private Image birdImage;
 
     //position d'arrivé après un vole
@@ -26,7 +28,8 @@ public class Bird extends Sprite {
     private boolean startAndGoalAreSetup = false;
 
     /**
-     * Crée et instantie un oiseau
+     * Crée et instantie un oiseau à la position, la taille et la couleur voulue
+     * Un sprite et une vie lui sont automatiquement assigné
      *
      * @param x     coordonnée X
      * @param y     coordonnée Y
@@ -42,6 +45,8 @@ public class Bird extends Sprite {
     }
 
     /**
+     * Permet d'accéder à l'état de santé de l'oiseau
+     *
      * @return l'état de santé de l'oiseau (true = vivant, false = mort)
      */
     public boolean isAlive() {
@@ -54,7 +59,10 @@ public class Bird extends Sprite {
     public void kill() {
         this.isAlive = false;
     }
-    public void revive(){this.isAlive = true;}
+
+    public void revive() {
+        this.isAlive = true;
+    }
 
     /**
      * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
@@ -69,6 +77,7 @@ public class Bird extends Sprite {
 
     /**
      * Permet d'accéder au sprite
+     *
      * @return birdSprite
      */
     public ImageView getBirdSprite() {
@@ -105,6 +114,7 @@ public class Bird extends Sprite {
 
     /**
      * Met à jours la variable goal
+     *
      * @param hauteurDuVole valeur fixe où l'oiseau doit se rendre
      */
     public void refreshGoal(int hauteurDuVole) {
@@ -120,6 +130,7 @@ public class Bird extends Sprite {
 
     /**
      * Donne accès à la variable flying
+     *
      * @return flying
      */
     public boolean isFlying() {
@@ -128,6 +139,7 @@ public class Bird extends Sprite {
 
     /**
      * Change l'état de flying
+     *
      * @param flying (true = l'oiseau vole, false = l'oiseau tombe)
      */
     public void setFlying(boolean flying) {
@@ -136,6 +148,7 @@ public class Bird extends Sprite {
 
     /**
      * Permet de changer l'état de startAndGoalAreSetup
+     *
      * @param startAndGoalAreSetup , true = les deux points start et goal sont placés, false = ils ne le sont pas
      */
     public void setStartAndGoalAreSetup(boolean startAndGoalAreSetup) {

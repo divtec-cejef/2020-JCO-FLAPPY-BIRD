@@ -16,6 +16,13 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
+/**
+ * @author Louis Bovay
+ * @version 3.0 - 04.11.2020
+ * FLAPPY BIRD
+ * Projet d'atelier 26.10.2020 au 16.12.2020
+ * "Création d'un petit jeu en programmation avancée"
+ */
 public class Main extends Application {
 
     //Indice de temps
@@ -39,7 +46,7 @@ public class Main extends Application {
     //LeScore
     Score score = new Score(-400, -320);
     //Text d'information
-    Text txtInformation = new Text(0,0,"Appuyez sur -> SPACE <-");
+    Text txtInformation = new Text(0, 0, "Appuyez sur -> SPACE <-");
     //Liste de couple de tuyau
     ArrayList<PipeCouple> couplesList;
 
@@ -74,7 +81,7 @@ public class Main extends Application {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 if (!isSpacePressed) {
-                    if(isGameRunning) {
+                    if (isGameRunning) {
                         //l'oiseau vole
                         bird.setFlying(true);
                         //point de départ et d'arrivé doivent être mis en place
@@ -84,18 +91,23 @@ public class Main extends Application {
                         //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
                         isSpacePressed = true;
                     }
-                    if(!isGameStarted) {
+                    if (!isGameStarted) {
                         startGame();
                     }
                 }
             }
             //Si R est appuyé
-            if(keyCode.equals(KeyCode.R)){
+            if (keyCode.equals(KeyCode.R)) {
                 //N'est pas disponnbile lorsque le jeu est en cours
-                if(!isGameRunning) {
+                if (!isGameRunning) {
                     if (!isRPressed) {
                         isRPressed = true;
                     }
+                }
+            }
+            if (keyCode.equals(KeyCode.Q)) {
+                if (!isGameRunning) {
+                    stage.close();
                 }
             }
         });
@@ -110,7 +122,7 @@ public class Main extends Application {
             //Si R est relâché
             if (keyCode.equals(KeyCode.R)) {
                 //N'est pas disponnble lorsque le joue est en cours
-                if(!isGameRunning) {
+                if (!isGameRunning) {
                     restartGame();
                 }
             }
@@ -292,8 +304,8 @@ public class Main extends Application {
     /**
      * Replace les couples de tuyau, leur sprite ainsi que leur zone de collision à leur point de départ
      */
-    public void resetPipe(){
-        for(PipeCouple couple : couplesList){
+    public void resetPipe() {
+        for (PipeCouple couple : couplesList) {
             couple.formatCouples();
             couple.pipe1.refreshCoord();
             couple.pipe2.refreshCoord();
@@ -303,7 +315,7 @@ public class Main extends Application {
     /**
      * Lance le jeu pour la première fois
      */
-    public void startGame(){
+    public void startGame() {
         //déclare le jeu comme en cours
         isGameRunning = true;
         //déclare le jeu comme lancé
@@ -320,7 +332,7 @@ public class Main extends Application {
      * L'oiseau, son sprite ainsi que sa zone de collision sont remis à leur position de départ
      * Le score et un message d'info pour rejouer s'affiche au milleu de l'écran
      */
-    public void endGame(){
+    public void endGame() {
         //remet le timer de poche à 0
         t = 0;
         //Affichage du score
@@ -329,16 +341,16 @@ public class Main extends Application {
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
         //Affichage d'information
-        txtInformation.setText("Rejouer -> R <-");
+        txtInformation.setText("Rejouer -> R <-\nQuitter -> Q <-");
         txtInformation.setVisible(true);
         //Le jeu est déclarer comme arrêté
         isGameRunning = false;
     }
 
     /**
-     *
+     * Redémarre le jeu
      */
-    public void restartGame(){
+    public void restartGame() {
         resetScore();
         //Reinitialisation des tuyaux
         resetPipe();
@@ -354,7 +366,10 @@ public class Main extends Application {
         isGameRunning = true;
     }
 
-    public void resetScore(){
+    /**
+     * Replace le score au bonne endroit et le remet à zéro
+     */
+    public void resetScore() {
         score.resetScore();
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.TRANSPARENT);

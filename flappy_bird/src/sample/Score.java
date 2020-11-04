@@ -1,25 +1,30 @@
 package sample;
+
 import javafx.scene.text.Text;
 
 /**
  * Classe qui représente un score
+ *
+ * @author Louis Bovay
  */
 public class Score {
     private int pts = 0;
     private Text text = new Text();
 
     /**
-     * Constructeur
+     * Constructeur permettant d'assigner directement une position
+     *
      * @param x position X
      * @param y position Y
      */
-    public Score(double x, double y){
+    public Score(double x, double y) {
         this.text.setTranslateX(x);
         this.text.setTranslateY(y);
     }
 
     /**
      * Renvoie les points
+     *
      * @return pts
      */
     public int getPts() {
@@ -28,6 +33,7 @@ public class Score {
 
     /**
      * Renvoie l'objet text
+     *
      * @return l'objet text
      */
     public Text getText() {
@@ -36,6 +42,7 @@ public class Score {
 
     /**
      * Permet décrire dans l'objet text
+     *
      * @param text à écrire
      */
     public void write(String text) {
@@ -45,14 +52,14 @@ public class Score {
     /**
      * Incrémente le score de 1
      */
-    public void incrementScore(){
+    public void incrementScore() {
         this.pts++;
     }
 
     /**
      * Remet le score à zéro
      */
-    public void resetScore(){
+    public void resetScore() {
         this.pts = 0;
         this.text.setText("Score : 0");
     }

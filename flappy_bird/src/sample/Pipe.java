@@ -6,6 +6,8 @@ import javafx.scene.paint.Color;
 
 /**
  * Classe qui représente un tuyau
+ *
+ * @author Louis Bovay
  */
 public class Pipe extends Sprite {
 
@@ -14,7 +16,8 @@ public class Pipe extends Sprite {
     private Image pipeImage;
 
     /**
-     * Crée et instantie un tuyau
+     * Crée et instantie un tuyau à la position, la taille et la couleur voulue
+     * Un sprite lui est automatiquement assigné
      *
      * @param x     coordonée X
      * @param y     coordonnée Y

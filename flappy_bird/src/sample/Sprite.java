@@ -5,6 +5,8 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * Classe qui représente un Sprite
+ *
+ * @author Louis Bovay
  */
 public class Sprite extends Rectangle {
 
@@ -13,7 +15,7 @@ public class Sprite extends Rectangle {
     public int hauteur = 0;
 
     /**
-     * Crée et instantie un Sprite
+     * Crée et instantie un Sprite à la position, la taille et la couleur voulue
      *
      * @param x     coordonnée X
      * @param y     coordonnée Y
@@ -84,10 +86,10 @@ public class Sprite extends Rectangle {
      */
     public void refreshCoord() {
         //Y
-        area.getTopLeft().setY((int) getTranslateY()  - (hauteur / 2));
-        area.getTopRight().setY((int) getTranslateY()  - (hauteur / 2));
-        area.getDownLeft().setY((int) getTranslateY()  + (hauteur / 2));
-        area.getDownRight().setY((int) getTranslateY()  + (hauteur / 2));
+        area.getTopLeft().setY((int) getTranslateY() - (hauteur / 2));
+        area.getTopRight().setY((int) getTranslateY() - (hauteur / 2));
+        area.getDownLeft().setY((int) getTranslateY() + (hauteur / 2));
+        area.getDownRight().setY((int) getTranslateY() + (hauteur / 2));
 
         //X
         area.getTopLeft().setX((int) getTranslateX() - (this.largeur / 2));
@@ -99,6 +101,7 @@ public class Sprite extends Rectangle {
 
     /**
      * Permet d'accéder à area
+     *
      * @return area
      */
     public Area getArea() {
