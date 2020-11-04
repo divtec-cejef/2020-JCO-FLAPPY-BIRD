@@ -1,6 +1,4 @@
 package sample;
-
-
 import javafx.scene.text.Text;
 
 /**
@@ -10,6 +8,11 @@ public class Score {
     private int pts = 0;
     private Text text = new Text();
 
+    /**
+     * Constructeur
+     * @param x position X
+     * @param y position Y
+     */
     public Score(double x, double y){
         this.text.setTranslateX(x);
         this.text.setTranslateY(y);
@@ -46,7 +49,11 @@ public class Score {
         this.pts++;
     }
 
+    /**
+     * Remet le score à zéro
+     */
     public void resetScore(){
         this.pts = 0;
+        this.text.setText("Score : 0");
     }
 }
