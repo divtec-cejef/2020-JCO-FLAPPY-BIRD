@@ -82,7 +82,7 @@ public class Sprite extends Rectangle {
     /**
      * met à jours les coordonnée des quatre coins du Sprite
      */
-    private void refreshCoord() {
+    public void refreshCoord() {
         //Y
         area.getTopLeft().setY((int) getTranslateY()  - (hauteur / 2));
         area.getTopRight().setY((int) getTranslateY()  - (hauteur / 2));
