@@ -40,22 +40,24 @@ public class PipeCouple {
      * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
      */
     private void createSpace(){
+        //Espace fixe entre le couple de tuyaux
         int spaceBetween = 250;
         int rndNum = getRandomNumber(0, spaceBetween);
         this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
         this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween -rndNum));
+        //Replacer les sprites sur les tuyaux
         this.pipe1.refreshPipeSprite();
         this.pipe2.refreshPipeSprite();
     }
 
     /**
-     * Fait bouger le couple de droite à gauche, si arrivé a droite, il se réinitialise
+     * Fait bouger le couple de droite à gauche, si arrivé a gauche, il se réinitialise
      */
     public void move(){
         //Arrivé
         if(isOut()){
+            //Couple réinitialisé
             formatCouples();
-            this.canGivePts = true;
         }
         //Pas arrivé
         else{
@@ -77,7 +79,7 @@ public class PipeCouple {
     /**
      * Réinitialise le couple, le replaçant à droit de l'écran et en recréant un espace entre les deux tuyaux
      */
-    private void formatCouples(){
+    public void formatCouples(){
         //en haut
         this.pipe1.setTranslateX(550);
         this.pipe1.setTranslateY(-350);
@@ -86,13 +88,24 @@ public class PipeCouple {
         this.pipe2.setTranslateX(550);
         this.pipe2.setTranslateY(350);
 
+        //Ils peuvent à nouveau donner des points
+        this.canGivePts = true;
+
         createSpace();
     }
 
+    /**
+     * Permet de connaître si oui on non un couple de tuyau peuvent donner des points
+     * @return true = le couple peut donner des points, false = ne peuvent pas donner de points
+     */
     public boolean CanGivePts() {
         return canGivePts;
     }
 
+    /**
+     * Définir si oui ou non un couple peut donner des points
+     * @param canGivePts true = le couple peut donner des points, false = il ne peut pas
+     */
     public void setCanGivePts(boolean canGivePts) {
         this.canGivePts = canGivePts;
     }
