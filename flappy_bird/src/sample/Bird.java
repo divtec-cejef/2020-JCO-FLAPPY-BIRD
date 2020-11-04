@@ -16,12 +16,13 @@ public class Bird extends Sprite {
 
     //position d'arrivé après un vole
     private int goal = 0;
+    //définit à quel hauteur suplémentaire de l'oiseau le point d'arrivée va être
     private int hauteurDuVole;
     //position de départ de l'oiseau
     private int start = 0;
-    //Savoir si l'oiseau est en train de voler ou s'il tombe
+    //Définit si l'oiseau est en train de volé ou non
     private boolean flying = false;
-    //Permet de refresh Start et Goal uniquement une fois
+    //Définit si le point start et goal ont été mis en place
     private boolean startAndGoalAreSetup = false;
 
     /**
@@ -36,7 +37,7 @@ public class Bird extends Sprite {
     public Bird(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
-        birdImage = new Image("Sprites/flappy.png");
+        birdImage = new Image("Sprites/flappyFlap.png");
         birdSprite = new ImageView(birdImage);
     }
 
@@ -53,6 +54,7 @@ public class Bird extends Sprite {
     public void kill() {
         this.isAlive = false;
     }
+    public void revive(){this.isAlive = true;}
 
     /**
      * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
@@ -62,16 +64,6 @@ public class Bird extends Sprite {
      */
     public void undergoGravity(int gravity) {
         this.moveDown(gravity);
-        refreshBirdSprite();
-    }
-
-    /**
-     * L'oiseau monte/"se téléporte" l'axe Y en fonction de sa force
-     *
-     * @param strengh force de l'oiseau, plus elle est haute, plus il montera haut
-     */
-    public void flap(int strengh) {
-        this.setTranslateY(this.getTranslateY() - strengh);
         refreshBirdSprite();
     }
 
@@ -143,8 +135,8 @@ public class Bird extends Sprite {
     }
 
     /**
-     * Permet de changer l'était de startAndGoalAreSetup
-     * @param startAndGoalAreSetup
+     * Permet de changer l'état de startAndGoalAreSetup
+     * @param startAndGoalAreSetup , true = les deux points start et goal sont placés, false = ils ne le sont pas
      */
     public void setStartAndGoalAreSetup(boolean startAndGoalAreSetup) {
         this.startAndGoalAreSetup = startAndGoalAreSetup;
