@@ -1,120 +1,77 @@
 # 2020-JCO-FLAPPY-BIRD
 
-## But :
-un oiseau vole entre l'espace créé par un tuyau supérieur et un tuyau inférieur, s'il en touche un il meurt.
+- [2020-JCO-FLAPPY-BIRD](#2020-jco-flappy-bird)
+  - [Introduction](#introduction)
+  - [Pré-requis](#pré-requis)
+  - [But](#but)
+  - [Évolution du jeu](#évolution-du-jeu)
+  - [Déroulement de base d'une partie](#déroulement-de-base-dune-partie)
+- [Class](#class)
+  - [Area](#area)
+  - [Bird](#bird)
+  - [Pipe](#pipe)
+  - [PipeCouple](#pipecouple)
+  - [Score](#score)
+  - [UML des Class](#uml-des-class)
 
-l'oiseau tombe en continue vers le bas, s'il touche le bas il meurt.
+## Introduction
+Projet d'une durée de 28 jours qui a pour but de repprendre un jeu célèbre et de le recréer par programmation orienté objet.
 
-si le joueur appuie sur une touche l'oiseau battera une fois des ails se qui le fera monter un peu, avant de recommencer à descendre, si le joueur fait monter l'oiseau trop haut,
-l'oiseau meurt.
+## Pré-requis
+Language de programation : [Java](https://fr.wikipedia.org/wiki/Java_(langage) "Wikipédia : Java") ![Logo java](img/java_logo.png)
 
-le but est de passer le plus de couple de tuyaux
+Des bases en programmation orienté objet sont indispensable pour comprendre et mondifer ce projet
+
+* SDK : [javaFX](https://gluonhq.com/products/javafx/ "Page de téléchargement")
+* IDE Java : [IntelliJ IDEA](https://www.jetbrains.com/fr-fr/idea/ "Page principale de IntelliJ IDEA")
+
+## But
+Le joueur doit aider un oiseau à franchir des petits espace entre deux tuyaux
+
+Si le joueur appuie sur une touche l'oiseau battera une fois des ails se qui le fera monter un peu, avant de recommencer à descendre, si le joueur fait monter l'oiseau trop haut, l'oiseau meurt.
+
+Si l'oiseau touche le bas il meurt.
+
+Le but est de passer le plus de tuyau possible
+
+## Évolution du jeu
+
+Voici les différentes évolutions majeures du projet
 
 <figure>
     <figcaption>Première version du jeu</figcaption>
-<img src="img/premiere_version.png" alt="première version du jeu" width="600"/>    
+<img src="img/premiere_version.png" alt="première version du jeu" width="600"/>
+Un fond et des rectangles pour faire un oiseau et des tuyaux, l'oiseau vole mais aucune collision n'est détectée
 </figure>
 
 <figure>
     <figcaption>Deuxième version du jeu</figcaption>
 <img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
+Ajout de sprite sur les rectangles, les collisions sont maitenant détectée
 </figure>
 
-## Sprite :
-
-La classe Sprite hérite de la classe JavaFX Rectangle qui permet de créer des rectangles de taille voulue, de les placer à une coordonnée x/y souhaitée, ainsi que de choisir leur couleur.
-
-La classe sprite ajoute 4 nouvelles fonctions qui permettent de déplacer le rectangle :
-* moveLeft()
-* moveRight()
-* moveUp()
-* moveDown()
-
-Chaque sprite a comme varial membre une zone(area) de type Area.
-
-la zone permet d'accéder à :
-* getTopLeft()
-* getTopRight()
-* getDownLeft()
-* getDownRight()
-
-chacune de ces fonctions permettent d'accéder à un point X(.getX()) et Y(.getY()) qui forme ensemble la coordonnée représentant un des 4 coins du sprite.
-
-```java 
-public class Area {
-    private CoordXY topLeft = new CoordXY();
-    private CoordXY topRight = new CoordXY();
-    private CoordXY downLeft = new CoordXY();
-    private CoordXY downRight = new CoordXY();
-    ...
-```
-
-Exemple : obtenir le coin supérieur gauche d'un carré :
-```java
-CoordXY topLeftCarré = new CoordXY(carré.getArea().getTopLeft().getX(),carré.getArea().getTopLeft().getY())
-```
-
-Chaque fois qu'un Sprite bouge, les coordonnées de area sont rafraîchies par le biais de refreshCoord() 
-
-La fonction principal de la variable area sera de déterminer si deux object se touche ou non.
-
-pour déterminer si deux object se touche, il suffit de comparer chaque coins de l'oiseau avec deux distance d'un tuyau
 <figure>
-<img src="img/schémacollisons.png" alt="première version du jeu" width="200"/>
+    <figcaption>Troisième version du jeu</figcaption>
+<img src="img/troisieme_version.png" alt="première version du jeu" width="600"/>
+Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi possible de rejouer après la mort de l'oiseau
 </figure>
-Si n'importe quel coin (ici haut-droit) de l'oiseau (en jaune) se situe entre le coin bas-gauche et bas-droit ET AUSSI entre le coin bas-gauche et haut-gauche d'un tuyau (en vert), il sera considéré comme "en collision"
 
-## Les tuyaux :
+## Déroulement de base d'une partie
+Le déroulement de base d'une partie est décrite dans ce [document PDF](docs/Ordinogramme.pdf)
 
-les tuyaux détectent si l'bird passe dessus, si oui, c'est perdu.
+# Class
+La javaDoc hors-ligne du projet est disponible ici : [JavaDoc](docs/JavaDocs)
 
-immaginons que de base le tuyaux de haut et du bas se touche au centre de l'écran.
+## Area
 
-il doit y avoir un écart de **n** entre les deux tuyaux, a chaque apparition de couple de tuyau un chiffre aléatoir de 0 à **n** est tiré.
+## Bird
 
-depuis le millieu de l'écran en augmente la valeur Y du tuyau du haut par la valeur tirée,
-et on réduit la valeur Y du tuyau du bas par **n** - la valeur tirée, ce qui donnera un écart de **n** + une position aléatoire de l'espace.
+## Pipe
 
-```java
-/**
- * Crée un espace égale à la valeur de spaceBetween entre deux tuyaux
- */
-public void createSpace(){
-int rndNum = getRandomNumber(0,spaceBetween);
-this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
-this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween-rndNum));
-}
-```
+## PipeCouple
 
-## L'oiseau :
--l'oiseau tombe de base, en appuyant sur un touche, il monte progressivement d'une valeur fixe vers le haut, puis recommence a tombé
-
-```java
-/**
- * L'oiseau monte l'axe Y en fonction de sa force
- * @param strengh force de l'oiseau, plus elle est haute, plus il montera haut
- */
-public void flap(int strengh) {
-    this.setTranslateY(this.getTranslateY() - strengh);
-}
-
-/**
- * fait subir à l'oiseau une force de gravité, ce qui le poussera a tomber en continu
- * plus la gravité est élevée, plus il tombera vite
- * @param gravity force de gravité
- */
-public void undergoGravity(int gravity) {
-        this.moveDown(gravity);
-}
-```
+## Score
 
 
-## La scene :
-la scène est un simple rectangle.
-
-le bas et le haut tue l'oiseau.
-
-la droite donne un point d'apparaission des tuyaux, la gauche donne un point de destruction des tuyaux.
-
-## Les classes :
+## UML des Class
 UML des classes
