@@ -1,8 +1,5 @@
 package sample;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.animation.AnimationTimer;
@@ -14,7 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -25,6 +22,12 @@ public class Main extends Application {
     float t = 0;
     //Si oui ou non la barre espace est appuyée
     boolean isSpacePressed = false;
+    //Si oui ou non la touche R est appuyée
+    boolean isRPressed = false;
+    //Si oui ou non le jeu est en cours
+    boolean isGameRunning = false;
+    //Si oui ou non le jeu à déjà été lancé
+    boolean isGameStarted = false;
     //Hauteur max de la fenêtre
     final float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
@@ -32,12 +35,11 @@ public class Main extends Application {
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
-    Bird bird = new Bird(-250, -200, 30, 30, Color.TRANSPARENT);
+    Bird bird = new Bird(-250, 0, 30, 30, Color.TRANSPARENT);
     //LeScore
     Score score = new Score(-400, -320);
-
-    Label myScore = new Label();
-
+    //Text d'information
+    Text txtInformation = new Text(0,0,"Appuyez sur -> SPACE <-");
     //Liste de couple de tuyau
     ArrayList<PipeCouple> couplesList;
 
@@ -59,32 +61,58 @@ public class Main extends Application {
         score.getText().setFont(Font.font("FlappyBirdy", FontWeight.BOLD, FontPosture.REGULAR, 50));
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.TRANSPARENT);
+        score.getText().setVisible(false);
 
-        myScore.setText("COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU COUCOU ");
-        myScore.setTranslateX(0);
-        myScore.setTranslateY(0);
-        myScore.setAlignment(Pos.CENTER_LEFT);
-
+        //Initialisation du text d'information
+        txtInformation.setFont(Font.font("FlappyBirdy", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        txtInformation.setStroke(Color.BLACK);
+        txtInformation.setFill(Color.WHITESMOKE);
+        txtInformation.setTranslateY(200);
 
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 if (!isSpacePressed) {
-                    bird.setFlying(true);
-                    bird.setStartAndGoalAreSetup(false);
-                    bird.getBirdSprite().setImage(new Image("Sprites/flappyFlap.png"));
-                    isSpacePressed = true;
+                    if(isGameRunning) {
+                        //l'oiseau vole
+                        bird.setFlying(true);
+                        //point de départ et d'arrivé doivent être mis en place
+                        bird.setStartAndGoalAreSetup(false);
+                        //on change le sprite de l'oiseau
+                        bird.getBirdSprite().setImage(new Image("Sprites/flappy.png"));
+                        //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
+                        isSpacePressed = true;
+                    }
+                    if(!isGameStarted) {
+                        startGame();
+                    }
+                }
+            }
+            //Si R est appuyé
+            if(keyCode.equals(KeyCode.R)){
+                //N'est pas disponnbile lorsque le jeu est en cours
+                if(!isGameRunning) {
+                    if (!isRPressed) {
+                        isRPressed = true;
+                    }
                 }
             }
         });
 
-        //Si SPACE est relaché
+        //Si SPACE est relâché
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 isSpacePressed = false;
-                bird.getBirdSprite().setImage(new Image("Sprites/flappy.png"));
+                bird.getBirdSprite().setImage(new Image("Sprites/flappyFlap.png"));
+            }
+            //Si R est relâché
+            if (keyCode.equals(KeyCode.R)) {
+                //N'est pas disponnble lorsque le joue est en cours
+                if(!isGameRunning) {
+                    restartGame();
+                }
             }
         });
         //Ajout de tout les couple de tuyaux
@@ -94,8 +122,8 @@ public class Main extends Application {
         root.getChildren().add(bird.getBirdSprite());
         //Ajout du score
         root.getChildren().add(score.getText());
-
-        root.getChildren().add(myScore);
+        //Ajout du text d'info
+        root.getChildren().add(txtInformation);
 
         //Récupération de la feuille de style css
         scene.getStylesheets().add("css/style.css");
@@ -110,52 +138,57 @@ public class Main extends Application {
     }
 
     private void update() {
-
-        //timer de poche
-        if (t < 1) {
-            t += 0.0016;
-        }
-
-        //Le couple 0 bouge
-        couplesList.get(0).move();
-
-        //L'oiseau subit la gravité s'il n'est pas en train de volé
-        if (!bird.isFlying()) {
-            bird.undergoGravity(5);
+        if (!isGameRunning) {
+            //De base, place l'oiseau au milleur gauche de l'écran
+            bird.refreshBirdSprite();
         } else {
-            bird.flap2();
-        }
 
-        //Le couple 1 bouge
-        if (t > 0.100) {
-            couplesList.get(1).move();
-        }
+            //timer de poche
+            if (t < 1) {
+                t += 0.0016;
+            }
 
-        //Le couple 2 bouge
-        if (t > 0.200) {
-            couplesList.get(2).move();
-        }
+            //Le couple 0 bouge
+            couplesList.get(0).move();
 
-        //Le couple 3 bouge
-        if (t > 0.300) {
-            couplesList.get(3).move();
-        }
+            //L'oiseau subit la gravité s'il n'est pas en train de volé
+            if (!bird.isFlying()) {
+                bird.undergoGravity(5);
+            } else {
+                bird.flap2();
+            }
 
-        // tue l'oiseau si trop haut ou trop bas
-        if (checkBounds()) {
-            bird.kill();
-        }
+            //Le couple 1 bouge
+            if (t > 0.100) {
+                couplesList.get(1).move();
+            }
 
-        // si l'oiseau touche un tuyau, il meurt
-        if (isAPipeTouched(couplesList, bird)) {
-            bird.kill();
-        }
+            //Le couple 2 bouge
+            if (t > 0.200) {
+                couplesList.get(2).move();
+            }
 
-        //Tant que l'oiseau est en vie, compte les couples de tuyau
-        if (bird.isAlive()) {
-            coutingPipes();
-        }else{
-            //FIN DU JEU
+            //Le couple 3 bouge
+            if (t > 0.300) {
+                couplesList.get(3).move();
+            }
+
+            // tue l'oiseau si trop haut ou trop bas
+            if (checkBounds()) {
+                bird.kill();
+            }
+
+            // si l'oiseau touche un tuyau, il meurt
+            if (isAPipeTouched(couplesList, bird)) {
+                bird.kill();
+            }
+
+            //Tant que l'oiseau est en vie, compte les couples de tuyau
+            if (bird.isAlive()) {
+                coutingPipes();
+            } else {
+                endGame();
+            }
         }
     }
 
@@ -226,20 +259,108 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Regarde si l'oiseau ne sort pas des limites vertical de la fenêtre
+     *
+     * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
+     */
     public boolean checkBounds() {
         return bird.getTranslateY() > 350 || bird.getTranslateY() < -350;
     }
 
+    /**
+     * Compte chaque couple de pipe qui passe l'oiseau
+     * si le couple passe par le Y de l'oiseau, il donne un point et passe en état "ne peuveunt plus donner de points"
+     * dès qu'il reviennent à leur position de départ, ils peuvent a nouveau donner des points.
+     */
     public void coutingPipes() {
         for (PipeCouple couple : couplesList) {
             if (couple.pipe1.getTranslateX() < bird.getTranslateX()) {
                 if (couple.CanGivePts()) {
+                    //Réajustement du l'alignement du text, pas encore trouvé comment faire autrement
+                    if (score.getPts() == 9) {
+                        score.getText().setTranslateX(score.getText().getTranslateX() + 15);
+                    }
                     score.incrementScore();
                     score.write("Score : " + score.getPts());
                     couple.setCanGivePts(false);
                 }
             }
         }
+    }
+
+    /**
+     * Replace les couples de tuyau, leur sprite ainsi que leur zone de collision à leur point de départ
+     */
+    public void resetPipe(){
+        for(PipeCouple couple : couplesList){
+            couple.formatCouples();
+            couple.pipe1.refreshCoord();
+            couple.pipe2.refreshCoord();
+        }
+    }
+
+    /**
+     * Lance le jeu pour la première fois
+     */
+    public void startGame(){
+        //déclare le jeu comme en cours
+        isGameRunning = true;
+        //déclare le jeu comme lancé
+        isGameStarted = true;
+        //Enlève le text d'info
+        txtInformation.setVisible(false);
+        //Affiche le score
+        score.getText().setVisible(true);
+    }
+
+    /**
+     * Fin du jeu
+     * L'oiseau est réanimé et arrête de voler
+     * L'oiseau, son sprite ainsi que sa zone de collision sont remis à leur position de départ
+     * Le score et un message d'info pour rejouer s'affiche au milleu de l'écran
+     */
+    public void endGame(){
+        //remet le timer de poche à 0
+        t = 0;
+        //Affichage du score
+        score.getText().setTranslateX(0);
+        score.getText().setTranslateY(0);
+        score.getText().setFill(Color.WHITESMOKE);
+        score.getText().setStroke(Color.BLACK);
+        //Affichage d'information
+        txtInformation.setText("Rejouer -> R <-");
+        txtInformation.setVisible(true);
+        //Le jeu est déclarer comme arrêté
+        isGameRunning = false;
+    }
+
+    /**
+     *
+     */
+    public void restartGame(){
+        resetScore();
+        //Reinitialisation des tuyaux
+        resetPipe();
+        //Réssucite l'oiseau
+        bird.revive();
+        //Si l'oiseau était en vole, le stop
+        bird.setFlying(false);
+        //Replacer l'oiseau
+        bird.setTranslateY(0);
+        bird.refreshBirdSprite();
+        bird.refreshCoord();
+        //Le jeu est à nouveau déclarer comme "en cours"
+        isGameRunning = true;
+    }
+
+    public void resetScore(){
+        score.resetScore();
+        score.getText().setStroke(Color.WHITESMOKE);
+        score.getText().setFill(Color.TRANSPARENT);
+        score.getText().setTranslateX(-400);
+        score.getText().setTranslateY(-320);
+        txtInformation.setVisible(false);
     }
 }
 
