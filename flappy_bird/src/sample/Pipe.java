@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
  */
 public class Pipe extends Sprite {
 
+    //sprite du tuyau
     private ImageView pipeSprite;
     private Image pipeImage;
 
@@ -29,29 +30,31 @@ public class Pipe extends Sprite {
 
     /**
      * Check si le tuyeau se fait toucher par un oiseau
+     * pour ça on regarde si au moins un coin de l'oiseau se trouve entre le coin haut-gauche et bas-gauche
+     * du tuyau ET S'il se trouvent entre le coins bas-gauche et bas-droit du tuyau.
      *
-     * @param bird qu'on surveille
+     * @param bird oiseau qu'on surveille
      * @return true = l'oiseau a touché / false l'oiseau n'a pas touché
      */
     public boolean isHit(Bird bird) {
         boolean isTouched = false;
         if (
-            //topRight de l'oiseau
+            //Haut-droite de l'oiseau
                 bird.getArea().getTopRight().getX() < this.getArea().getDownRight().getX()
                         && bird.getArea().getTopRight().getX() > this.getArea().getDownLeft().getX()
                         && bird.getArea().getTopRight().getY() < this.getArea().getDownLeft().getY()
                         && bird.getArea().getTopRight().getY() > this.getArea().getTopLeft().getY()
-                        //topLeft de l'oiseau
+                        //Haut-gauche de l'oiseau
                         || bird.getArea().getTopLeft().getX() < this.getArea().getDownRight().getX()
                         && bird.getArea().getTopLeft().getX() > this.getArea().getDownLeft().getX()
                         && bird.getArea().getTopLeft().getY() < this.getArea().getDownLeft().getY()
                         && bird.getArea().getTopLeft().getY() > this.getArea().getTopLeft().getY()
-                        //downRight de l'oiseau
+                        //Bas-gauche de l'oiseau
                         || bird.getArea().getDownRight().getX() < this.getArea().getDownRight().getX()
                         && bird.getArea().getDownRight().getX() > this.getArea().getDownLeft().getX()
                         && bird.getArea().getDownRight().getY() < this.getArea().getDownLeft().getY()
                         && bird.getArea().getDownRight().getY() > this.getArea().getTopLeft().getY()
-                        //downLeft de l'oiseau
+                        //Bas-droit de l'oiseau
                         || bird.getArea().getDownLeft().getX() < this.getArea().getDownRight().getX()
                         && bird.getArea().getDownLeft().getX() > this.getArea().getDownLeft().getX()
                         && bird.getArea().getDownLeft().getY() < this.getArea().getDownLeft().getY()
@@ -62,11 +65,19 @@ public class Pipe extends Sprite {
         return isTouched;
     }
 
-    public void refreshPipeSprite(){
+    /**
+     * Replace le spritre du tyau sur le tuyau
+     */
+    public void refreshPipeSprite() {
         pipeSprite.setTranslateX(this.getTranslateX());
         pipeSprite.setTranslateY(this.getTranslateY());
     }
 
+    /**
+     * Permet d'accéder au sprite du tuyau (utile pour le mettre dans la scène)
+     *
+     * @return le sprite du tuyau
+     */
     public ImageView getPipeSprite() {
         return pipeSprite;
     }
