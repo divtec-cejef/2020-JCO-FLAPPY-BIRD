@@ -11,13 +11,13 @@ l'oiseau meurt.
 le but est de passer le plus de couple de tuyaux
 
 <figure>
-<img src="img/premiere_version.png" alt="première version du jeu" width="600"/>
     <figcaption>Première version du jeu</figcaption>
+<img src="img/premiere_version.png" alt="première version du jeu" width="600"/>    
 </figure>
 
 <figure>
-<img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
     <figcaption>Deuxième version du jeu</figcaption>
+<img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
 </figure>
 
 ## Sprite :
