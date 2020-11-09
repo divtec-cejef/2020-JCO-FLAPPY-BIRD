@@ -1,19 +1,19 @@
 package sample;
 
-import javafx.scene.paint.Color;
-import javafx.scene.image.Image;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.paint.Color;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 /**
@@ -35,6 +35,8 @@ public class Main extends Application {
     boolean isGameRunning = false;
     //Si oui ou non le jeu à déjà été lancé
     boolean isGameStarted = false;
+    //Si oui ou non la phase d'arrêt est lancée
+    boolean isGameAboutToStop = false;
     //Hauteur max de la fenêtre
     final float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
@@ -65,15 +67,16 @@ public class Main extends Application {
 
         //Initialisation du score
         score.write("Score : " + score.getPts());
-        score.getText().setFont(Font.font("FlappyBirdy", FontWeight.BOLD, FontPosture.REGULAR, 50));
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.TRANSPARENT);
         score.getText().setVisible(false);
 
         //Initialisation du text d'information
-        txtInformation.setFont(Font.font("FlappyBirdy", FontWeight.BOLD, FontPosture.REGULAR, 50));
-        txtInformation.setStroke(Color.BLACK);
-        txtInformation.setFill(Color.WHITESMOKE);
+        txtInformation.setFont(Font.font("Berlin Sans FB", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        txtInformation.setTextAlignment(TextAlignment.CENTER);
+        root.setAlignment(txtInformation, Pos.CENTER);
+        txtInformation.setStroke(Color.ORANGE);
+        txtInformation.setFill(Color.ORANGERED);
         txtInformation.setTranslateY(200);
 
         //Si SPACE est appuyé
@@ -107,7 +110,8 @@ public class Main extends Application {
             }
             if (keyCode.equals(KeyCode.Q)) {
                 if (!isGameRunning) {
-                    stage.close();
+                    txtInformation.setText("Voulez-vous vraiment quitter ?\n-> Y <- OUI\n-> N <- NON");
+                    //stage.close();
                 }
             }
         });
@@ -127,6 +131,8 @@ public class Main extends Application {
                 }
             }
         });
+
+
         //Ajout de tout les couple de tuyaux
         addCouples(root);
         //Ajout de l'oiseau
@@ -291,7 +297,7 @@ public class Main extends Application {
                 if (couple.CanGivePts()) {
                     //Réajustement du l'alignement du text, pas encore trouvé comment faire autrement
                     if (score.getPts() == 9) {
-                        score.getText().setTranslateX(score.getText().getTranslateX() + 15);
+                        score.getText().setTranslateX(score.getText().getTranslateX() + 8);
                     }
                     score.incrementScore();
                     score.write("Score : " + score.getPts());
@@ -340,6 +346,7 @@ public class Main extends Application {
         score.getText().setTranslateY(0);
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
+
         //Affichage d'information
         txtInformation.setText("Rejouer -> R <-\nQuitter -> Q <-");
         txtInformation.setVisible(true);
