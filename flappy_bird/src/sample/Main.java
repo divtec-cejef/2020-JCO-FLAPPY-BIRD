@@ -188,7 +188,7 @@ public class Main extends Application {
             if (!bird.isFlying()) {
                 bird.undergoGravity(5);
             } else {
-                bird.flap2();
+                bird.flap();
             }
 
             //Le couple 1 bouge

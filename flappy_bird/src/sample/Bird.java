@@ -9,11 +9,11 @@ import javafx.scene.paint.Color;
  *
  * @author Louis Bovay
  */
-public class Bird extends Sprite {
+public class Bird extends Shape {
     //Si l'oiseau est vivant ou mort
     private boolean isAlive;
     //Sprite de la classe Bird
-    private ImageView birdSprite; //haha lol
+    private ImageView birdSprite;
     private Image birdImage;
 
     //position d'arrivé après un vole
@@ -93,9 +93,9 @@ public class Bird extends Sprite {
     }
 
     /**
-     * deuxième version du flap, cette fois l'oiseau montre progressivement vers son point d'arrivée
+     * l'oiseau monte progressivement à un point donner
      */
-    public void flap2() {
+    public void flap() {
         //Si start et goal ne sont pas à jours, les mettre à jours
         if (!startAndGoalAreSetup) {
             refreshStart();

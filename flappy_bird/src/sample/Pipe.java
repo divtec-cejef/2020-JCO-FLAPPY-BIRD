@@ -9,11 +9,10 @@ import javafx.scene.paint.Color;
  *
  * @author Louis Bovay
  */
-public class Pipe extends Sprite {
+public class Pipe extends Shape {
 
     //sprite du tuyau
-    private ImageView pipeSprite;
-    private Image pipeImage;
+    private final ImageView pipeSprite;
 
     /**
      * Crée et instantie un tuyau à la position, la taille et la couleur voulue
@@ -27,7 +26,7 @@ public class Pipe extends Sprite {
      */
     Pipe(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
-        pipeImage = new Image("Sprites/longpipe.png");
+        Image pipeImage = new Image("Sprites/longpipe.png");
         pipeSprite = new ImageView(pipeImage);
     }
 
