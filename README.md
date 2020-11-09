@@ -5,6 +5,9 @@
   - [Pré-requis](#pré-requis)
   - [But](#but)
   - [Évolution du jeu](#évolution-du-jeu)
+    - [Première version du jeu](#première-version-du-jeu)
+    - [Deuxième version du jeu](#deuxième-version-du-jeu)
+    - [Troisième version du jeu](#troisième-version-du-jeu)
   - [Déroulement de base d'une partie](#déroulement-de-base-dune-partie)
 - [Class](#class)
   - [Area](#area)
@@ -38,20 +41,20 @@ Le but est de passer le plus de tuyau possible
 
 Voici les différentes évolutions majeures du projet
 
+### Première version du jeu
 <figure>
-    <figcaption>Première version du jeu</figcaption>
 <img src="img/premiere_version.png" alt="première version du jeu" width="600"/>
 Un fond et des rectangles pour faire un oiseau et des tuyaux, l'oiseau vole mais aucune collision n'est détectée
 </figure>
 
+### Deuxième version du jeu
 <figure>
-    <figcaption>Deuxième version du jeu</figcaption>
 <img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
 Ajout de sprite sur les rectangles, les collisions sont maitenant détectée
 </figure>
 
+### Troisième version du jeu
 <figure>
-    <figcaption>Troisième version du jeu</figcaption>
 <img src="img/troisieme_version.png" alt="première version du jeu" width="600"/>
 Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi possible de rejouer après la mort de l'oiseau
 </figure>
