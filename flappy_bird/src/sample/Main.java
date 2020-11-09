@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
+import org.omg.CORBA.CODESET_INCOMPATIBLE;
 
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -312,8 +313,10 @@ public class Main extends Application {
         for (PipeCouple couple : couplesList) {
             if (couple.pipe1.getTranslateX() < bird.getTranslateX()) {
                 if (couple.CanGivePts()) {
-                    if(score.getPts() % 10 == 0){
-                        
+                    if((score.getPts()+1) % 10 == 0 && score.getPts() >1){
+                        score.getText().setFill(Color.GOLD);
+                    }else{
+                        score.getText().setFill(Color.TRANSPARENT);
                     }
                     score.incrementScore();
                     score.write("Score : " + score.getPts());
