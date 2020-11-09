@@ -57,7 +57,7 @@ public class PipeCouple {
     /**
      * Fait bouger le couple de droite à gauche, si arrivé a gauche, il se réinitialise
      */
-    public void move() {
+    public void move(int speed) {
         //Arrivé
         if (isOut()) {
             //Couple réinitialisé
@@ -65,9 +65,9 @@ public class PipeCouple {
         }
         //Pas arrivé
         else {
-            this.pipe1.moveLeft(5);
+            this.pipe1.moveLeft(speed);
             this.pipe1.refreshPipeSprite();
-            this.pipe2.moveLeft(5);
+            this.pipe2.moveLeft(speed);
             this.pipe2.refreshPipeSprite();
         }
     }
