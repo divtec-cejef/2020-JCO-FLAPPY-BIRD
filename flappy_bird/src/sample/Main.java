@@ -2,7 +2,6 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,9 +45,9 @@ public class Main extends Application {
     //L'oiseau
     Bird bird = new Bird(-250, 0, 30, 30, Color.TRANSPARENT);
     //LeScore
-    Score score = new Score(-400, -320);
+    Score score = new Score(0, 0);
     //Text d'information
-    Text txtInformation = new Text(0, 0, "Appuyez sur -> SPACE <-");
+    Text txtInformation = new Text(0, 0, "[SPACE] Commencer");
     //Liste de couple de tuyau
     ArrayList<PipeCouple> couplesList;
 
@@ -69,6 +68,8 @@ public class Main extends Application {
         score.write("Score : " + score.getPts());
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.TRANSPARENT);
+        score.getText().setTextAlignment(TextAlignment.LEFT);
+        root.setAlignment(score.getText(), Pos.TOP_LEFT);
         score.getText().setVisible(false);
 
         //Initialisation du text d'information
@@ -108,10 +109,23 @@ public class Main extends Application {
                     }
                 }
             }
+            // Si Q est appuyé, ouvrir le menu de confirmation
             if (keyCode.equals(KeyCode.Q)) {
+                //N'est pas disponnbile lorsque le jeu est en cours
                 if (!isGameRunning) {
-                    txtInformation.setText("Voulez-vous vraiment quitter ?\n-> Y <- OUI\n-> N <- NON");
-                    //stage.close();
+                    txtInformation.setText("Voulez-vous vraiment quitter ?\n[Y] OUI   \n[N] NON");
+                }
+            }
+            // Si Y est appuyé, fermer l'application
+            if (keyCode.equals(KeyCode.Y)) {
+                if (!isGameRunning) {
+                    stage.close();
+                }
+            }
+            // Si N est appuyé, relancer l'instance de fin de jeu
+            if (keyCode.equals(KeyCode.N)) {
+                if (!isGameRunning) {
+                    endGame();
                 }
             }
         });
@@ -147,6 +161,9 @@ public class Main extends Application {
         scene.getStylesheets().add("css/style.css");
         // Sélectionner la scene
         stage.setScene(scene);
+        //Ajouter une icon à l'application
+        stage.getIcons().add(
+                new Image("Sprites/icon.png"));
         // Donner une titre à la scène
         stage.setTitle("FlappyBird");
         //rendre la fenetre non redimentionnable
@@ -295,9 +312,8 @@ public class Main extends Application {
         for (PipeCouple couple : couplesList) {
             if (couple.pipe1.getTranslateX() < bird.getTranslateX()) {
                 if (couple.CanGivePts()) {
-                    //Réajustement du l'alignement du text, pas encore trouvé comment faire autrement
-                    if (score.getPts() == 9) {
-                        score.getText().setTranslateX(score.getText().getTranslateX() + 8);
+                    if(score.getPts() % 10 == 0){
+                        
                     }
                     score.incrementScore();
                     score.write("Score : " + score.getPts());
@@ -342,13 +358,12 @@ public class Main extends Application {
         //remet le timer de poche à 0
         t = 0;
         //Affichage du score
-        score.getText().setTranslateX(0);
-        score.getText().setTranslateY(0);
+        root.setAlignment(score.getText(),Pos.CENTER);
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
 
         //Affichage d'information
-        txtInformation.setText("Rejouer -> R <-\nQuitter -> Q <-");
+        txtInformation.setText("[R] Rejouer\n[Q] Quitter");
         txtInformation.setVisible(true);
         //Le jeu est déclarer comme arrêté
         isGameRunning = false;
@@ -380,8 +395,7 @@ public class Main extends Application {
         score.resetScore();
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.TRANSPARENT);
-        score.getText().setTranslateX(-400);
-        score.getText().setTranslateY(-320);
+        root.setAlignment(score.getText(),Pos.TOP_LEFT);
         txtInformation.setVisible(false);
     }
 }
