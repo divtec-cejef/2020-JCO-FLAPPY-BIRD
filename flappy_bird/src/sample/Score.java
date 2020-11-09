@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 /**
@@ -20,6 +23,7 @@ public class Score {
     public Score(double x, double y) {
         this.text.setTranslateX(x);
         this.text.setTranslateY(y);
+        text.setFont(Font.font("Berlin Sans FB",FontWeight.BOLD, FontPosture.REGULAR, 50));
     }
 
     /**
