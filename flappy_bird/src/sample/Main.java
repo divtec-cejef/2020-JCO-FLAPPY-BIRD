@@ -1,6 +1,8 @@
 package sample;
 
-import javafx.animation.AnimationTimer;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -11,9 +13,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
+import javafx.util.Duration;
 
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 /**
@@ -25,8 +26,10 @@ import java.util.ArrayList;
  */
 public class Main extends Application {
 
-    //Indice de temps
+    //Indice de temps, 1 = 60 frame
     float t = 0;
+    //Indice de frame, 60 = 1 seconde
+    int frame = 0;
     //Si oui ou non la barre espace est appuyée
     boolean isSpacePressed = false;
     //Si oui ou non la touche R est appuyée
@@ -35,12 +38,12 @@ public class Main extends Application {
     boolean isGameRunning = false;
     //Si oui ou non le jeu à déjà été lancé
     boolean isGameStarted = false;
-    //Si oui ou non la phase d'arrêt est lancée
-    boolean isGameAboutToStop = false;
     //Hauteur max de la fenêtre
     final float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
     final float MAX_WIDTH = 1000;
+    // vitesse des tuyaux
+    int pipeSeed = 5;
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
@@ -178,14 +181,8 @@ public class Main extends Application {
             //De base, place l'oiseau au milleur gauche de l'écran
             bird.refreshBirdSprite();
         } else {
-
-            //timer de poche
-            if (t < 1) {
-                t += 0.0016;
-            }
-
             //Le couple 0 bouge
-            couplesList.get(0).move();
+            couplesList.get(0).move(pipeSeed);
 
             //L'oiseau subit la gravité s'il n'est pas en train de volé
             if (!bird.isFlying()) {
@@ -195,18 +192,18 @@ public class Main extends Application {
             }
 
             //Le couple 1 bouge
-            if (t > 0.100) {
-                couplesList.get(1).move();
+            if (t > 1) {
+                couplesList.get(1).move(pipeSeed);
             }
 
             //Le couple 2 bouge
-            if (t > 0.200) {
-                couplesList.get(2).move();
+            if (t > 2) {
+                couplesList.get(2).move(pipeSeed);
             }
 
             //Le couple 3 bouge
-            if (t > 0.300) {
-                couplesList.get(3).move();
+            if (t > 3) {
+                couplesList.get(3).move(pipeSeed);
             }
 
             // tue l'oiseau si trop haut ou trop bas
@@ -225,21 +222,31 @@ public class Main extends Application {
             } else {
                 endGame();
             }
+
+            //Incrémentation des indice de frame et de temps
+            //Quand t atteint 1, une seconde sera écoulée
+            //Quand frame atteint 60, une seconde sera écoulée
+            t += 0.016;
+            frame++;
         }
     }
 
     //Initialisation de la pane
     private Parent createContent() {
+
         root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
         root.setId("pane");
 
-        AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                update();
-            }
-        };
-        timer.start();
+        //Timer basé sur 1 seconde
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            update();
+        }));
+        //nombbre de fois qu'elle se répète
+        timeline.setCycleCount(Animation.INDEFINITE);
+        //lancer la timeline
+        timeline.play();
+        // vitesse 60 = 60 images par seconde
+        timeline.setRate(60);
 
         return root;
     }
@@ -313,9 +320,9 @@ public class Main extends Application {
         for (PipeCouple couple : couplesList) {
             if (couple.pipe1.getTranslateX() < bird.getTranslateX()) {
                 if (couple.CanGivePts()) {
-                    if((score.getPts()+1) % 10 == 0 && score.getPts() >1){
+                    if ((score.getPts() + 1) % 10 == 0 && score.getPts() > 1) {
                         score.getText().setFill(Color.GOLD);
-                    }else{
+                    } else {
                         score.getText().setFill(Color.TRANSPARENT);
                     }
                     score.incrementScore();
@@ -361,7 +368,7 @@ public class Main extends Application {
         //remet le timer de poche à 0
         t = 0;
         //Affichage du score
-        root.setAlignment(score.getText(),Pos.CENTER);
+        root.setAlignment(score.getText(), Pos.CENTER);
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
 
@@ -398,7 +405,7 @@ public class Main extends Application {
         score.resetScore();
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.TRANSPARENT);
-        root.setAlignment(score.getText(),Pos.TOP_LEFT);
+        root.setAlignment(score.getText(), Pos.TOP_LEFT);
         txtInformation.setVisible(false);
     }
 }
