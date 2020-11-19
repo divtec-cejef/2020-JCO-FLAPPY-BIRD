@@ -23,19 +23,19 @@ Projet d'une durée de 28 jours qui a pour but de repprendre un jeu célèbre et
 ## Pré-requis
 Language de programation : [Java](https://fr.wikipedia.org/wiki/Java_(langage) "Wikipédia : Java") ![Logo java](img/java_logo.png)
 
-Des bases en programmation orienté objet sont indispensable pour comprendre et mondifer ce projet
+Des bases en programmation orienté objet sont indispensables pour comprendre et modifer ce projet
 
 * SDK : [javaFX](https://gluonhq.com/products/javafx/ "Page de téléchargement")
 * IDE Java : [IntelliJ IDEA](https://www.jetbrains.com/fr-fr/idea/ "Page principale de IntelliJ IDEA")
 
 ## But
-Le joueur doit aider un oiseau à franchir des petits espace entre deux tuyaux
+Le joueur doit aider un oiseau à franchir des petits espaces entre deux tuyaux
 
-Si le joueur appuie sur une touche l'oiseau battera une fois des ails se qui le fera monter un peu, avant de recommencer à descendre, si le joueur fait monter l'oiseau trop haut, l'oiseau meurt.
+Si le joueur appuie sur la barre d'espace, l'oiseau battera des ailes une fois se qui le fera monter un peu, avant de recommencer à descendre, si le joueur fait monter l'oiseau trop haut, l'oiseau meurt.
 
 Si l'oiseau touche le bas il meurt.
 
-Le but est de passer le plus de tuyau possible
+Le but est de passer le plus de tuyaux possible
 
 ## Évolution du jeu
 
@@ -50,13 +50,13 @@ Un fond et des rectangles pour faire un oiseau et des tuyaux, l'oiseau vole mais
 ### Deuxième version du jeu
 <figure>
 <img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
-Ajout de sprite sur les rectangles, les collisions sont maitenant détectée
+Ajout de sprite sur les rectangles, les collisions sont maitenant détectées
 </figure>
 
 ### Troisième version du jeu
 <figure>
 <img src="img/troisieme_version.png" alt="première version du jeu" width="600"/>
-Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi possible de rejouer après la mort de l'oiseau
+Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi possible de rejouer ou de quitter l'application après la mort de l'oiseau
 </figure>
 
 ## Déroulement de base d'une partie
@@ -74,7 +74,7 @@ Les classes sont nettement plus détaillées dans le code source ainsi que dans 
 La javaDoc hors-ligne du projet est disponible ici : [JavaDoc](docs/JavaDocs)
 
 ## Area
-La classe Area décrit une zone rectangulaire servant a détécter les bords limites d'un rectangle.
+La classe Area décrit une zone rectangulaire servant à détécter les bords limites d'un rectangle.
 
 Un objet Area sera composé de 4 coordonnées XY de la classe CoordXY qui représenteront le coin haut-gauche, haut-droit, bas-gauche et bas-droit.
 
@@ -96,7 +96,7 @@ La classe se compose d'une Area servant à détecter ses collision ainsi que d'u
 
 
 ## PipeCouple
-La classe PipeCouple représente un couple de tuyaux (un en haut et un en bas) qui peut se déplacer de droite à gauche, générer un nouvelle espace aléatoire entre eux-mêmes et donner des points au joueur.
+La classe PipeCouple représente un couple de tuyaux (un en haut et un en bas) qui peut se déplacer de droite à gauche, générer un nouvel espace aléatoire entre eux-mêmes et donner des points au joueur.
 
 La classe se compose de deux tuyaux de la classe Pipe
 
