@@ -76,7 +76,13 @@ La javaDoc hors-ligne du projet est disponible ici : [JavaDoc](docs/JavaDocs)
 ## Area
 La classe Area décrit une zone rectangulaire servant a détécter les bords limites d'un rectangle.
 
-Un objet Area sera composé de 4 coordonné XY de la classe CoordXY qui représenteront le coin haut-gauche, haut-droit, bas-gauche et bas-droit.
+Un objet Area sera composé de 4 coordonnées XY de la classe CoordXY qui représenteront le coin haut-gauche, haut-droit, bas-gauche et bas-droit.
+
+<figure>
+<img src="img/schémacollisons_précisé.png" alt="première version du jeu" width="300"/>
+
+Fonctionnement de la classe Area
+</figure>
 
 ## Bird
 La classe Bird décrit un oiseau pouvant voler, tomber, mourir et revivre.
