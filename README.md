@@ -10,12 +10,12 @@
     - [Troisième version du jeu](#troisième-version-du-jeu)
   - [Déroulement de base d'une partie](#déroulement-de-base-dune-partie)
 - [Class](#class)
+  - [JavaDoc](#javadoc)
   - [Area](#area)
   - [Bird](#bird)
   - [Pipe](#pipe)
   - [PipeCouple](#pipecouple)
   - [Score](#score)
-  - [UML des Class](#uml-des-class)
 
 ## Introduction
 Projet d'une durée de 28 jours qui a pour but de repprendre un jeu célèbre et de le recréer par programmation orienté objet.
@@ -65,18 +65,36 @@ Le déroulement de base d'une partie est décrite dans ce [document PDF](docs/Or
 ![Image de l'ordinogramme](img/ordinogramme.png)
 
 # Class
+
+Voici un bref apperçu des différentes classes qui composent le jeu.
+
+Les classes sont nettement plus détaillées dans le code source ainsi que dans la JavaDoc.
+
+## JavaDoc
 La javaDoc hors-ligne du projet est disponible ici : [JavaDoc](docs/JavaDocs)
 
 ## Area
+La classe Area décrit une zone rectangulaire servant a détécter les bords limites d'un rectangle.
+
+Un objet Area sera composé de 4 coordonné XY de la classe CoordXY qui représenteront le coin haut-gauche, haut-droit, bas-gauche et bas-droit.
 
 ## Bird
+La classe Bird décrit un oiseau pouvant voler, tomber, mourir et revivre.
+
+La classe se compose d'une Area servant à détecter ses collisions ainsi que d'un sprite pour afficher une image de l'oiseau FlappyBird.
 
 ## Pipe
+La classe Pipe réprésente un tuyaux qui peut détecter si l'oiseau l'a touché.
+
+La classe se compose d'une Area servant à détecter ses collision ainsi que d'un sprite pour afficher une image de tuyau
+
 
 ## PipeCouple
+La classe PipeCouple représente un couple de tuyaux (un en haut et un en bas) qui peut se déplacer de droite à gauche, générer un nouvelle espace aléatoire entre eux-mêmes et donner des points au joueur.
+
+La classe se compose de deux tuyaux de la classe Pipe
 
 ## Score
+La classe Score réprsente un texte qui peut s'incrément ainsi que se remettre à zéro.
 
-
-## UML des Class
-UML des classes
+La classe se compose d'un objet Text.
