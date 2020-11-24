@@ -45,10 +45,13 @@ public class PipeCouple {
      */
     private void createSpace() {
         //Espace fixe entre le couple de tuyaux
-        int spaceBetween = 250;
-        int rndNum = getRandomNumber(0, spaceBetween);
-        this.pipe1.setTranslateY(this.pipe1.getTranslateY() - rndNum);
-        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + (spaceBetween - rndNum));
+        int spaceBetween = 200;
+        // décalage automatique des tuyaux
+        int rndNum = getRandomNumber(-250, 250);
+        //Décale le tuyau du haut
+        this.pipe1.setTranslateY(this.pipe1.getTranslateY() +  rndNum - spaceBetween/2);
+        //Décale le tuyau du bas
+        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + rndNum + spaceBetween/2);
         //Replacer les sprites sur les tuyaux
         this.pipe1.refreshPipeSprite();
         this.pipe2.refreshPipeSprite();
@@ -56,6 +59,7 @@ public class PipeCouple {
 
     /**
      * Fait bouger le couple de droite à gauche, si arrivé a gauche, il se réinitialise
+     * @param speed Vitesse des tuyaux
      */
     public void move(int speed) {
         //Arrivé

@@ -120,7 +120,7 @@ public class Bird extends Shape {
     public void smoothFlap(){
         if(momentum > 0){
             this.moveUp((int)momentum);
-            momentum -= 0.4;
+            momentum -= 0.5;
         }else{
             flying = false;
         }
