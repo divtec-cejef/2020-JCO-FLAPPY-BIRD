@@ -44,10 +44,10 @@ public class Main extends Application {
     final float MAX_WIDTH = 1000;
     //Gravité appliquée à l'oiseau
     final int BIRD_GRAVITY = 7;
-    //Elan de l'oiseau
+    //Elan de l'oiseau (vitesse de pointe)
     final float BIRD_MOMENTUM = 19.5f;
     // vitesse des tuyaux
-    int pipeSeed = 5;
+    int pipeSpeed = 5;
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
@@ -188,7 +188,7 @@ public class Main extends Application {
             bird.refreshBirdSprite();
         } else {
             //Le couple 0 bouge
-            couplesList.get(0).move(pipeSeed);
+            couplesList.get(0).move(pipeSpeed);
 
             ////L'oiseau subit la gravité s'il n'est pas en train de volé
             //if (!bird.isFlying()) {
@@ -204,17 +204,17 @@ public class Main extends Application {
 
             //Le couple 1 bouge
             if (t > 1) {
-                couplesList.get(1).move(pipeSeed);
+                couplesList.get(1).move(pipeSpeed);
             }
 
             //Le couple 2 bouge
             if (t > 2) {
-                couplesList.get(2).move(pipeSeed);
+                couplesList.get(2).move(pipeSpeed);
             }
 
             //Le couple 3 bouge
             if (t > 3) {
-                couplesList.get(3).move(pipeSeed);
+                couplesList.get(3).move(pipeSpeed);
             }
 
             // tue l'oiseau si trop haut ou trop bas
