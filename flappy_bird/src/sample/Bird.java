@@ -26,6 +26,8 @@ public class Bird extends Shape {
     private boolean flying = false;
     //Définit si le point start et goal ont été mis en place
     private boolean startAndGoalAreSetup = false;
+    //Elan de l'oiseau (vitesse de pointe de son vole)
+    private float momentum = 20;
 
     /**
      * Crée et instantie un oiseau à la position, la taille et la couleur voulue
@@ -113,6 +115,18 @@ public class Bird extends Shape {
     }
 
     /**
+     * L'oiseau entâme un mouvement souple de saut et subit à nouveau la gravité petit à petit
+     */
+    public void smoothFlap(){
+        if(momentum > 0){
+            this.moveUp((int)momentum);
+            momentum -= 0.4;
+        }else{
+            flying = false;
+        }
+    }
+
+    /**
      * Met à jours la variable goal
      *
      * @param hauteurDuVole valeur fixe où l'oiseau doit se rendre
@@ -155,6 +169,9 @@ public class Bird extends Shape {
         this.startAndGoalAreSetup = startAndGoalAreSetup;
     }
 
+    public void setMomentum(float momentum) {
+        this.momentum = momentum;
+    }
 }
 
 

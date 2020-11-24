@@ -42,6 +42,10 @@ public class Main extends Application {
     final float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
     final float MAX_WIDTH = 1000;
+    //Gravité appliquée à l'oiseau
+    final int BIRD_GRAVITY = 7;
+    //Elan de l'oiseau
+    final float BIRD_MOMENTUM = 19.5f;
     // vitesse des tuyaux
     int pipeSeed = 5;
     //Pane principale
@@ -94,6 +98,8 @@ public class Main extends Application {
                         bird.setFlying(true);
                         //point de départ et d'arrivé doivent être mis en place
                         bird.setStartAndGoalAreSetup(false);
+                        //l'oiseau repprend son élan
+                        bird.setMomentum(BIRD_MOMENTUM);
                         //on change le sprite de l'oiseau
                         bird.getBirdSprite().setImage(new Image("Sprites/flappy.png"));
                         //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
@@ -184,12 +190,17 @@ public class Main extends Application {
             //Le couple 0 bouge
             couplesList.get(0).move(pipeSeed);
 
-            //L'oiseau subit la gravité s'il n'est pas en train de volé
-            if (!bird.isFlying()) {
-                bird.undergoGravity(5);
-            } else {
-                bird.flap();
+            ////L'oiseau subit la gravité s'il n'est pas en train de volé
+            //if (!bird.isFlying()) {
+            //    bird.undergoGravity(BIRD_GRAVITY);
+            //} else {
+            //    bird.flap();
+            //}
+
+            if(bird.isFlying()){
+                bird.smoothFlap();
             }
+            bird.undergoGravity(BIRD_GRAVITY);
 
             //Le couple 1 bouge
             if (t > 1) {
