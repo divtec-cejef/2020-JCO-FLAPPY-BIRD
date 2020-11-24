@@ -43,11 +43,11 @@ public class Main extends Application {
     //Largeur max de la fenêtre
     final float MAX_WIDTH = 1000;
     //Gravité appliquée à l'oiseau
-    final int BIRD_GRAVITY = 7;
+    final int BIRD_GRAVITY = 8;
     //Elan de l'oiseau (vitesse de pointe)
     final float BIRD_MOMENTUM = 19.5f;
     // vitesse des tuyaux
-    int pipeSpeed = 5;
+    int pipeSpeed = 2;
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
@@ -67,7 +67,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         //Initialisé la liste de couple de tuyau
-        couplesList = createCouplesList(4);
+        couplesList = createCouplesList(6);
 
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
@@ -156,7 +156,6 @@ public class Main extends Application {
             }
         });
 
-
         //Ajout de tout les couple de tuyaux
         addCouples(root);
         //Ajout de l'oiseau
@@ -190,32 +189,25 @@ public class Main extends Application {
             //Le couple 0 bouge
             couplesList.get(0).move(pipeSpeed);
 
-            ////L'oiseau subit la gravité s'il n'est pas en train de volé
-            //if (!bird.isFlying()) {
-            //    bird.undergoGravity(BIRD_GRAVITY);
-            //} else {
-            //    bird.flap();
-            //}
-
             if(bird.isFlying()){
                 bird.smoothFlap();
             }
             bird.undergoGravity(BIRD_GRAVITY);
 
             //Le couple 1 bouge
-            if (t > 1) {
+            if (t > 2) {
                 couplesList.get(1).move(pipeSpeed);
             }
-
-            //Le couple 2 bouge
-            if (t > 2) {
+            if(t > 4){
                 couplesList.get(2).move(pipeSpeed);
-            }
-
-            //Le couple 3 bouge
-            if (t > 3) {
+            }if (t > 6) {
                 couplesList.get(3).move(pipeSpeed);
             }
+            if(t > 8){
+                couplesList.get(4).move(pipeSpeed);
+            }
+
+            //updateSpeed();
 
             // tue l'oiseau si trop haut ou trop bas
             if (checkBounds()) {
@@ -405,6 +397,8 @@ public class Main extends Application {
         bird.setTranslateY(0);
         bird.refreshBirdSprite();
         bird.refreshCoord();
+        //Remettre la vitesse des tuyaux de base
+        pipeSpeed = 2;
         //Le jeu est à nouveau déclarer comme "en cours"
         isGameRunning = true;
     }
@@ -419,5 +413,22 @@ public class Main extends Application {
         root.setAlignment(score.getText(), Pos.TOP_LEFT);
         txtInformation.setVisible(false);
     }
+
+    /*
+    Augmente la vitesse du jeu en fonction du nombre de tuyaux passés
+     */
+    //public void updateSpeed(){
+    //    switch(score.getPts()){
+    //        case 10:
+    //            pipeSpeed = 3;
+    //            break;
+    //        case 20:
+    //            pipeSpeed = 4;
+    //            break;
+    //        case 30:
+    //            pipeSpeed = 5;
+    //            break;
+    //    }
+    //}
 }
 
