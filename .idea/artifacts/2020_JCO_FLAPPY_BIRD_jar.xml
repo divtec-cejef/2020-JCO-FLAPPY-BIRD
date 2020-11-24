@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="2020-JCO-FLAPPY-BIRD:jar">
-    <output-path>$PROJECT_DIR$/flappy_bird/artifacts/2020_JCO_FLAPPY_BIRD_jar</output-path>
-    <root id="archive" name="2020-JCO-FLAPPY-BIRD.jar">
-      <element id="module-output" name="2020-JCO-FLAPPY-BIRD" />
-    </root>
-  </artifact>
-</component>
