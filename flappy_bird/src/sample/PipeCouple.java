@@ -85,17 +85,18 @@ public class PipeCouple {
      * Réinitialise le couple, le replaçant à droit de l'écran et en recréant un espace entre les deux tuyaux
      */
     public void formatCouples() {
-        //en haut
+        //tuyau du haut
         this.pipe1.setTranslateX(550);
         this.pipe1.setTranslateY(-350);
 
-        //en bas
+        //tuyau du bas
         this.pipe2.setTranslateX(550);
         this.pipe2.setTranslateY(350);
 
         //Ils peuvent à nouveau donner des points
         this.canGivePts = true;
 
+        // Générer l'espace aléatoire entre les deux tuyaux
         createSpace();
     }
 
