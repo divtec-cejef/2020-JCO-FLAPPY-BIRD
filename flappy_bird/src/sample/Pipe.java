@@ -26,7 +26,7 @@ public class Pipe extends Shape {
      */
     Pipe(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
-        Image pipeImage = new Image("Sprites/longpipe.png");
+        Image pipeImage = new Image("Sprites/longPipe.png");
         pipeSprite = new ImageView(pipeImage);
     }
 

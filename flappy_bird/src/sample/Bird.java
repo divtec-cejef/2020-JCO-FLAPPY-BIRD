@@ -16,16 +16,8 @@ public class Bird extends Shape {
     private ImageView birdSprite;
     private Image birdImage;
 
-    //position d'arrivé après un vole
-    private int goal = 0;
-    //définit à quel hauteur suplémentaire de l'oiseau le point d'arrivée va être
-    private int hauteurDuVole;
-    //position de départ de l'oiseau
-    private int start = 0;
     //Définit si l'oiseau est en train de volé ou non
     private boolean flying = false;
-    //Définit si le point start et goal ont été mis en place
-    private boolean startAndGoalAreSetup = false;
     //Elan de l'oiseau (vitesse de pointe de son vole)
     private float momentum = 20;
 
@@ -42,7 +34,7 @@ public class Bird extends Shape {
     public Bird(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
-        birdImage = new Image("Sprites/flappyFlap.png");
+        birdImage = new Image("Sprites/flappy.png");
         birdSprite = new ImageView(birdImage);
     }
 
@@ -74,6 +66,9 @@ public class Bird extends Shape {
      */
     public void undergoGravity(int gravity) {
         this.moveDown(gravity);
+        if (birdSprite.getRotate() < 80) {
+            birdSprite.setRotate(birdSprite.getRotate() + 5);
+        }
         refreshBirdSprite();
     }
 
@@ -95,51 +90,17 @@ public class Bird extends Shape {
     }
 
     /**
-     * l'oiseau monte progressivement à un point donner
-     */
-    public void flap() {
-        //Si start et goal ne sont pas à jours, les mettre à jours
-        if (!startAndGoalAreSetup) {
-            refreshStart();
-            refreshGoal(150);
-            startAndGoalAreSetup = !startAndGoalAreSetup;
-        }
-        //l'oiseau monte
-        this.moveUp(36);
-        //Si l'oiseau atteint son point d'arrivée, arrête de volé
-        if (this.getTranslateY() < this.goal) {
-            flying = false;
-        }
-        //Rafraîchissement du sprite
-        refreshBirdSprite();
-    }
-
-    /**
      * L'oiseau entâme un mouvement souple de saut et subit à nouveau la gravité petit à petit
      */
-    public void smoothFlap(){
-        if(momentum > 0){
-            this.moveUp((int)momentum);
+    public void smoothFlap() {
+        if (momentum > 0) {
+            this.moveUp((int) momentum);
             momentum -= 0.5;
-        }else{
+            birdSprite.setRotate(-20);
+            refreshBirdSprite();
+        } else {
             flying = false;
         }
-    }
-
-    /**
-     * Met à jours la variable goal
-     *
-     * @param hauteurDuVole valeur fixe où l'oiseau doit se rendre
-     */
-    public void refreshGoal(int hauteurDuVole) {
-        this.goal = (int) this.getTranslateY() - hauteurDuVole;
-    }
-
-    /**
-     * Met à jours la variable start, c'est là où se trouve l'oiseau
-     */
-    public void refreshStart() {
-        this.start = (int) this.getTranslateY();
     }
 
     /**
@@ -158,15 +119,6 @@ public class Bird extends Shape {
      */
     public void setFlying(boolean flying) {
         this.flying = flying;
-    }
-
-    /**
-     * Permet de changer l'état de startAndGoalAreSetup
-     *
-     * @param startAndGoalAreSetup , true = les deux points start et goal sont placés, false = ils ne le sont pas
-     */
-    public void setStartAndGoalAreSetup(boolean startAndGoalAreSetup) {
-        this.startAndGoalAreSetup = startAndGoalAreSetup;
     }
 
     public void setMomentum(float momentum) {

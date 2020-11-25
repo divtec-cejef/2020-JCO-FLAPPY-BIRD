@@ -47,7 +47,7 @@ public class PipeCouple {
         //Espace fixe entre le couple de tuyaux
         int spaceBetween = 200;
         // décalage automatique des tuyaux
-        int rndNum = getRandomNumber(-250, 250);
+        int rndNum = getRandomNumber(-210,210);
         //Décale le tuyau du haut
         this.pipe1.setTranslateY(this.pipe1.getTranslateY() +  rndNum - spaceBetween/2);
         //Décale le tuyau du bas

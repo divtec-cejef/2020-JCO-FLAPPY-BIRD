@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -51,13 +52,15 @@ public class Main extends Application {
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
-    Bird bird = new Bird(-250, 0, 30, 30, Color.TRANSPARENT);
+    Bird bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT);
     //LeScore
     Score score = new Score(0, 0);
     //Text d'information
     Text txtInformation = new Text(0, 0, "[SPACE] Commencer");
     //Liste de couple de tuyau
     ArrayList<PipeCouple> couplesList;
+    // Background
+    ArrayList<ImageView> backgroundList = new ArrayList<>();
 
     public static void main(String[] args) {
         launch(args);
@@ -75,7 +78,7 @@ public class Main extends Application {
         //Initialisation du score
         score.write("Score : " + score.getPts());
         score.getText().setStroke(Color.WHITESMOKE);
-        score.getText().setFill(Color.TRANSPARENT);
+        score.getText().setFill(Color.DARKBLUE);
         score.getText().setTextAlignment(TextAlignment.LEFT);
         root.setAlignment(score.getText(), Pos.TOP_LEFT);
         score.getText().setVisible(false);
@@ -96,8 +99,6 @@ public class Main extends Application {
                     if (isGameRunning) {
                         //l'oiseau vole
                         bird.setFlying(true);
-                        //point de départ et d'arrivé doivent être mis en place
-                        bird.setStartAndGoalAreSetup(false);
                         //l'oiseau repprend son élan
                         bird.setMomentum(BIRD_MOMENTUM);
                         //on change le sprite de l'oiseau
@@ -155,7 +156,14 @@ public class Main extends Application {
                 }
             }
         });
-
+        // Ajout des backgrounds
+        backgroundList.add(new ImageView(new Image("Sprites/cloudbg1.png")));
+        backgroundList.get(0).setTranslateX(0);
+        backgroundList.add(new ImageView(new Image("Sprites/cloudbg2.png")));
+        backgroundList.get(1).setTranslateX(1000);
+        // On ajoute les backgrounds en première pour qu'ils soient automatiquement en arrière plan
+        root.getChildren().add(backgroundList.get(1));
+        root.getChildren().add(backgroundList.get(0));
         //Ajout de tout les couple de tuyaux
         addCouples(root);
         //Ajout de l'oiseau
@@ -165,18 +173,17 @@ public class Main extends Application {
         root.getChildren().add(score.getText());
         //Ajout du text d'info
         root.getChildren().add(txtInformation);
-
-        //Récupération de la feuille de style css
-        scene.getStylesheets().add("css/style.css");
         // Sélectionner la scene
         stage.setScene(scene);
         //Ajouter une icon à l'application
-        stage.getIcons().add(
-                new Image("Sprites/icon.png"));
+        stage.getIcons().add(new Image("Sprites/icon.png"));
         // Donner une titre à la scène
         stage.setTitle("FlappyBird");
         //rendre la fenetre non redimentionnable
         stage.setResizable(false);
+        //taille max
+        stage.setHeight(700);
+        stage.setWidth(1000);
         // Lancer la scène
         stage.show();
     }
@@ -185,29 +192,46 @@ public class Main extends Application {
         if (!isGameRunning) {
             //De base, place l'oiseau au milleur gauche de l'écran
             bird.refreshBirdSprite();
-        } else {
+        }
+        //Le jeu est en cours
+        else {
+            // Les background bouge
+            backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() -1);
+            backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() -1);
+            // Les background passent perpétuellement
+            for(ImageView background : backgroundList){
+                if(background.getTranslateX() <= -1000){
+                    background.setTranslateX(1000);
+                }
+            }
+
+
+            //l'oiseau vole
+            if (bird.isFlying()) {
+                bird.smoothFlap();
+            }
+            //l'oiseau subit en permanence la gravité
+            bird.undergoGravity(BIRD_GRAVITY);
+
             //Le couple 0 bouge
             couplesList.get(0).move(pipeSpeed);
 
-            if(bird.isFlying()){
-                bird.smoothFlap();
-            }
-            bird.undergoGravity(BIRD_GRAVITY);
-
             //Le couple 1 bouge
-            if (t > 2) {
+            if (t > 1.9) {
                 couplesList.get(1).move(pipeSpeed);
             }
-            if(t > 4){
+            //le couple 2 bouge
+            if (t > 3.8) {
                 couplesList.get(2).move(pipeSpeed);
-            }if (t > 6) {
+            }
+            //le couple 3 bouge
+            if (t > 5.7) {
                 couplesList.get(3).move(pipeSpeed);
             }
-            if(t > 8){
+            //le couple 4 bouge
+            if (t > 7.6) {
                 couplesList.get(4).move(pipeSpeed);
             }
-
-            //updateSpeed();
 
             // tue l'oiseau si trop haut ou trop bas
             if (checkBounds()) {
@@ -229,7 +253,7 @@ public class Main extends Application {
             //Incrémentation des indice de frame et de temps
             //Quand t atteint 1, une seconde sera écoulée
             //Quand frame atteint 60, une seconde sera écoulée
-            t += 0.016;
+            t += 0.016666666666666666666666666666;
             frame++;
         }
     }
@@ -237,7 +261,7 @@ public class Main extends Application {
     //Initialisation de la pane
     private Parent createContent() {
 
-        root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
+        //root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
         root.setId("pane");
 
         //Timer basé sur 1 seconde
@@ -278,7 +302,7 @@ public class Main extends Application {
      * Parcours chaque tuyau de chaque couple de tuyaux présent dans la liste et vérifie s'il touche l'oiseau
      *
      * @param coupleList liste de couple de tuyaux
-     * @param bird qui peut ou non toucher un tuyau
+     * @param bird       qui peut ou non toucher un tuyau
      * @return true = touché // False = non touché
      */
     public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, Bird bird) {
@@ -311,13 +335,15 @@ public class Main extends Application {
      * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
      */
     public boolean checkBounds() {
-        return bird.getTranslateY() > 350 || bird.getTranslateY() < -350;
+        return bird.getTranslateY() > MAX_HEIGHT/2 || bird.getTranslateY() < -MAX_HEIGHT/2;
     }
 
     /**
      * Compte chaque couple de pipe qui passe l'oiseau
      * si le couple passe par le Y de l'oiseau, il donne un point et passe en état "ne peuveunt plus donner de points"
      * dès qu'il reviennent à leur position de départ, ils peuvent a nouveau donner des points.
+     * on en profite pour que tous les 10 points, le score score s'allume en jaune
+     * IncreaseSpeed augmenet la vitesse des tuyaux de 1 tout les 10 points
      */
     public void coutingPipes() {
         for (PipeCouple couple : couplesList) {
@@ -325,8 +351,9 @@ public class Main extends Application {
                 if (couple.CanGivePts()) {
                     if ((score.getPts() + 1) % 10 == 0 && score.getPts() > 1) {
                         score.getText().setFill(Color.GOLD);
+                        //increaseSpeed();
                     } else {
-                        score.getText().setFill(Color.TRANSPARENT);
+                        score.getText().setFill(Color.DARKBLUE);
                     }
                     score.incrementScore();
                     score.write("Score : " + score.getPts());
@@ -409,26 +436,16 @@ public class Main extends Application {
     public void resetScore() {
         score.resetScore();
         score.getText().setStroke(Color.WHITESMOKE);
-        score.getText().setFill(Color.TRANSPARENT);
+        score.getText().setFill(Color.DARKBLUE);
         root.setAlignment(score.getText(), Pos.TOP_LEFT);
         txtInformation.setVisible(false);
     }
 
     /*
-    Augmente la vitesse du jeu en fonction du nombre de tuyaux passés
+    Augmente la vitesse du jeu
      */
-    //public void updateSpeed(){
-    //    switch(score.getPts()){
-    //        case 10:
-    //            pipeSpeed = 3;
-    //            break;
-    //        case 20:
-    //            pipeSpeed = 4;
-    //            break;
-    //        case 30:
-    //            pipeSpeed = 5;
-    //            break;
-    //    }
-    //}
+    public void increaseSpeed() {
+        pipeSpeed++;
+    }
 }
 
