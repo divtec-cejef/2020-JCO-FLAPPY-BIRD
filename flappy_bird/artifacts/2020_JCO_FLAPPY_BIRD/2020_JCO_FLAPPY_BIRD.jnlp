@@ -8,8 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="2020_JCO_FLAPPY_BIRD.jar" size="591831" download="eager" />
+    <jar href="2020_JCO_FLAPPY_BIRD.jar" size="699369" download="eager" />
   </resources>
-  <jfx:javafx-desc  width="600" height="400" main-class="sample.Main"  name="2020-JCO-FLAPPY-BIRD" />
+  <jfx:javafx-desc  width="1000" height="700" main-class="sample.Main"  name="2020-JCO-FLAPPY-BIRD" />
   <update check="background"/>
 </jnlp>
