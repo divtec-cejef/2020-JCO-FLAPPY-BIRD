@@ -182,12 +182,16 @@ public class Main extends Application {
         //rendre la fenetre non redimentionnable
         stage.setResizable(false);
         //taille max
-        stage.setHeight(700);
-        stage.setWidth(1000);
+        stage.setHeight(MAX_HEIGHT);
+        stage.setWidth(MAX_WIDTH);
         // Lancer la scène
         stage.show();
     }
 
+    /**
+     * Update
+     * s'éxécute 60 fois par secondes
+     */
     private void update() {
         if (!isGameRunning) {
             //De base, place l'oiseau au milleur gauche de l'écran
@@ -196,11 +200,11 @@ public class Main extends Application {
         //Le jeu est en cours
         else {
             // Les background bouge
-            backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() -1);
-            backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() -1);
+            backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() - 1);
+            backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() - 1);
             // Les background passent perpétuellement
-            for(ImageView background : backgroundList){
-                if(background.getTranslateX() <= -1000){
+            for (ImageView background : backgroundList) {
+                if (background.getTranslateX() <= -1000) {
                     background.setTranslateX(1000);
                 }
             }
@@ -335,7 +339,7 @@ public class Main extends Application {
      * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
      */
     public boolean checkBounds() {
-        return bird.getTranslateY() > MAX_HEIGHT/2 || bird.getTranslateY() < -MAX_HEIGHT/2;
+        return bird.getTranslateY() > MAX_HEIGHT / 2 || bird.getTranslateY() < -MAX_HEIGHT / 2;
     }
 
     /**
