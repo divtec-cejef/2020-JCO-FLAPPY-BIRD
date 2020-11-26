@@ -38,7 +38,7 @@ public class Shape extends Rectangle {
     }
 
     /**
-     * Déplace la Shape vers la guauche
+     * Déplace la Shape vers la gauche
      *
      * @param speed distance entre le point de départ et de fin
      */
