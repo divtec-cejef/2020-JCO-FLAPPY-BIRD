@@ -1,0 +1,29 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="2020-JCO-FLAPPY-BIRD">
+    <output-path>$PROJECT_DIR$/flappy_bird/artifacts/2020_JCO_FLAPPY_BIRD</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="sample.Main" />
+        <option name="description" value="" />
+        <option name="height" value="700" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="windowsIcon" value="$PROJECT_DIR$/flappy_bird/src/Sprites/icon_Qhp_icon.ico" />
+          </JavaFxApplicationIcons>
+        </option>
+        <option name="nativeBundle" value="all" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+        <option name="width" value="1000" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="2020_JCO_FLAPPY_BIRD.jar">
+        <element id="module-output" name="2020-JCO-FLAPPY-BIRD" />
+        <element id="module-source" name="2020-JCO-FLAPPY-BIRD" />
+      </element>
+    </root>
+  </artifact>
+</component>
