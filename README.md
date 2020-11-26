@@ -8,6 +8,7 @@
   - [Première version du jeu](#première-version-du-jeu)
   - [Deuxième version du jeu](#deuxième-version-du-jeu)
   - [Troisième version du jeu](#troisième-version-du-jeu)
+  - [Quatrième version du jeu](#quatrième-version-du-jeu)
 - [Déroulement de base d'une partie](#déroulement-de-base-dune-partie)
 - [Documentation](#documentation)
 - [Class](#class)
@@ -50,14 +51,20 @@ Un fond et des rectangles pour faire un oiseau et des tuyaux, l'oiseau vole mais
 
 ## Deuxième version du jeu
 <figure>
-<img src="img/deuxieme_version.png" alt="première version du jeu" width="600"/>
+<img src="img/deuxieme_version.png" alt="deuxième version du jeu" width="600"/>
 Ajout de sprite sur les rectangles, les collisions sont maitenant détectées
 </figure>
 
 ## Troisième version du jeu
 <figure>
-<img src="img/troisieme_version.png" alt="première version du jeu" width="600"/>
+<img src="img/troisieme_version.png" alt="troisième version du jeu" width="600"/>
 Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi possible de rejouer ou de quitter l'application après la mort de l'oiseau
+</figure>
+
+## Quatrième version du jeu
+<figure>
+<img src="img/quatrième_version.png" alt="quatrième version du jeu" width="600"/>
+L'oiseau pique maintenant du bec en tombant, un fond animé défile lors de la partie, la vitesse des tuyaux à été diminiuée mais leur nombre à augmenté.
 </figure>
 
 # Déroulement de base d'une partie
