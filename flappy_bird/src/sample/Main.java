@@ -16,7 +16,6 @@ import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * @author Louis Bovay
@@ -232,9 +231,6 @@ public class Main extends Application {
             if (t > 7.6) {
                 couplesList.get(4).move(pipeSpeed);
             }
-
-            //Provoque des mouvements aléatoires verticaux des tuyaux
-            randomPipeMovement();
 
             // tue l'oiseau si trop haut ou trop bas
             if (checkBounds()) {
@@ -468,26 +464,7 @@ public class Main extends Application {
         }
     }
 
-    /**
-     * Tous les X point, fait bouger verticalement le tuyaux dominant
-     */
-    public void randomPipeMovement(){
-        if(score.getPts() >= 10){
-            couplesList.get(0).moveAlphaPipe();
-        }
-        if(score.getPts() >= 11){
-            couplesList.get(1).moveAlphaPipe();
-        }
-        if(score.getPts() >= 12){
-            couplesList.get(2).moveAlphaPipe();
-        }
-        if(score.getPts() >= 13){
-            couplesList.get(3).moveAlphaPipe();
-        }
-        if(score.getPts() >= 14){
-            couplesList.get(4).moveAlphaPipe();
-        }
-    }
+
 
     /**
      * Génère un nombre aléatoire entre une range donnée
