@@ -6,25 +6,38 @@ package sample;
  * @author Louis Bovay
  */
 public class PipeCouple {
-    public Pipe pipe1;
-    public Pipe pipe2;
+    public Pipe topPipe;
+    public Pipe bottomPipe;
     private boolean canGivePts = true;
+    private final double VERTICAL_RANGE_EXPAND = 100;
+    private final double VERTICAL_RANGE_SHRINK = 50;
+    private final double MAX_HEIGHT = 700;
+
+    private double startBottonPipe;
+    private double endBottomPipe;
+    private double startTopPipe;
+    private double endTopPipe;
+    private double direction;
+    private boolean goDown = true;
+    private boolean goUp = true;
+    //Le tuyaux dominant, celui qui bougera
+    private String alphaPipe = "";
 
     /**
      * Crée et instantie un couple de tuyau
      *
-     * @param pipe1 tuyau du haut
-     * @param pipe2 tuyau du bas
+     * @param topPipe    tuyau du haut
+     * @param bottomPipe tuyau du bas
      */
-    public PipeCouple(Pipe pipe1, Pipe pipe2) {
-        this.pipe1 = pipe1;
-        this.pipe2 = pipe2;
+    public PipeCouple(Pipe topPipe, Pipe bottomPipe) {
+        this.topPipe = topPipe;
+        this.bottomPipe = bottomPipe;
 
-        this.pipe1.setWidth(60);
-        this.pipe1.setHeight(700);
+        this.topPipe.setWidth(60);
+        this.topPipe.setHeight(700);
 
-        this.pipe2.setWidth(60);
-        this.pipe2.setHeight(700);
+        this.bottomPipe.setWidth(60);
+        this.bottomPipe.setHeight(700);
 
         formatCouples();
     }
@@ -47,18 +60,19 @@ public class PipeCouple {
         //Espace fixe entre le couple de tuyaux
         int spaceBetween = 200;
         // décalage automatique des tuyaux
-        int rndNum = getRandomNumber(-210,210);
+        int rndNum = getRandomNumber(-210, 210);
         //Décale le tuyau du haut
-        this.pipe1.setTranslateY(this.pipe1.getTranslateY() +  rndNum - spaceBetween/2);
+        this.topPipe.setTranslateY(this.topPipe.getTranslateY() + rndNum - spaceBetween / 2);
         //Décale le tuyau du bas
-        this.pipe2.setTranslateY(this.pipe2.getTranslateY() + rndNum + spaceBetween/2);
+        this.bottomPipe.setTranslateY(this.bottomPipe.getTranslateY() + rndNum + spaceBetween / 2);
         //Replacer les sprites sur les tuyaux
-        this.pipe1.refreshPipeSprite();
-        this.pipe2.refreshPipeSprite();
+        this.topPipe.refreshPipeSprite();
+        this.bottomPipe.refreshPipeSprite();
     }
 
     /**
      * Fait bouger le couple de droite à gauche, si arrivé a gauche, il se réinitialise
+     *
      * @param speed Vitesse des tuyaux
      */
     public void move(int speed) {
@@ -69,10 +83,10 @@ public class PipeCouple {
         }
         //Pas arrivé
         else {
-            this.pipe1.moveLeft(speed);
-            this.pipe1.refreshPipeSprite();
-            this.pipe2.moveLeft(speed);
-            this.pipe2.refreshPipeSprite();
+            this.topPipe.moveLeft(speed);
+            this.topPipe.refreshPipeSprite();
+            this.bottomPipe.moveLeft(speed);
+            this.bottomPipe.refreshPipeSprite();
         }
     }
 
@@ -82,7 +96,7 @@ public class PipeCouple {
      * @return true : est arrivé / False : n'est pas arrivé
      */
     private boolean isOut() {
-        return this.pipe1.getTranslateX() < -600;
+        return this.topPipe.getTranslateX() < -600;
     }
 
     /**
@@ -90,18 +104,22 @@ public class PipeCouple {
      */
     public void formatCouples() {
         //tuyau du haut
-        this.pipe1.setTranslateX(550);
-        this.pipe1.setTranslateY(-350);
+        this.topPipe.setTranslateX(550);
+        this.topPipe.setTranslateY(-350);
 
         //tuyau du bas
-        this.pipe2.setTranslateX(550);
-        this.pipe2.setTranslateY(350);
+        this.bottomPipe.setTranslateX(550);
+        this.bottomPipe.setTranslateY(350);
 
         //Ils peuvent à nouveau donner des points
         this.canGivePts = true;
 
         // Générer l'espace aléatoire entre les deux tuyaux
         createSpace();
+        // Rafraîchir les position de départ et d'arrivée des mouvement verticaux des tuyaux
+        refreshStartAndEndPipe();
+        //Décide qui des deux tuyaux bougera
+        generateAlpha();
     }
 
     /**
@@ -121,4 +139,89 @@ public class PipeCouple {
     public void setCanGivePts(boolean canGivePts) {
         this.canGivePts = canGivePts;
     }
+
+    /**
+     * Rafraîchit le départ et l'arrivée des mouvement verticaux des tuyaux
+     */
+    private void refreshStartAndEndPipe() {
+        this.startBottonPipe = this.bottomPipe.getTranslateY() - VERTICAL_RANGE_SHRINK;
+        this.endBottomPipe = this.bottomPipe.getTranslateY() + VERTICAL_RANGE_EXPAND;
+
+        this.startTopPipe = this.topPipe.getTranslateY() + VERTICAL_RANGE_SHRINK;
+        this.endTopPipe = this.topPipe.getTranslateY() - VERTICAL_RANGE_EXPAND;
+    }
+
+    /**
+     * Fait bouger verticalement le tuyaux du bas entre deux points
+     */
+    private void moveBottomPipe() {
+        if (this.bottomPipe.getTranslateY() > this.endBottomPipe) {
+            goDown = true;
+        }
+        if (this.bottomPipe.getTranslateY() < this.startBottonPipe) {
+            goDown = false;
+        }
+
+        if (goDown) {
+            this.bottomPipe.moveUp(2);
+        } else {
+            this.bottomPipe.moveDown(2);
+        }
+    }
+
+    /**
+     * Fait bouger verticalement le tuyaux du haut entre deux points
+     */
+    private void moveTopPipe() {
+        if (this.topPipe.getTranslateY() < this.endTopPipe) {
+            goUp = false;
+        }
+        if (this.topPipe.getTranslateY() > this.startTopPipe) {
+            goUp = true;
+        }
+
+        if (goUp) {
+            this.topPipe.moveUp(2);
+        } else {
+            this.topPipe.moveDown(2);
+        }
+    }
+
+    /**
+     * Décide lequel des deux tuyaux sera le tuyau dominant
+     */
+    private void generateAlpha(){
+        switch(getRandomNumber(1,3)){
+            case 1:
+                alphaPipe = "TOP";
+                break;
+            case 2:
+                alphaPipe = "BOTTOM";
+                break;
+        }
+    }
+
+    /**
+     * Donne accès au tuyaux dominant
+     * @return le tuyaux dominant
+     */
+    private String getAlphaPipe() {
+        return alphaPipe;
+    }
+
+    /**
+     * Fait bouger le tuyau dominant verticalement
+     */
+    public void moveAlphaPipe(){
+        switch(this.getAlphaPipe()){
+            case "TOP":
+                moveTopPipe();
+                break;
+            case "BOTTOM":
+                moveBottomPipe();
+                break;
+        }
+    }
+
+
 }
