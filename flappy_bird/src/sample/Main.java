@@ -15,8 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Louis Bovay
@@ -35,6 +35,8 @@ public class Main extends Application {
     boolean isSpacePressed = false;
     //Si oui ou non la touche R est appuyée
     boolean isRPressed = false;
+    //Si oui ou non la touche Q est appuyée
+    boolean isQPressed = false;
     //Si oui ou non le jeu est en cours
     boolean isGameRunning = false;
     //Si oui ou non le jeu à déjà été lancé
@@ -90,6 +92,11 @@ public class Main extends Application {
         txtInformation.setStroke(Color.ORANGE);
         txtInformation.setFill(Color.ORANGERED);
         txtInformation.setTranslateY(200);
+        // Initialisation des background
+        backgroundList.add(new ImageView(new Image(Path.DIR_SPRITES + "cloudbg1.png")));
+        backgroundList.get(0).setTranslateX(0);
+        backgroundList.add(new ImageView(new Image(Path.DIR_SPRITES + "cloudbg2.png")));
+        backgroundList.get(1).setTranslateX(MAX_WIDTH);
 
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
@@ -102,7 +109,7 @@ public class Main extends Application {
                         //l'oiseau repprend son élan
                         bird.setMomentum(BIRD_MOMENTUM);
                         //on change le sprite de l'oiseau
-                        bird.getBirdSprite().setImage(new Image("Sprites/flappy.png"));
+                        bird.getBirdSprite().setImage(new Image(Path.DIR_SPRITES + "flappy.png"));
                         //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
                         isSpacePressed = true;
                     }
@@ -124,18 +131,20 @@ public class Main extends Application {
             if (keyCode.equals(KeyCode.Q)) {
                 //N'est pas disponnbile lorsque le jeu est en cours
                 if (!isGameRunning) {
+                    isQPressed = true;
                     txtInformation.setText("Voulez-vous vraiment quitter ?\n[Y] OUI   \n[N] NON");
                 }
             }
             // Si Y est appuyé, fermer l'application
             if (keyCode.equals(KeyCode.Y)) {
-                if (!isGameRunning) {
+                if (!isGameRunning && isQPressed) {
                     stage.close();
                 }
             }
             // Si N est appuyé, relancer l'instance de fin de jeu
             if (keyCode.equals(KeyCode.N)) {
-                if (!isGameRunning) {
+                if (!isGameRunning && isQPressed) {
+                    isQPressed = false;
                     endGame();
                 }
             }
@@ -146,7 +155,7 @@ public class Main extends Application {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 isSpacePressed = false;
-                bird.getBirdSprite().setImage(new Image("Sprites/flappyFlap.png"));
+                bird.getBirdSprite().setImage(new Image(Path.DIR_SPRITES + "flappyFlap.png"));
             }
             //Si R est relâché
             if (keyCode.equals(KeyCode.R)) {
@@ -156,12 +165,8 @@ public class Main extends Application {
                 }
             }
         });
-        // Ajout des backgrounds
-        backgroundList.add(new ImageView(new Image("Sprites/cloudbg1.png")));
-        backgroundList.get(0).setTranslateX(0);
-        backgroundList.add(new ImageView(new Image("Sprites/cloudbg2.png")));
-        backgroundList.get(1).setTranslateX(1000);
-        // On ajoute les backgrounds en première pour qu'ils soient automatiquement en arrière plan
+
+        // Ajout des backgrounds en premier pour qu'ils soient automatiquement en arrière plan
         root.getChildren().add(backgroundList.get(1));
         root.getChildren().add(backgroundList.get(0));
         //Ajout de tout les couple de tuyaux
@@ -176,9 +181,9 @@ public class Main extends Application {
         // Sélectionner la scene
         stage.setScene(scene);
         //Ajouter une icon à l'application
-        stage.getIcons().add(new Image("Sprites/icon.png"));
+        stage.getIcons().add(new Image(Path.DIR_SPRITES + "icon.png"));
         // Donner une titre à la scène
-        stage.setTitle("FlappyBird");
+        stage.setTitle("FLAPPY BIRD");
         //rendre la fenetre non redimentionnable
         stage.setResizable(false);
         //taille max
@@ -199,22 +204,13 @@ public class Main extends Application {
         }
         //Le jeu est en cours
         else {
-            // Les background bouge
-            backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() - 1);
-            backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() - 1);
-            // Les background passent perpétuellement
-            for (ImageView background : backgroundList) {
-                if (background.getTranslateX() <= -1000) {
-                    background.setTranslateX(1000);
-                }
-            }
-
+            moveBackground();
 
             //l'oiseau vole
             if (bird.isFlying()) {
                 bird.smoothFlap();
             }
-            //l'oiseau subit en permanence la gravité
+            // L'oiseau subit en permanance la gravité quand le jeu est en cours
             bird.undergoGravity(BIRD_GRAVITY);
 
             //Le couple 0 bouge
@@ -237,6 +233,9 @@ public class Main extends Application {
                 couplesList.get(4).move(pipeSpeed);
             }
 
+            //Provoque des mouvements aléatoires verticaux des tuyaux
+            randomPipeMovement();
+
             // tue l'oiseau si trop haut ou trop bas
             if (checkBounds()) {
                 bird.kill();
@@ -257,7 +256,7 @@ public class Main extends Application {
             //Incrémentation des indice de frame et de temps
             //Quand t atteint 1, une seconde sera écoulée
             //Quand frame atteint 60, une seconde sera écoulée
-            t += 0.016666666666666666666666666666;
+            t += 0.01666;
             frame++;
         }
     }
@@ -312,7 +311,7 @@ public class Main extends Application {
     public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, Bird bird) {
         boolean isTouched = false;
         for (PipeCouple couple : coupleList) {
-            if (couple.pipe1.isHit(bird) || couple.pipe2.isHit(bird)) {
+            if (couple.topPipe.isHit(bird) || couple.bottomPipe.isHit(bird)) {
                 isTouched = true;
             }
         }
@@ -326,10 +325,10 @@ public class Main extends Application {
      */
     public void addCouples(StackPane root) {
         for (PipeCouple couple : couplesList) {
-            root.getChildren().add(couple.pipe1);
-            root.getChildren().add(couple.pipe1.getPipeSprite());
-            root.getChildren().add(couple.pipe2);
-            root.getChildren().add(couple.pipe2.getPipeSprite());
+            root.getChildren().add(couple.topPipe);
+            root.getChildren().add(couple.topPipe.getPipeSprite());
+            root.getChildren().add(couple.bottomPipe);
+            root.getChildren().add(couple.bottomPipe.getPipeSprite());
         }
     }
 
@@ -351,7 +350,7 @@ public class Main extends Application {
      */
     public void coutingPipes() {
         for (PipeCouple couple : couplesList) {
-            if (couple.pipe1.getTranslateX() < bird.getTranslateX()) {
+            if (couple.topPipe.getTranslateX() < bird.getTranslateX()) {
                 if (couple.CanGivePts()) {
                     if ((score.getPts() + 1) % 10 == 0 && score.getPts() > 1) {
                         score.getText().setFill(Color.GOLD);
@@ -373,8 +372,8 @@ public class Main extends Application {
     public void resetPipe() {
         for (PipeCouple couple : couplesList) {
             couple.formatCouples();
-            couple.pipe1.refreshCoord();
-            couple.pipe2.refreshCoord();
+            couple.topPipe.refreshCoord();
+            couple.bottomPipe.refreshCoord();
         }
     }
 
@@ -450,6 +449,55 @@ public class Main extends Application {
      */
     public void increaseSpeed() {
         pipeSpeed++;
+    }
+
+
+    /**
+     * Bouge une liste de backgrounds de droit à gauche, s'ils sortent totalement de la fenêtre, ils sont replacés
+     * à droite
+     */
+    public void moveBackground() {
+        // Les backgrounds bougent
+        backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() - 1);
+        backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() - 1);
+        //Replace les background s'il sort de la fenêtre
+        for (ImageView background : backgroundList) {
+            if (background.getTranslateX() <= -MAX_WIDTH) {
+                background.setTranslateX(MAX_WIDTH);
+            }
+        }
+    }
+
+    /**
+     * Tous les X point, fait bouger verticalement le tuyaux dominant
+     */
+    public void randomPipeMovement(){
+        if(score.getPts() >= 10){
+            couplesList.get(0).moveAlphaPipe();
+        }
+        if(score.getPts() >= 11){
+            couplesList.get(1).moveAlphaPipe();
+        }
+        if(score.getPts() >= 12){
+            couplesList.get(2).moveAlphaPipe();
+        }
+        if(score.getPts() >= 13){
+            couplesList.get(3).moveAlphaPipe();
+        }
+        if(score.getPts() >= 14){
+            couplesList.get(4).moveAlphaPipe();
+        }
+    }
+
+    /**
+     * Génère un nombre aléatoire entre une range donnée
+     *
+     * @param min range inférieure
+     * @param max range supérieure
+     * @return un nombre aléatoire
+     */
+    private int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 }
 
