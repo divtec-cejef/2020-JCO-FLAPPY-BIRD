@@ -1,5 +1,7 @@
 package sample;
 
+import static java.lang.Math.abs;
+
 /**
  * Classe qui représente un couple de tuyau
  *
@@ -10,18 +12,12 @@ public class PipeCouple {
     public Pipe bottomPipe;
     private boolean canGivePts = true;
     private final double VERTICAL_RANGE_EXPAND = 100;
-    private final double VERTICAL_RANGE_SHRINK = 50;
+    private final double VERTICAL_RANGE_SHRINK = 20;
     private final double MAX_HEIGHT = 700;
 
-    private double startBottonPipe;
-    private double endBottomPipe;
-    private double startTopPipe;
-    private double endTopPipe;
-    private double direction;
-    private boolean goDown = true;
+    private boolean goDown = false;
     private boolean goUp = true;
-    //Le tuyaux dominant, celui qui bougera
-    private String alphaPipe = "";
+    private boolean areMoving = false;
 
     /**
      * Crée et instantie un couple de tuyau
@@ -116,10 +112,7 @@ public class PipeCouple {
 
         // Générer l'espace aléatoire entre les deux tuyaux
         createSpace();
-        // Rafraîchir les position de départ et d'arrivée des mouvement verticaux des tuyaux
-        refreshStartAndEndPipe();
-        //Décide qui des deux tuyaux bougera
-        generateAlpha();
+        areMoving = setAreMoving();
     }
 
     /**
@@ -140,88 +133,39 @@ public class PipeCouple {
         this.canGivePts = canGivePts;
     }
 
-    /**
-     * Rafraîchit le départ et l'arrivée des mouvement verticaux des tuyaux
-     */
-    private void refreshStartAndEndPipe() {
-        this.startBottonPipe = this.bottomPipe.getTranslateY() - VERTICAL_RANGE_SHRINK;
-        this.endBottomPipe = this.bottomPipe.getTranslateY() + VERTICAL_RANGE_EXPAND;
-
-        this.startTopPipe = this.topPipe.getTranslateY() + VERTICAL_RANGE_SHRINK;
-        this.endTopPipe = this.topPipe.getTranslateY() - VERTICAL_RANGE_EXPAND;
-    }
 
     /**
-     * Fait bouger verticalement le tuyaux du bas entre deux points
+     * Les tuyaux font des aller-retour verticaux
      */
-    private void moveBottomPipe() {
-        if (this.bottomPipe.getTranslateY() > this.endBottomPipe) {
+    public void verticalPipeMove() {
+        if (this.topPipe.getArea().getDownLeft().getY() < -280) {
             goDown = true;
-        }
-        if (this.bottomPipe.getTranslateY() < this.startBottonPipe) {
-            goDown = false;
-        }
-
-        if (goDown) {
-            this.bottomPipe.moveUp(2);
-        } else {
-            this.bottomPipe.moveDown(2);
-        }
-    }
-
-    /**
-     * Fait bouger verticalement le tuyaux du haut entre deux points
-     */
-    private void moveTopPipe() {
-        if (this.topPipe.getTranslateY() < this.endTopPipe) {
             goUp = false;
         }
-        if (this.topPipe.getTranslateY() > this.startTopPipe) {
+        if (this.bottomPipe.getArea().getTopLeft().getY() > 280) {
+            goDown = false;
             goUp = true;
         }
 
+        if (goDown) {
+            this.topPipe.moveDown(1);
+            this.bottomPipe.moveDown(1);
+        }
         if (goUp) {
-            this.topPipe.moveUp(2);
-        } else {
-            this.topPipe.moveDown(2);
+            this.topPipe.moveUp(1);
+            this.bottomPipe.moveUp(1);
         }
     }
 
     /**
-     * Décide lequel des deux tuyaux sera le tuyau dominant
+     * Décide si oui ou non les tuyaux bougeront
+     * @return 2 = ils bougeront
      */
-    private void generateAlpha(){
-        switch(getRandomNumber(1,3)){
-            case 1:
-                alphaPipe = "TOP";
-                break;
-            case 2:
-                alphaPipe = "BOTTOM";
-                break;
-        }
+    public boolean setAreMoving(){
+        return getRandomNumber(1,4) == 2;
     }
 
-    /**
-     * Donne accès au tuyaux dominant
-     * @return le tuyaux dominant
-     */
-    private String getAlphaPipe() {
-        return alphaPipe;
+    public boolean isAreMoving() {
+        return areMoving;
     }
-
-    /**
-     * Fait bouger le tuyau dominant verticalement
-     */
-    public void moveAlphaPipe(){
-        switch(this.getAlphaPipe()){
-            case "TOP":
-                moveTopPipe();
-                break;
-            case "BOTTOM":
-                moveBottomPipe();
-                break;
-        }
-    }
-
-
 }
