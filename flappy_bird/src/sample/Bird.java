@@ -34,7 +34,7 @@ public class Bird extends Shape {
     public Bird(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
-        birdImage = new Image("Sprites/flappy.png");
+        birdImage = new Image(Path.DIR_SPRITES + "flappy.png");
         birdSprite = new ImageView(birdImage);
     }
 
