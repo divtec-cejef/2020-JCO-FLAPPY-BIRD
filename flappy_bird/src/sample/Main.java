@@ -72,7 +72,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         //Initialisé la liste de couple de tuyau
         couplesList = createCouplesList(6);
@@ -85,13 +85,13 @@ public class Main extends Application {
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.DARKBLUE);
         score.getText().setTextAlignment(TextAlignment.LEFT);
-        root.setAlignment(score.getText(), Pos.TOP_LEFT);
+        StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
         score.getText().setVisible(false);
 
         //Initialisation du text d'information
         txtInformation.setFont(Font.font("Berlin Sans FB", FontWeight.BOLD, FontPosture.REGULAR, 50));
         txtInformation.setTextAlignment(TextAlignment.CENTER);
-        root.setAlignment(txtInformation, Pos.CENTER);
+        StackPane.setAlignment(txtInformation, Pos.CENTER);
         txtInformation.setStroke(Color.ORANGE);
         txtInformation.setFill(Color.ORANGERED);
         txtInformation.setTranslateY(200);
@@ -162,11 +162,7 @@ public class Main extends Application {
                 if(!isGameRunning) {
                     isHardMode = !isHardMode;
                 }
-                if(isHardMode){
-                    skull.setVisible(true);
-                }else{
-                    skull.setVisible(false);
-                }
+                skull.setVisible(isHardMode);
             }
         });
 
@@ -298,9 +294,7 @@ public class Main extends Application {
         root.setId("pane");
 
         //Timer basé sur 1 seconde
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            update();
-        }));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> update()));
         //nombbre de fois qu'elle se répète
         timeline.setCycleCount(Animation.INDEFINITE);
         //lancer la timeline
@@ -431,7 +425,7 @@ public class Main extends Application {
         //remet le timer de poche à 0
         t = 0;
         //Affichage du score
-        root.setAlignment(score.getText(), Pos.CENTER);
+        StackPane.setAlignment(score.getText(), Pos.CENTER);
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
 
@@ -470,17 +464,9 @@ public class Main extends Application {
         score.resetScore();
         score.getText().setStroke(Color.WHITESMOKE);
         score.getText().setFill(Color.DARKBLUE);
-        root.setAlignment(score.getText(), Pos.TOP_LEFT);
+        StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
         txtInformation.setVisible(false);
     }
-
-    /*
-    Augmente la vitesse du jeu
-     */
-    public void increaseSpeed() {
-        pipeSpeed++;
-    }
-
 
     /**
      * Bouge une liste de backgrounds de droit à gauche, s'ils sortent totalement de la fenêtre, ils sont replacés
@@ -496,19 +482,6 @@ public class Main extends Application {
                 background.setTranslateX(MAX_WIDTH);
             }
         }
-    }
-
-
-
-    /**
-     * Génère un nombre aléatoire entre une range donnée
-     *
-     * @param min range inférieure
-     * @param max range supérieure
-     * @return un nombre aléatoire
-     */
-    private int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
     }
 }
 
