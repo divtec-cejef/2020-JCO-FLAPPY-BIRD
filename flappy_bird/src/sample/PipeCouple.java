@@ -165,7 +165,11 @@ public class PipeCouple {
         return getRandomNumber(1,4) == 2;
     }
 
-    public boolean isAreMoving() {
+    /**
+     *
+     * @return si le couple bouge ou non
+     */
+    public boolean AreMoving() {
         return areMoving;
     }
 }
