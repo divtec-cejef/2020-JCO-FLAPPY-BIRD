@@ -40,12 +40,14 @@ public class Main extends Application {
     boolean isGameRunning = false;
     //Si oui ou non le jeu à déjà été lancé
     boolean isGameStarted = false;
+    //Si oui ou non le mode difficile est activé
+    boolean isHardMode = false;
     //Hauteur max de la fenêtre
     final float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
     final float MAX_WIDTH = 1000;
-    //Gravité appliquée à l'oiseau
-    final int BIRD_GRAVITY = 8;
+    //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
+    int birdGravity = 8;
     //Elan de l'oiseau (vitesse de pointe)
     final float BIRD_MOMENTUM = 19.5f;
     // vitesse des tuyaux
@@ -62,6 +64,8 @@ public class Main extends Application {
     ArrayList<PipeCouple> couplesList;
     // Background
     ArrayList<ImageView> backgroundList = new ArrayList<>();
+    //Image du hardmode
+    ImageView skull = new ImageView(new Image(Path.DIR_SPRITES + "skull.png"));
 
     public static void main(String[] args) {
         launch(args);
@@ -96,26 +100,18 @@ public class Main extends Application {
         backgroundList.get(0).setTranslateX(0);
         backgroundList.add(new ImageView(new Image(Path.DIR_SPRITES + "cloudbg2.png")));
         backgroundList.get(1).setTranslateX(MAX_WIDTH);
+        //Initialisation de l'image du hardmode
+        skull.setVisible(false);
+        skull.setTranslateX(450);
+        skull.setTranslateY(-280);
+
+
 
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
-                if (!isSpacePressed) {
-                    if (isGameRunning) {
-                        //l'oiseau vole
-                        bird.setFlying(true);
-                        //l'oiseau repprend son élan
-                        bird.setMomentum(BIRD_MOMENTUM);
-                        //on change le sprite de l'oiseau
-                        bird.getBirdSprite().setImage(new Image(Path.DIR_SPRITES + "flappy.png"));
-                        //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
-                        isSpacePressed = true;
-                    }
-                    if (!isGameStarted) {
-                        startGame();
-                    }
-                }
+                //Faire quelque chose si SPACE est appuyé
             }
             //Si R est appuyé
             if (keyCode.equals(KeyCode.R)) {
@@ -145,6 +141,17 @@ public class Main extends Application {
                 if (!isGameRunning && isQPressed) {
                     isQPressed = false;
                     endGame();
+                }
+            }
+            //Si G est appuyé, active/désactive le hardmode
+            if (keyCode.equals(KeyCode.G)) {
+                if(!isGameRunning) {
+                    isHardMode = !isHardMode;
+                }
+                if(isHardMode){
+                    skull.setVisible(true);
+                }else{
+                    skull.setVisible(false);
                 }
             }
         });
@@ -177,6 +184,8 @@ public class Main extends Application {
         root.getChildren().add(score.getText());
         //Ajout du text d'info
         root.getChildren().add(txtInformation);
+        //Ajout de l'image du hardmode
+        root.getChildren().add(skull);
         // Sélectionner la scene
         stage.setScene(scene);
         //Ajouter une icon à l'application
@@ -210,7 +219,7 @@ public class Main extends Application {
                 bird.smoothFlap();
             }
             // L'oiseau subit en permanance la gravité quand le jeu est en cours
-            bird.undergoGravity(BIRD_GRAVITY);
+            bird.undergoGravity(birdGravity);
 
             //Le couple 0 bouge
             couplesList.get(0).move(pipeSpeed);
@@ -230,6 +239,17 @@ public class Main extends Application {
             //le couple 4 bouge
             if (t > 7.6) {
                 couplesList.get(4).move(pipeSpeed);
+            }
+
+            if(isHardMode) {
+                birdGravity = 9;
+                couplesList.get(0).verticalPipeMove();
+                couplesList.get(1).verticalPipeMove();
+                couplesList.get(2).verticalPipeMove();
+                couplesList.get(3).verticalPipeMove();
+                couplesList.get(4).verticalPipeMove();
+            }else{
+                birdGravity = 8;
             }
 
             // tue l'oiseau si trop haut ou trop bas
