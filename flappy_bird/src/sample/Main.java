@@ -111,7 +111,21 @@ public class Main extends Application {
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
-                //Faire quelque chose si SPACE est appuyé
+                if (!isSpacePressed) {
+                    if (isGameRunning) {
+                        //l'oiseau vole
+                        bird.setFlying(true);
+                        //l'oiseau repprend son élan
+                        bird.setMomentum(BIRD_MOMENTUM);
+                        //on change le sprite de l'oiseau
+                        bird.getBirdSprite().setImage(new Image(Path.DIR_SPRITES + "flappy.png"));
+                        //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
+                        isSpacePressed = true;
+                    }
+                    if (!isGameStarted) {
+                        startGame();
+                    }
+                }
             }
             //Si R est appuyé
             if (keyCode.equals(KeyCode.R)) {
