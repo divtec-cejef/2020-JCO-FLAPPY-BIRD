@@ -1,5 +1,7 @@
 # 2020-JCO-FLAPPY-BIRD
 
+![oiseau](img/bird.png)
+
 - [2020-JCO-FLAPPY-BIRD](#2020-jco-flappy-bird)
 - [Introduction](#introduction)
 - [Pré-requis](#pré-requis)
