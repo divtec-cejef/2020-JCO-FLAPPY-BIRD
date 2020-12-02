@@ -1,4 +1,4 @@
-package sample;
+package flappybird;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -15,7 +15,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.io.*;
 import java.util.ArrayList;
+import static flappybird.Constant.*;
+
 
 /**
  * @author Louis Bovay
@@ -42,16 +45,10 @@ public class Main extends Application {
     boolean isGameStarted = false;
     //Si oui ou non le mode difficile est activé
     boolean isHardMode = false;
-    //Hauteur max de la fenêtre
-    final float MAX_HEIGHT = 700;
-    //Largeur max de la fenêtre
-    final float MAX_WIDTH = 1000;
+    //Si oui ou non le score à été écrit
+    boolean scoreHasBeenWrited = false;
     //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
     int birdGravity = 8;
-    //Elan de l'oiseau (vitesse de pointe)
-    final float BIRD_MOMENTUM = 19.5f;
-    // vitesse des tuyaux
-    int pipeSpeed = 2;
     //Pane principale
     StackPane root = new StackPane();
     //L'oiseau
@@ -65,14 +62,18 @@ public class Main extends Application {
     // Background
     ArrayList<ImageView> backgroundList = new ArrayList<>();
     //Image du hardmode
-    ImageView skull = new ImageView(new Image(Path.DIR_SPRITES + "skull.png"));
+    ImageView skull = new ImageView(new Image(PATH_DIR_SPRITES + "skull.png"));
+    //Fichier de score
+    File scoreFile = new File(PATH_FILE_SCORES);
+    //Tableau de score
+    Text txtScoreBoard = new Text(0, 0, "");
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage){
 
         //Initialisé la liste de couple de tuyau
         couplesList = createCouplesList(6);
@@ -96,16 +97,21 @@ public class Main extends Application {
         txtInformation.setFill(Color.ORANGERED);
         txtInformation.setTranslateY(200);
         // Initialisation des background
-        backgroundList.add(new ImageView(new Image(Path.DIR_SPRITES + "cloudbg1.png")));
+        backgroundList.add(new ImageView(new Image(IMG_BACKGROUND_PT_1)));
         backgroundList.get(0).setTranslateX(0);
-        backgroundList.add(new ImageView(new Image(Path.DIR_SPRITES + "cloudbg2.png")));
+        backgroundList.add(new ImageView(new Image(IMG_BACKGROUND_PT_2)));
         backgroundList.get(1).setTranslateX(MAX_WIDTH);
         //Initialisation de l'image du hardmode
         skull.setVisible(false);
         skull.setTranslateX(450);
         skull.setTranslateY(-280);
-
-
+        //initialisation du tableau des score
+        txtScoreBoard.setFont(Font.font("Berlin Sans FB", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        txtScoreBoard.setFill(Color.GOLD);
+        txtScoreBoard.setStroke(Color.DARKCYAN);
+        StackPane.setAlignment(txtScoreBoard, Pos.CENTER_LEFT);
+        txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 100);
+        txtScoreBoard.setVisible(false);
 
         //Si SPACE est appuyé
         scene.setOnKeyPressed(event -> {
@@ -118,8 +124,8 @@ public class Main extends Application {
                         //l'oiseau repprend son élan
                         bird.setMomentum(BIRD_MOMENTUM);
                         //on change le sprite de l'oiseau
-                        bird.getBirdSprite().setImage(new Image(Path.DIR_SPRITES + "flappy.png"));
-                        //l'Input ne sera fait quune seule fois, pour le refaire il faut lacher espace, et réappuyer
+                        bird.getBirdSprite().setImage(new Image(IMG_FLAPPY));
+                        //l'Input ne sera fait q'une seule fois, pour le refaire il faut lacher espace, et réappuyer
                         isSpacePressed = true;
                     }
                     if (!isGameStarted) {
@@ -127,57 +133,59 @@ public class Main extends Application {
                     }
                 }
             }
-            //Si R est appuyé
-            if (keyCode.equals(KeyCode.R)) {
-                //N'est pas disponnbile lorsque le jeu est en cours
-                if (!isGameRunning) {
+            //N'est pas disponnible en cours de jeu
+            if (!isGameRunning) {
+                //Si R est appuyé
+                if (keyCode.equals(KeyCode.R)) {
                     if (!isRPressed) {
                         isRPressed = true;
                     }
                 }
-            }
-            // Si Q est appuyé, ouvrir le menu de confirmation
-            if (keyCode.equals(KeyCode.Q)) {
-                //N'est pas disponnbile lorsque le jeu est en cours
-                if (!isGameRunning) {
+                // Si Q est appuyé, ouvrir le menu de confirmation
+                if (keyCode.equals(KeyCode.Q)) {
                     isQPressed = true;
-                    txtInformation.setText("Voulez-vous vraiment quitter ?\n[Y] OUI   \n[N] NON");
+                    txtInformation.setText(TXT_ALERT_MESSAGE);
                 }
-            }
-            // Si Y est appuyé, fermer l'application
-            if (keyCode.equals(KeyCode.Y)) {
-                if (!isGameRunning && isQPressed) {
+                // Si Y est appuyé, fermer l'application
+                if (keyCode.equals(KeyCode.Y)) {
                     stage.close();
                 }
-            }
-            // Si N est appuyé, relancer l'instance de fin de jeu
-            if (keyCode.equals(KeyCode.N)) {
-                if (!isGameRunning && isQPressed) {
-                    isQPressed = false;
-                    endGame();
+                // Si N est appuyé, relancer l'instance de fin de jeu
+                if (keyCode.equals(KeyCode.N)) {
+                    if (isQPressed) {
+                        isQPressed = false;
+                        endGame();
+                    }
                 }
-            }
-            //Si G est appuyé, active/désactive le hardmode
-            if (keyCode.equals(KeyCode.G)) {
-                if(!isGameRunning) {
+                //Si G est appuyé, active/désactive le hardmode
+                if (keyCode.equals(KeyCode.G)) {
                     isHardMode = !isHardMode;
+                    skull.setVisible(isHardMode);
                 }
-                skull.setVisible(isHardMode);
+                //Si TAB est appuyé, active/désactive le hardmode
+                if (keyCode.equals(KeyCode.TAB)) {
+                    txtScoreBoard.setVisible(true);
+                }
             }
         });
+
 
         //Si SPACE est relâché
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
             if (keyCode.equals(KeyCode.SPACE)) {
                 isSpacePressed = false;
-                bird.getBirdSprite().setImage(new Image(Path.DIR_SPRITES + "flappyFlap.png"));
+                bird.getBirdSprite().setImage(new Image(IMG_FLAPPY_FLAP));
             }
-            //Si R est relâché
-            if (keyCode.equals(KeyCode.R)) {
-                //N'est pas disponnble lorsque le joue est en cours
-                if (!isGameRunning) {
-                    restartGame();
+            //N'est pas disponnible en cours de jeu
+            if(!isGameRunning) {
+                //Si R est relâché
+                if (keyCode.equals(KeyCode.R)) {
+                        restartGame();
+                }
+                //Si TAB est relâché
+                if (keyCode.equals(KeyCode.TAB)) {
+                        txtScoreBoard.setVisible(false);
                 }
             }
         });
@@ -196,12 +204,17 @@ public class Main extends Application {
         root.getChildren().add(txtInformation);
         //Ajout de l'image du hardmode
         root.getChildren().add(skull);
+        //Ajout du tableau de score
+        root.getChildren().add(txtScoreBoard);
+        if(scoreFile.exists()) {
+            txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+        }
         // Sélectionner la scene
         stage.setScene(scene);
         //Ajouter une icon à l'application
-        stage.getIcons().add(new Image(Path.DIR_SPRITES + "icon.png"));
+        stage.getIcons().add(new Image(IMG_ICON));
         // Donner une titre à la scène
-        stage.setTitle("FLAPPY BIRD");
+        stage.setTitle(TXT_GAME_TITLE);
         //rendre la fenetre non redimentionnable
         stage.setResizable(false);
         //taille max
@@ -217,7 +230,7 @@ public class Main extends Application {
      */
     private void update() {
         if (!isGameRunning) {
-            //De base, place l'oiseau au milleur gauche de l'écran
+            //De base, place l'oiseau au milleu gauche de l'écran
             bird.refreshBirdSprite();
         }
         //Le jeu est en cours
@@ -232,33 +245,33 @@ public class Main extends Application {
             bird.undergoGravity(birdGravity);
 
             //Le couple 0 bouge
-            couplesList.get(0).move(pipeSpeed);
+            couplesList.get(0).move(PIPE_SPEED);
 
             //Le couple 1 bouge
             if (t > 1.9) {
-                couplesList.get(1).move(pipeSpeed);
+                couplesList.get(1).move(PIPE_SPEED);
             }
             //le couple 2 bouge
             if (t > 3.8) {
-                couplesList.get(2).move(pipeSpeed);
+                couplesList.get(2).move(PIPE_SPEED);
             }
             //le couple 3 bouge
             if (t > 5.7) {
-                couplesList.get(3).move(pipeSpeed);
+                couplesList.get(3).move(PIPE_SPEED);
             }
             //le couple 4 bouge
             if (t > 7.6) {
-                couplesList.get(4).move(pipeSpeed);
+                couplesList.get(4).move(PIPE_SPEED);
             }
 
-            if(isHardMode) {
+            if (isHardMode) {
                 birdGravity = 9;
                 couplesList.get(0).verticalPipeMove();
                 couplesList.get(1).verticalPipeMove();
                 couplesList.get(2).verticalPipeMove();
                 couplesList.get(3).verticalPipeMove();
                 couplesList.get(4).verticalPipeMove();
-            }else{
+            } else {
                 birdGravity = 8;
             }
 
@@ -300,7 +313,7 @@ public class Main extends Application {
         //lancer la timeline
         timeline.play();
         // vitesse 60 = 60 images par seconde
-        timeline.setRate(60);
+        timeline.setRate(FPS);
 
         return root;
     }
@@ -424,16 +437,24 @@ public class Main extends Application {
     public void endGame() {
         //remet le timer de poche à 0
         t = 0;
+        frame = 0;
         //Affichage du score
         StackPane.setAlignment(score.getText(), Pos.CENTER);
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
 
         //Affichage d'information
-        txtInformation.setText("[R] Rejouer\n[Q] Quitter");
+        txtInformation.setText(TXT_END_GAME_MESSAGE);
         txtInformation.setVisible(true);
         //Le jeu est déclarer comme arrêté
         isGameRunning = false;
+
+        if (!scoreHasBeenWrited) {
+            ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
+            txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+        }
+        scoreHasBeenWrited = true;
+
     }
 
     /**
@@ -451,10 +472,10 @@ public class Main extends Application {
         bird.setTranslateY(0);
         bird.refreshBirdSprite();
         bird.refreshCoord();
-        //Remettre la vitesse des tuyaux de base
-        pipeSpeed = 2;
         //Le jeu est à nouveau déclarer comme "en cours"
         isGameRunning = true;
+
+        scoreHasBeenWrited = false;
     }
 
     /**
@@ -483,5 +504,6 @@ public class Main extends Application {
             }
         }
     }
+
 }
 

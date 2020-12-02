@@ -1,8 +1,9 @@
-package sample;
+package flappybird;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import static flappybird.Constant.*;
 
 /**
  * Classe qui représente un tuyau
@@ -26,7 +27,7 @@ public class Pipe extends Shape {
      */
     Pipe(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
-        Image pipeImage = new Image(Path.DIR_SPRITES + "longPipe.png");
+        Image pipeImage = new Image(PATH_DIR_SPRITES + "longPipe.png");
         pipeSprite = new ImageView(pipeImage);
     }
 

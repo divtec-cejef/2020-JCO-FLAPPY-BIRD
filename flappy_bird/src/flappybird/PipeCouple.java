@@ -1,4 +1,4 @@
-package sample;
+package flappybird;
 
 import static java.lang.Math.abs;
 

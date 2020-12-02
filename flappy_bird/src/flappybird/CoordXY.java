@@ -1,4 +1,4 @@
-package sample;
+package flappybird;
 
 /**
  * Classe qui représente une coordonnée X Y

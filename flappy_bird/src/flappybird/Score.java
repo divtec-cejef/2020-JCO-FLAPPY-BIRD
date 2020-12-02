@@ -1,4 +1,4 @@
-package sample;
+package flappybird;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;

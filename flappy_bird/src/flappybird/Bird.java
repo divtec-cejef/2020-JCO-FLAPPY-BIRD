@@ -1,8 +1,9 @@
-package sample;
+package flappybird;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import static flappybird.Constant.*;
 
 /**
  * Classe qui représente un Oiseau
@@ -34,7 +35,7 @@ public class Bird extends Shape {
     public Bird(int x, int y, int w, int h, Color color) {
         super(x, y, w, h, color);
         this.isAlive = true;
-        birdImage = new Image(Path.DIR_SPRITES + "flappy.png");
+        birdImage = new Image(PATH_DIR_SPRITES + "flappy.png");
         birdSprite = new ImageView(birdImage);
     }
 

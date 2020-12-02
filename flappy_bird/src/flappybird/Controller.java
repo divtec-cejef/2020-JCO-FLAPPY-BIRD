@@ -1,4 +1,4 @@
-package sample;
+package flappybird;
 
 public class Controller {
 }

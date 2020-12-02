@@ -1,4 +1,4 @@
-package sample;
+package flappybird;
 
 /**
  * Classe représentant quatre coins d'un rectangle quelconque
