@@ -15,8 +15,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.io.*;
 import java.util.ArrayList;
+
 import static flappybird.Constant.*;
 
 
@@ -65,6 +67,8 @@ public class Main extends Application {
     ImageView skull = new ImageView(new Image(PATH_DIR_SPRITES + "skull.png"));
     //Fichier de score
     File scoreFile = new File(PATH_FILE_SCORES);
+    //Fichier de score du hardmode
+    File hardModeScoreFile = new File(PATH_FILE_SCORES_HARDMODE);
     //Tableau de score
     Text txtScoreBoard = new Text(0, 0, "");
 
@@ -73,7 +77,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage){
+    public void start(Stage stage) {
 
         //Initialisé la liste de couple de tuyau
         couplesList = createCouplesList(6);
@@ -109,8 +113,9 @@ public class Main extends Application {
         txtScoreBoard.setFont(Font.font("Berlin Sans FB", FontWeight.BOLD, FontPosture.REGULAR, 50));
         txtScoreBoard.setFill(Color.GOLD);
         txtScoreBoard.setStroke(Color.DARKCYAN);
-        StackPane.setAlignment(txtScoreBoard, Pos.CENTER_LEFT);
-        txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 100);
+        StackPane.setAlignment(txtScoreBoard, Pos.TOP_LEFT);
+        txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 30);
+        txtScoreBoard.setTranslateY(txtScoreBoard.getTranslateY() + 30);
         txtScoreBoard.setVisible(false);
 
         //Si SPACE est appuyé
@@ -161,6 +166,15 @@ public class Main extends Application {
                 if (keyCode.equals(KeyCode.G)) {
                     isHardMode = !isHardMode;
                     skull.setVisible(isHardMode);
+                    if (isHardMode) {
+                        if (hardModeScoreFile.exists()) {
+                            txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
+                        }else{
+                            txtScoreBoard.setText("");
+                        }
+                    } else {
+                        txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+                    }
                 }
                 //Si TAB est appuyé, active/désactive le hardmode
                 if (keyCode.equals(KeyCode.TAB)) {
@@ -178,14 +192,14 @@ public class Main extends Application {
                 bird.getBirdSprite().setImage(new Image(IMG_FLAPPY_FLAP));
             }
             //N'est pas disponnible en cours de jeu
-            if(!isGameRunning) {
+            if (!isGameRunning) {
                 //Si R est relâché
                 if (keyCode.equals(KeyCode.R)) {
-                        restartGame();
+                    restartGame();
                 }
                 //Si TAB est relâché
                 if (keyCode.equals(KeyCode.TAB)) {
-                        txtScoreBoard.setVisible(false);
+                    txtScoreBoard.setVisible(false);
                 }
             }
         });
@@ -206,7 +220,7 @@ public class Main extends Application {
         root.getChildren().add(skull);
         //Ajout du tableau de score
         root.getChildren().add(txtScoreBoard);
-        if(scoreFile.exists()) {
+        if (scoreFile.exists()) {
             txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
         }
         // Sélectionner la scene
@@ -246,7 +260,6 @@ public class Main extends Application {
 
             //Le couple 0 bouge
             couplesList.get(0).move(PIPE_SPEED);
-
             //Le couple 1 bouge
             if (t > 1.9) {
                 couplesList.get(1).move(PIPE_SPEED);
@@ -302,10 +315,8 @@ public class Main extends Application {
 
     //Initialisation de la pane
     private Parent createContent() {
-
-        //root.setPrefSize(MAX_WIDTH, MAX_HEIGHT);
+        //ID de la pane
         root.setId("pane");
-
         //Timer basé sur 1 seconde
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> update()));
         //nombbre de fois qu'elle se répète
@@ -342,7 +353,7 @@ public class Main extends Application {
      * Parcours chaque tuyau de chaque couple de tuyaux présent dans la liste et vérifie s'il touche l'oiseau
      *
      * @param coupleList liste de couple de tuyaux
-     * @param bird qui peut ou non toucher un tuyau
+     * @param bird       qui peut ou non toucher un tuyau
      * @return true = touché // False = non touché
      */
     public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, Bird bird) {
@@ -450,8 +461,13 @@ public class Main extends Application {
         isGameRunning = false;
 
         if (!scoreHasBeenWrited) {
-            ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
-            txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+            if (isHardMode) {
+                ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
+                txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
+            }else {
+                ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
+                txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+            }
         }
         scoreHasBeenWrited = true;
 
