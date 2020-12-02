@@ -342,7 +342,7 @@ public class Main extends Application {
      * Parcours chaque tuyau de chaque couple de tuyaux présent dans la liste et vérifie s'il touche l'oiseau
      *
      * @param coupleList liste de couple de tuyaux
-     * @param bird       qui peut ou non toucher un tuyau
+     * @param bird qui peut ou non toucher un tuyau
      * @return true = touché // False = non touché
      */
     public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, Bird bird) {
