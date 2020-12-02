@@ -11,6 +11,7 @@
   - [Deuxième version du jeu](#deuxième-version-du-jeu)
   - [Troisième version du jeu](#troisième-version-du-jeu)
   - [Quatrième version du jeu](#quatrième-version-du-jeu)
+  - [Cinquième version du jeu](#cinquième-version-du-jeu)
 - [Déroulement de base d'une partie](#déroulement-de-base-dune-partie)
 - [Documentation](#documentation)
 - [Class](#class)
@@ -65,8 +66,18 @@ Ajout et gestion du score, un écran d'accueil est maintenant là, il est aussi 
 
 ## Quatrième version du jeu
 <figure>
-<img src="img/quatrième_version.png" alt="quatrième version du jeu" width="600"/>
+<img src="img/quatrieme_version.png" alt="quatrième version du jeu" width="600"/>
 L'oiseau pique maintenant du bec en tombant, un fond animé défile lors de la partie, la vitesse des tuyaux à été diminiuée mais leur nombre à augmenté.
+</figure>
+
+## Cinquième version du jeu
+<figure>
+<img src="img/cinquieme_version.png" alt="quatrième version du jeu" width="600"/>
+Il est possible d'activer le hardmode (mode difficile) en appuyant sur G dans le menu, dans ce mode les tuyaux bougent verticalement.
+
+Une petite tête de mort sera là pour indiquer dans quel mode vous vous trouvez.
+
+Il est possible de visualiser le tableau des 5 meilleur scores en appuyant sur TAB, changer de mode de jeu changera de tableau de score.
 </figure>
 
 # Déroulement de base d'une partie
