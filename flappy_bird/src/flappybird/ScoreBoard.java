@@ -116,7 +116,7 @@ public class ScoreBoard {
                     if (i != 0) {
                         scoreBoard.append("\n");
                     }
-                    scoreBoard.append(i + 1).append(".\t").append(listScores.get(i).toString()).append(" pts");
+                    scoreBoard.append("   ").append(i + 1).append(".\t  ").append(listScores.get(i).toString());
                 }
             }
         }
