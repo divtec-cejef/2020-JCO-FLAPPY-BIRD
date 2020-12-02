@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static flappybird.Constant.*;
@@ -32,7 +33,7 @@ import static flappybird.Constant.*;
 public class Main extends Application {
 
     //Indice de temps, 1 = 60 frame
-    float t = 0;
+    double t = 0;
     //Indice de frame, 60 = 1 seconde
     int frame = 0;
     //Si oui ou non la barre espace est appuyée
@@ -91,10 +92,12 @@ public class Main extends Application {
         score.getText().setFill(Color.DARKBLUE);
         score.getText().setTextAlignment(TextAlignment.LEFT);
         StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
+        score.getText().setTranslateX(score.getText().getTranslateX() + 10);
+        score.getText().setTranslateY(score.getText().getTranslateY() + 5);
         score.getText().setVisible(false);
 
         //Initialisation du text d'information
-        txtInformation.setFont(Font.font("Berlin Sans FB", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        txtInformation.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, FontPosture.REGULAR, 50));
         txtInformation.setTextAlignment(TextAlignment.CENTER);
         StackPane.setAlignment(txtInformation, Pos.CENTER);
         txtInformation.setStroke(Color.ORANGE);
@@ -110,7 +113,7 @@ public class Main extends Application {
         skull.setTranslateX(450);
         skull.setTranslateY(-280);
         //initialisation du tableau des score
-        txtScoreBoard.setFont(Font.font("Berlin Sans FB", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        txtScoreBoard.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, FontPosture.REGULAR, 50));
         txtScoreBoard.setFill(Color.GOLD);
         txtScoreBoard.setStroke(Color.DARKCYAN);
         StackPane.setAlignment(txtScoreBoard, Pos.TOP_LEFT);
@@ -118,9 +121,12 @@ public class Main extends Application {
         txtScoreBoard.setTranslateY(txtScoreBoard.getTranslateY() + 30);
         txtScoreBoard.setVisible(false);
 
-        //Si SPACE est appuyé
+        /*
+        TOUCHE APPUYÉE
+         */
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
+            //Si SPACE est appuyé
             if (keyCode.equals(KeyCode.SPACE)) {
                 if (!isSpacePressed) {
                     if (isGameRunning) {
@@ -140,26 +146,30 @@ public class Main extends Application {
             }
             //N'est pas disponnible en cours de jeu
             if (!isGameRunning) {
-                //Si R est appuyé
-                if (keyCode.equals(KeyCode.R)) {
-                    if (!isRPressed) {
-                        isRPressed = true;
+                if (isGameStarted) {
+                    //Si R est appuyé
+                    if (keyCode.equals(KeyCode.R)) {
+                        if (!isRPressed) {
+                            isRPressed = true;
+                        }
                     }
-                }
-                // Si Q est appuyé, ouvrir le menu de confirmation
-                if (keyCode.equals(KeyCode.Q)) {
-                    isQPressed = true;
-                    txtInformation.setText(TXT_ALERT_MESSAGE);
-                }
-                // Si Y est appuyé, fermer l'application
-                if (keyCode.equals(KeyCode.Y)) {
-                    stage.close();
-                }
-                // Si N est appuyé, relancer l'instance de fin de jeu
-                if (keyCode.equals(KeyCode.N)) {
-                    if (isQPressed) {
-                        isQPressed = false;
-                        endGame();
+                    // Si Q est appuyé, ouvrir le menu de confirmation
+                    if (keyCode.equals(KeyCode.Q)) {
+                        isQPressed = true;
+                        txtInformation.setText(TXT_ALERT_MESSAGE);
+                    }
+                    // Si Y est appuyé, fermer l'application
+                    if (keyCode.equals(KeyCode.Y)) {
+                        if (isQPressed) {
+                            stage.close();
+                        }
+                    }
+                    // Si N est appuyé, relancer l'instance de fin de jeu
+                    if (keyCode.equals(KeyCode.N)) {
+                        if (isQPressed) {
+                            endGame();
+                            isQPressed = false;
+                        }
                     }
                 }
                 //Si G est appuyé, active/désactive le hardmode
@@ -183,10 +193,12 @@ public class Main extends Application {
             }
         });
 
-
-        //Si SPACE est relâché
+        /*
+         TOUCHE RELACHÉE
+         */
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
+            //Si SPACE est relâché
             if (keyCode.equals(KeyCode.SPACE)) {
                 isSpacePressed = false;
                 bird.getBirdSprite().setImage(new Image(IMG_FLAPPY_FLAP));
@@ -195,7 +207,7 @@ public class Main extends Application {
             if (!isGameRunning) {
                 //Si R est relâché
                 if (keyCode.equals(KeyCode.R)) {
-                    restartGame();
+                        restartGame();
                 }
                 //Si TAB est relâché
                 if (keyCode.equals(KeyCode.TAB)) {
@@ -204,6 +216,9 @@ public class Main extends Application {
             }
         });
 
+        /*
+        AJOUT DANS LA STACKPANE
+         */
         // Ajout des backgrounds en premier pour qu'ils soient automatiquement en arrière plan
         root.getChildren().add(backgroundList.get(1));
         root.getChildren().add(backgroundList.get(0));
@@ -223,6 +238,10 @@ public class Main extends Application {
         if (scoreFile.exists()) {
             txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
         }
+
+        /*
+        GESTION ET LANCEMENT DE LA SCÈNE
+         */
         // Sélectionner la scene
         stage.setScene(scene);
         //Ajouter une icon à l'application
@@ -239,15 +258,17 @@ public class Main extends Application {
     }
 
     /**
-     * Update
+     * UPDATE
      * s'éxécute 60 fois par secondes
      */
     private void update() {
+
+        //Menu de départ ou de fin
         if (!isGameRunning) {
             //De base, place l'oiseau au milleu gauche de l'écran
             bird.refreshBirdSprite();
         }
-        //Le jeu est en cours
+        //En jeu
         else {
             moveBackground();
 
@@ -308,12 +329,14 @@ public class Main extends Application {
             //Incrémentation des indice de frame et de temps
             //Quand t atteint 1, une seconde sera écoulée
             //Quand frame atteint 60, une seconde sera écoulée
-            t += 0.01666;
-            frame++;
+            t += 1 / 60f;
+            frame += 1;
         }
     }
 
-    //Initialisation de la pane
+    /**
+     * Initialisation de la pane
+     */
     private Parent createContent() {
         //ID de la pane
         root.setId("pane");
@@ -446,9 +469,25 @@ public class Main extends Application {
      * Le score et un message d'info pour rejouer s'affiche au milleu de l'écran
      */
     public void endGame() {
-        //remet le timer de poche à 0
-        t = 0;
-        frame = 0;
+
+        //Si le score n'a pas été encore inscrit
+        if (!scoreHasBeenWrited) {
+            //Écrit le score dans le fichier du mode jouer et met à jour le tablau des scores
+            if (isHardMode) {
+                ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
+                txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
+            } else {
+                ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
+                txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+            }
+            //Affiche le temps passé
+            DecimalFormat df = new DecimalFormat("#.##");
+            System.out.println("temps : " + df.format(t) + " secondes...");
+            //remet le timer de poche à 0
+            t = 0;
+            frame = 0;
+        }
+
         //Affichage du score
         StackPane.setAlignment(score.getText(), Pos.CENTER);
         score.getText().setFill(Color.WHITESMOKE);
@@ -459,16 +498,6 @@ public class Main extends Application {
         txtInformation.setVisible(true);
         //Le jeu est déclarer comme arrêté
         isGameRunning = false;
-
-        if (!scoreHasBeenWrited) {
-            if (isHardMode) {
-                ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
-                txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
-            } else {
-                ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
-                txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
-            }
-        }
         scoreHasBeenWrited = true;
 
     }
