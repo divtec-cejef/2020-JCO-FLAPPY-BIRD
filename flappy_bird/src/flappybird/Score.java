@@ -23,7 +23,7 @@ public class Score {
     public Score(double x, double y) {
         this.text.setTranslateX(x);
         this.text.setTranslateY(y);
-        text.setFont(Font.font("Berlin Sans FB",FontWeight.BOLD, FontPosture.REGULAR, 50));
+        text.setFont(Font.font("Arial Rounded MT Bold",FontWeight.BOLD, FontPosture.REGULAR, 50));
     }
 
     /**
