@@ -169,7 +169,7 @@ public class Main extends Application {
                     if (isHardMode) {
                         if (hardModeScoreFile.exists()) {
                             txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
-                        }else{
+                        } else {
                             txtScoreBoard.setText("");
                         }
                     } else {
@@ -464,7 +464,7 @@ public class Main extends Application {
             if (isHardMode) {
                 ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
                 txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
-            }else {
+            } else {
                 ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
                 txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
             }
