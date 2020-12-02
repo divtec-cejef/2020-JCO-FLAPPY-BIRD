@@ -13,6 +13,8 @@ public class Constant {
     public final static String PATH_DIR_FONT = "police/";
     //Chemin vers le fichier Scores.txt
     public final static String PATH_FILE_SCORES = Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappy_bird\\src\\scores.txt";
+    //Chemin vers le fichier ScoresHardMode.txt
+    public final static String PATH_FILE_SCORES_HARDMODE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappy_bird\\src\\scoresHardMode.txt";
 
     /************************
      * NUMERIC
@@ -37,6 +39,8 @@ public class Constant {
     public final static String TXT_ALERT_MESSAGE = "Voulez-vous vraiment quitter ?\n[Y] OUI   \n[N] NON";
     //Titre du tableau des scores
     public final static String TXT_SCORES_TITLE = "Scores :\n";
+    //Titre du tableau des score du hardmode
+    public final static String TXT_HARDMODE_SCORES_TITLE = "Scores [HARDMODE] :\n";
     //Message de fin de partie
     public final static  String TXT_END_GAME_MESSAGE = "[R] Rejouer\n[Q] Quitter";
 
