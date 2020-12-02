@@ -1,11 +1,12 @@
 package flappybird;
 
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 
 public class Constant {
 
     /************************
-     * PATH
+     PATH
      */
     //Chemin vert le dossier Sprites
     public final static String PATH_DIR_SPRITES = "Sprites/";
@@ -17,7 +18,7 @@ public class Constant {
     public final static String PATH_FILE_SCORES_HARDMODE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappy_bird\\src\\scoresHardMode.txt";
 
     /************************
-     * NUMERIC
+     NUMERIC
      */
     //Hauteur max de la fenêtre
     public final static float MAX_HEIGHT = 700;
@@ -29,9 +30,11 @@ public class Constant {
     public final static int PIPE_SPEED = 2;
     //Nombre d'images par seconde
     public final static int FPS = 60;
+    //Format de sortie décimal
+    DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
     /************************
-     * TEXT
+     TEXT
      */
     //Titre du jeu
     public final static String TXT_GAME_TITLE = "FLAPPY BIRD";
@@ -40,12 +43,12 @@ public class Constant {
     //Titre du tableau des scores
     public final static String TXT_SCORES_TITLE = "Scores :\n";
     //Titre du tableau des score du hardmode
-    public final static String TXT_HARDMODE_SCORES_TITLE = "Scores [HARDMODE] :\n";
+    public final static String TXT_HARDMODE_SCORES_TITLE = "Scores [HM] :\n";
     //Message de fin de partie
-    public final static  String TXT_END_GAME_MESSAGE = "[R] Rejouer\n[Q] Quitter";
+    public final static String TXT_END_GAME_MESSAGE = "[R] Rejouer\n[Q] Quitter";
 
     /************************
-     * IMAGES
+     IMAGES
      */
     //Première partie de l'arrière plan
     public final static String IMG_BACKGROUND_PT_1 = PATH_DIR_SPRITES + "cloudbg1.png";
