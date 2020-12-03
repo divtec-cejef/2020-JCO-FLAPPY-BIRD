@@ -33,6 +33,10 @@ Des bases en programmation orienté objet sont indispensables pour comprendre et
 * SDK : [javaFX](https://gluonhq.com/products/javafx/ "Page de téléchargement")
 * IDE Java : [IntelliJ IDEA](https://www.jetbrains.com/fr-fr/idea/ "Page principale de IntelliJ IDEA")
 
+# Jouer au jeu
+
+Télécharger la dernière version dans la section [release](https://github.com/divtec-cejef/2020-JCO-FLAPPY-BIRD/releases "Release")
+
 # But
 Le joueur doit aider un oiseau à franchir des petits espaces entre deux tuyaux
 
