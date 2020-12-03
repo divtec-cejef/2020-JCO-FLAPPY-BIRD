@@ -26,26 +26,28 @@ public class Constant {
     public final static float MAX_WIDTH = 1000;
     //Elan de l'oiseau (vitesse de pointe)
     public final static float BIRD_MOMENTUM = 19.5f;
+    //Perte d'élan de l'oiseau
+    public final static float BIRD_MOMENTUM_LOSS = 0.5f;
     //Vitesse des tuyaux
     public final static int PIPE_SPEED = 2;
     //Nombre d'images par seconde
     public final static int FPS = 60;
-    //Format de sortie décimal
-    DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
     /************************
      TEXT
      */
     //Titre du jeu
     public final static String TXT_GAME_TITLE = "FLAPPY BIRD";
+    //Message d'info de début de partie
+    public final static String TXT_START_MESSAGE = "[SPACE] Commencer";
     //Message d'alerte avant la fermeture de l'application
-    public final static String TXT_ALERT_MESSAGE = "Voulez-vous vraiment quitter ?\n[Y] OUI   \n[N] NON";
+    public final static String TXT_ALERT_MESSAGE = "Voulez-vous vraiment quitter ?\n[Y] OUI\n[N] NON";
     //Titre du tableau des scores
     public final static String TXT_SCORES_TITLE = "Scores :\n";
     //Titre du tableau des score du hardmode
     public final static String TXT_HARDMODE_SCORES_TITLE = "Scores [HM] :\n";
     //Message de fin de partie
-    public final static String TXT_END_GAME_MESSAGE = "[R] Rejouer\n[Q] Quitter";
+    public final static String TXT_END_GAME_MESSAGE = "Rejouer\n[Q] Quitter";
 
     /************************
      IMAGES
