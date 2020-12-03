@@ -20,7 +20,7 @@ public class Bird extends Shape {
     //Définit si l'oiseau est en train de volé ou non
     private boolean flying = false;
     //Elan de l'oiseau (vitesse de pointe de son vole)
-    private float momentum = 20;
+    private float momentum = BIRD_MOMENTUM;
 
     /**
      * Crée et instantie un oiseau à la position, la taille et la couleur voulue
@@ -96,7 +96,7 @@ public class Bird extends Shape {
     public void smoothFlap() {
         if (momentum > 0) {
             this.moveUp((int) momentum);
-            momentum -= 0.5;
+            momentum -= BIRD_MOMENTUM_LOSS;
             birdSprite.setRotate(-20);
             refreshBirdSprite();
         } else {
