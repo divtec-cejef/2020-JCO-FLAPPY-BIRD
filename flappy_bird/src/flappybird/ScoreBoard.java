@@ -13,8 +13,9 @@ import java.util.Collections;
 public class ScoreBoard {
 
     /**
-     * Écrit dans un fichier text présent à la racine
+     * Écrit dans un fichier text
      *
+     * @param file fichier à créer si inexistant et dans lequel écrire
      * @param text Text à écrir dans le fichier de text
      */
     public static void writeInTxtFile(File file, String text) {
@@ -31,9 +32,10 @@ public class ScoreBoard {
     /**
      * Convertit la chaîne de caractère en Integer et met le tout dans une liste triée décroissante
      *
+     * @param file Fichier dans lequel écrire
      * @return une liste d'Integer triée, retourne une liste vide si le fichier est vide
      */
-    public static ArrayList<Integer> getScoreList(File file) {
+    private static ArrayList<Integer> getScoreList(File file) {
         //Récupère la ligne de text dans le fichier
         String line = getTxtFileLine(file);
         //Crée une Arraylist à partir de cette ligne de text
@@ -79,6 +81,7 @@ public class ScoreBoard {
 
     /**
      * Récupère une ligne de texte dans une fichier texte
+     *
      * @param file Chemin vers le fichier texte
      * @return une chaîne de caractère contenant la ligne
      */
@@ -103,6 +106,7 @@ public class ScoreBoard {
     /**
      * Créer une chaîne de charactère formatée pour afficher un tableau de 5 scores
      *
+     * @param file fichier à ouvrir
      * @return une chaîne de caractère formatée
      */
     public static String getscoreBoard(File file) {
@@ -110,16 +114,17 @@ public class ScoreBoard {
         ArrayList<Integer> listScores;
         listScores = getScoreList(file);
 
-        if (listScores != null) {
-            for (int i = 0; i < listScores.size(); i++) {
-                if (i < 5) {
-                    if (i != 0) {
-                        scoreBoard.append("\n");
-                    }
-                    scoreBoard.append("   ").append(i + 1).append(".\t  ").append(listScores.get(i).toString());
+            for (int i = 0; i < 5; i++) {
+                //Retour de chariot
+                if (i != 0) {
+                    scoreBoard.append("\n");
+                }
+                scoreBoard.append("   ").append(i + 1).append(".\t  ");
+                //Insérer les scores
+                if (i < listScores.size()) {
+                    scoreBoard.append(listScores.get(i).toString());
                 }
             }
-        }
         return scoreBoard.toString();
     }
 }
