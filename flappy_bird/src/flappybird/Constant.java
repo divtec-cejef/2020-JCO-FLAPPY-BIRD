@@ -1,7 +1,6 @@
 package flappybird;
 
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 
 public class Constant {
 
@@ -9,9 +8,13 @@ public class Constant {
      PATH
      */
     //Chemin vert le dossier Sprites
-    public final static String PATH_DIR_SPRITES = "Sprites/";
+    public final static String PATH_DIR_SPRITES = "/sprites/";
     //Chemin vers le dossier police
-    public final static String PATH_DIR_FONT = "police/";
+    public final static String PATH_DIR_FONT = "/font/";
+    //Chemin vers le fichier son du flap
+    public final static String PATH_DIR_FLAP_SOUNDS = Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappy_bird\\src\\sounds\\flapSound.mp3";
+    //Chemin vers le fichier son du flap
+    public final static String PATH_DIR_IMPACT_SOUNDS = Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappy_bird\\src\\sounds\\impactSound.mp3";
     //Chemin vers le fichier Scores.txt
     public final static String PATH_FILE_SCORES = Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappy_bird\\src\\scores.txt";
     //Chemin vers le fichier ScoresHardMode.txt
@@ -47,7 +50,11 @@ public class Constant {
     //Titre du tableau des score du hardmode
     public final static String TXT_HARDMODE_SCORES_TITLE = "Scores [HM] :\n";
     //Message de fin de partie
-    public final static String TXT_END_GAME_MESSAGE = "Rejouer\n[Q] Quitter";
+    public final static String TXT_END_GAME_MESSAGE = "\n[Q] Quitter";
+    //Nom du fichier de police d'écriture
+    public final static String TXT_POLICE_FILE_NAME = "KGHAPPY.ttf";
+    //Nom Windows de la police d'écriture
+    public final static String TXT_POLICE_NAME = "KG HAPPY";
 
     /************************
      IMAGES
