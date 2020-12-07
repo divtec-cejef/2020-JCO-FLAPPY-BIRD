@@ -74,6 +74,9 @@ public class Main extends Application {
     double replayTimer = 6;
     //format des décimal
     DecimalFormat df = new DecimalFormat("#");
+    //fichiers musicaux
+    Sound flapSound = new Sound(PATH_DIR_FLAP_SOUNDS);
+    Sound impactSound = new Sound(PATH_DIR_IMPACT_SOUNDS);
 
     public static void main(String[] args) {
         launch(args);
@@ -88,22 +91,30 @@ public class Main extends Application {
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
 
+        //Ajouter la police d'écriture
+        try {
+            Font.loadFont(Main.class.getResource(PATH_DIR_FONT + TXT_POLICE_FILE_NAME).toExternalForm(), 100);
+        } catch (Exception e) {
+            System.out.println("Police non chargée");
+        }
+
         //Initialisation du score
         score.write("Score : " + score.getPts());
-        score.getText().setStroke(Color.WHITESMOKE);
-        score.getText().setFill(Color.DARKBLUE);
+        score.getText().setStroke(Color.BLACK);
+        score.getText().setFill(Color.WHITESMOKE);
         score.getText().setTextAlignment(TextAlignment.LEFT);
         StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
         score.getText().setTranslateX(score.getText().getTranslateX() + 10);
         score.getText().setTranslateY(score.getText().getTranslateY() + 5);
+        score.getText().setFont(Font.font(TXT_POLICE_NAME,50));
         score.getText().setVisible(false);
 
         //Initialisation du text d'information
-        txtInformation.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        txtInformation.setFont(Font.font(TXT_POLICE_NAME,45));
         txtInformation.setTextAlignment(TextAlignment.CENTER);
         StackPane.setAlignment(txtInformation, Pos.CENTER);
-        txtInformation.setStroke(Color.DARKBLUE);
         txtInformation.setFill(Color.GOLD);
+        txtInformation.setStroke(Color.BLACK);
         txtInformation.setTranslateY(200);
         // Initialisation des background
         backgroundList.add(new ImageView(new Image(IMG_BACKGROUND_PT_1)));
@@ -115,13 +126,15 @@ public class Main extends Application {
         skull.setTranslateX(450);
         skull.setTranslateY(-280);
         //initialisation du tableau des score
-        txtScoreBoard.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, FontPosture.REGULAR, 50));
         txtScoreBoard.setFill(Color.GOLD);
-        txtScoreBoard.setStroke(Color.DARKCYAN);
+        txtScoreBoard.setStroke(Color.BLACK);
+        txtScoreBoard.setStrokeWidth(2);
         StackPane.setAlignment(txtScoreBoard, Pos.TOP_LEFT);
         txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 30);
         txtScoreBoard.setTranslateY(txtScoreBoard.getTranslateY() + 30);
+        txtScoreBoard.setFont(Font.font(TXT_POLICE_NAME,40));
         txtScoreBoard.setVisible(false);
+
 
         /*
         TOUCHE APPUYÉE
@@ -133,6 +146,8 @@ public class Main extends Application {
                 if (!isSpacePressed) {
                     //Durant la partie
                     if (isGameRunning) {
+                        //Un son est joué
+                        flapSound.play();
                         //l'oiseau vole
                         bird.setFlying(true);
                         //l'oiseau repprend son élan
@@ -141,11 +156,10 @@ public class Main extends Application {
                         bird.getBirdSprite().setImage(new Image(IMG_FLAPPY));
                         //l'Input ne sera fait q'une seule fois, pour le refaire il faut lacher espace, et réappuyer
                         isSpacePressed = true;
-
                     }
                     //Relancer une partie
                     else {
-                        if (replayTimer < 0) {
+                        if (replayTimer < 0 && !isQPressed) {
                             restartGame();
                         }
                     }
@@ -241,6 +255,8 @@ public class Main extends Application {
             txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
         }
 
+
+
         /*
         GESTION ET LANCEMENT DE LA SCÈNE
          */
@@ -322,6 +338,7 @@ public class Main extends Application {
                     coutingPipes();
                 } else {
                     endGame();
+                    impactSound.play();
                 }
 
                 //Incrémentation des indice de frame et de temps
@@ -338,7 +355,7 @@ public class Main extends Application {
                     if (replayTimer > 0) {
                         txtInformation.setText("[" + df.format(replayTimer) + "]" + TXT_END_GAME_MESSAGE);
                     } else {
-                        txtInformation.setText("[SPACE] " + TXT_END_GAME_MESSAGE);
+                        txtInformation.setText("[SPACE] Rejouer" + TXT_END_GAME_MESSAGE);
                     }
                 }
             }
@@ -354,6 +371,7 @@ public class Main extends Application {
 
     /**
      * Initialisation de la pane
+     * @return root La Stackpane à utiliser dans la scene
      */
     private Parent createContent() {
         //ID de la pane
@@ -445,7 +463,7 @@ public class Main extends Application {
                         score.getText().setFill(Color.GOLD);
                         //increaseSpeed();
                     } else {
-                        score.getText().setFill(Color.DARKBLUE);
+                        score.getText().setFill(Color.WHITESMOKE);
                     }
                     score.incrementScore();
                     score.write("Score : " + score.getPts());
@@ -487,7 +505,10 @@ public class Main extends Application {
      * Le score et un message d'info pour rejouer s'affiche au milleu de l'écran
      */
     public void endGame() {
-        isGameRunning = false;
+        //remet les compteurs à 0
+        t = 0;
+        frame = 0;
+        replayTimer = 3;
 
         //Si le score n'a pas été encore inscrit
         if (!scoreHasBeenWrited) {
@@ -499,12 +520,8 @@ public class Main extends Application {
                 ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
                 txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
             }
-            //Affiche le temps passé
-            System.out.println("temps : " + df.format(t) + " secondes...");
-            //remet le timer de poche à 0
-            t = 0;
-            frame = 0;
-            replayTimer = 3;
+
+            isGameRunning = false;
 
         }
         //Affichage du score
@@ -543,8 +560,8 @@ public class Main extends Application {
      */
     public void resetScore() {
         score.resetScore();
-        score.getText().setStroke(Color.WHITESMOKE);
-        score.getText().setFill(Color.DARKBLUE);
+        score.getText().setStroke(Color.BLACK);
+        score.getText().setFill(Color.WHITESMOKE);
         StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
         txtInformation.setVisible(false);
     }
@@ -564,6 +581,5 @@ public class Main extends Application {
             }
         }
     }
-
 }
 
