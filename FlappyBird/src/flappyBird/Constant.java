@@ -19,6 +19,8 @@ public class Constant {
     public final static String PATH_FILE_SCORES = Paths.get(".").toAbsolutePath().normalize().toString() + "\\src\\scores.txt";
     //Chemin vers le fichier ScoresHardMode.txt
     public final static String PATH_FILE_SCORES_HARDMODE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\src\\scoresHardMode.txt";
+    //Chemin vers le fichier ThirdMode.txt
+    public final static String PATH_FILE_SCORE_THIRDMODE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\src\\scoreThirdMode.txt";
 
     /************************
      NUMERIC
@@ -27,10 +29,6 @@ public class Constant {
     public final static float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
     public final static float MAX_WIDTH = 1000;
-    //Elan de l'oiseau (vitesse de pointe)
-    public final static float BIRD_MOMENTUM = 19.5f;
-    //Perte d'élan de l'oiseau
-    public final static float BIRD_MOMENTUM_LOSS = 0.5f;
     //Vitesse des tuyaux
     public final static int PIPE_SPEED = 2;
     //Nombre d'images par seconde
@@ -49,6 +47,8 @@ public class Constant {
     public final static String TXT_SCORES_TITLE = "Scores :\n";
     //Titre du tableau des score du hardmode
     public final static String TXT_HARDMODE_SCORES_TITLE = "Scores [HM] :\n";
+    //Titre du tableau des score du hardmode
+    public final static String TXT_THIRDMODE_SCORES_TITLE = "Ennemis tués :\n";
     //Message de fin de partie
     public final static String TXT_END_GAME_MESSAGE = "\n[Q] Quitter";
     //Nom du fichier de police d'écriture
