@@ -11,8 +11,6 @@ import javafx.scene.shape.Rectangle;
 public class Shape extends Rectangle {
 
     private flappyBird.Area area = new flappyBird.Area();
-    public int largeur = 0;
-    public int hauteur = 0;
 
     /**
      * Crée et instantie une Shape à la position, la taille et la couleur voulue
@@ -28,10 +26,6 @@ public class Shape extends Rectangle {
 
         setTranslateX(x);
         setTranslateY(y);
-
-        //simplification de la variable, remplace getWidth/getHeight
-        largeur = w;
-        hauteur = h;
 
         //Mise à jours des coins
         refreshCoord();
@@ -86,16 +80,16 @@ public class Shape extends Rectangle {
      */
     public void refreshCoord() {
         //Y
-        area.getTopLeft().setY((int) getTranslateY() - (hauteur / 2));
-        area.getTopRight().setY((int) getTranslateY() - (hauteur / 2));
-        area.getDownLeft().setY((int) getTranslateY() + (hauteur / 2));
-        area.getDownRight().setY((int) getTranslateY() + (hauteur / 2));
+        area.getTopLeft().setY((int) getTranslateY() - ((int)this.getHeight() / 2));
+        area.getTopRight().setY((int) getTranslateY() - ((int)this.getHeight()  / 2));
+        area.getDownLeft().setY((int) getTranslateY() + ((int)this.getHeight()  / 2));
+        area.getDownRight().setY((int) getTranslateY() + ((int)this.getHeight()  / 2));
 
         //X
-        area.getTopLeft().setX((int) getTranslateX() - (this.largeur / 2));
-        area.getTopRight().setX((int) getTranslateX() + (this.largeur / 2));
-        area.getDownLeft().setX((int) getTranslateX() - (this.largeur / 2));
-        area.getDownRight().setX((int) getTranslateX() + (this.largeur / 2));
+        area.getTopLeft().setX((int) getTranslateX() - ((int)this.getWidth() / 2));
+        area.getTopRight().setX((int) getTranslateX() + ((int)this.getWidth() / 2));
+        area.getDownLeft().setX((int) getTranslateX() - ((int)this.getWidth() / 2));
+        area.getDownRight().setX((int) getTranslateX() + ((int)this.getWidth() / 2));
 
     }
 
