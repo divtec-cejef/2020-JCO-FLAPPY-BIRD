@@ -13,11 +13,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -45,8 +45,6 @@ public class Main extends Application {
     boolean isGameRunning = false;
     //Si oui ou non le jeu à déjà été lancé
     boolean isGameStarted = false;
-    //Si oui ou non le mode difficile est activé
-    boolean isHardMode = false;
     //Si oui ou non le score à été écrit
     boolean scoreHasBeenWrited = false;
     //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
@@ -65,10 +63,13 @@ public class Main extends Application {
     ArrayList<ImageView> backgroundList = new ArrayList<>();
     //Image du hardmode
     ImageView skull = new ImageView(new Image(PATH_DIR_SPRITES + "skull.png"));
+    ImageView thirdModeLogo = new ImageView(new Image(PATH_DIR_SPRITES + "thirdModeLogo.png"));
     //Fichier de score
     File scoreFile = new File(PATH_FILE_SCORES);
     //Fichier de score du hardmode
     File hardModeScoreFile = new File(PATH_FILE_SCORES_HARDMODE);
+    //Fichier de score du thirdMode
+    File thirdModeFile = new File(PATH_FILE_SCORE_THIRDMODE);
     //Tableau de score
     Text txtScoreBoard = new Text(0, 0, "");
     //Chrono pour relancer le jeu
@@ -78,6 +79,17 @@ public class Main extends Application {
     //fichiers musicaux
     Sound flapSound = new Sound(PATH_DIR_FLAP_SOUNDS);
     Sound impactSound = new Sound(PATH_DIR_IMPACT_SOUNDS);
+    //Ennemis
+    Asteroid ennemi;
+
+    //Enumération du mode de jeu
+    public enum gameMode {
+        NORMAL,
+        HARD,
+        FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K
+    }
+
+    gameMode selectedGameMode = gameMode.NORMAL;
 
     public static void main(String[] args) {
         launch(args);
@@ -85,7 +97,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        System.out.println(Paths.get(".").toAbsolutePath().normalize().toString() + "\\flappyBird\\src\\sounds\\flapSound.mp3");
 
         //Initialisé la liste de couple de tuyau
         couplesList = createCouplesList(6);
@@ -108,11 +119,11 @@ public class Main extends Application {
         StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
         score.getText().setTranslateX(score.getText().getTranslateX() + 10);
         score.getText().setTranslateY(score.getText().getTranslateY() + 5);
-        score.getText().setFont(Font.font(TXT_POLICE_NAME,50));
+        score.getText().setFont(Font.font(TXT_POLICE_NAME, 50));
         score.getText().setVisible(false);
 
         //Initialisation du text d'information
-        txtInformation.setFont(Font.font(TXT_POLICE_NAME,45));
+        txtInformation.setFont(Font.font(TXT_POLICE_NAME, 45));
         txtInformation.setTextAlignment(TextAlignment.CENTER);
         StackPane.setAlignment(txtInformation, Pos.CENTER);
         txtInformation.setFill(Color.GOLD);
@@ -127,6 +138,9 @@ public class Main extends Application {
         skull.setVisible(false);
         skull.setTranslateX(450);
         skull.setTranslateY(-280);
+        //Initialisation de l'image du mode 3
+        thirdModeLogo.setVisible(false);
+        thirdModeLogo.setTranslateY(-100);
         //initialisation du tableau des score
         txtScoreBoard.setFill(Color.GOLD);
         txtScoreBoard.setStroke(Color.BLACK);
@@ -134,7 +148,7 @@ public class Main extends Application {
         StackPane.setAlignment(txtScoreBoard, Pos.TOP_LEFT);
         txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 30);
         txtScoreBoard.setTranslateY(txtScoreBoard.getTranslateY() + 30);
-        txtScoreBoard.setFont(Font.font(TXT_POLICE_NAME,40));
+        txtScoreBoard.setFont(Font.font(TXT_POLICE_NAME, 40));
         txtScoreBoard.setVisible(false);
 
 
@@ -153,7 +167,15 @@ public class Main extends Application {
                         //l'oiseau vole
                         bird.setFlying(true);
                         //l'oiseau repprend son élan
-                        bird.setMomentum(BIRD_MOMENTUM);
+                        switch(selectedGameMode){
+                            case NORMAL:
+                            case HARD:
+                                bird.setMomentum(19.5f);
+                                break;
+                            case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                                bird.setMomentum(15f);
+                                break;
+                        }
                         //on change le sprite de l'oiseau
                         bird.getBirdSprite().setImage(new Image(IMG_FLAPPY));
                         //l'Input ne sera fait q'une seule fois, pour le refaire il faut lacher espace, et réappuyer
@@ -169,6 +191,9 @@ public class Main extends Application {
                     if (!isGameStarted) {
                         startGame();
                         txtInformation.setText("");
+                        if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
+                            thirdModeLogo.setVisible(false);
+                        }
                     }
                 }
             }
@@ -196,17 +221,22 @@ public class Main extends Application {
                 }
                 //Si G est appuyé, active/désactive le hardmode
                 if (keyCode.equals(KeyCode.G)) {
-                    isHardMode = !isHardMode;
-                    skull.setVisible(isHardMode);
-                    if (isHardMode) {
-                        if (hardModeScoreFile.exists()) {
-                            txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
-                        } else {
-                            txtScoreBoard.setText("");
-                        }
-                    } else {
-                        txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+                    switch (selectedGameMode) {
+                        case NORMAL:
+
+                            selectedGameMode = gameMode.HARD;
+                            break;
+                        case HARD:
+                            selectedGameMode = gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K;
+                            break;
+                        case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+
+                            selectedGameMode = gameMode.NORMAL;
+                            break;
                     }
+                    switchBetweenModes(selectedGameMode);
+                    skull.setVisible(selectedGameMode == gameMode.HARD);
+                    thirdModeLogo.setVisible(selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K);
                 }
                 //Si TAB est appuyé, active/désactive le hardmode
                 if (keyCode.equals(KeyCode.TAB)) {
@@ -251,11 +281,15 @@ public class Main extends Application {
         root.getChildren().add(txtInformation);
         //Ajout de l'image du hardmode
         root.getChildren().add(skull);
+        //Ajout le logo du 3eme mode
+        root.getChildren().add(thirdModeLogo);
         //Ajout du tableau de score
         root.getChildren().add(txtScoreBoard);
         if (scoreFile.exists()) {
             txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
         }
+
+        ennemi = new Asteroid(600,0,100,100,Color.RED,root);
 
 
 
@@ -278,6 +312,26 @@ public class Main extends Application {
     }
 
     /**
+     * Initialisation de la pane
+     *
+     * @return root La Stackpane à utiliser dans la scene
+     */
+    private Parent createContent() {
+        //ID de la pane
+        root.setId("pane");
+        //Timer basé sur 1 seconde
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> update()));
+        //nombbre de fois qu'elle se répète
+        timeline.setCycleCount(Animation.INDEFINITE);
+        //lancer la timeline
+        timeline.play();
+        // vitesse 60 = 60 images par seconde
+        timeline.setRate(FPS);
+
+        return root;
+    }
+
+    /**
      * UPDATE
      * s'éxécute 60 fois par secondes
      */
@@ -286,6 +340,43 @@ public class Main extends Application {
         if (isGameStarted) {
             //Le jeu est en cours
             if (isGameRunning) {
+                switch (selectedGameMode) {
+                    case NORMAL:
+                        break;
+
+                    case HARD:
+                        couplesList.get(0).verticalPipeMove();
+                        couplesList.get(1).verticalPipeMove();
+                        couplesList.get(2).verticalPipeMove();
+                        couplesList.get(3).verticalPipeMove();
+                        couplesList.get(4).verticalPipeMove();
+                        break;
+
+                    case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                        ennemi.moveLeft(3);
+                        break;
+                }
+                if(selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD){
+                    //Le couple 0 bouge
+                    couplesList.get(0).move(PIPE_SPEED);
+                    //Le couple 1 bouge
+                    if (t > 1.9) {
+                        couplesList.get(1).move(PIPE_SPEED);
+                    }
+                    //le couple 2 bouge
+                    if (t > 3.8) {
+                        couplesList.get(2).move(PIPE_SPEED);
+                    }
+                    //le couple 3 bouge
+                    if (t > 5.7) {
+                        couplesList.get(3).move(PIPE_SPEED);
+                    }
+                    //le couple 4 bouge
+                    if (t > 7.6) {
+                        couplesList.get(4).move(PIPE_SPEED);
+                    }
+                }
+                //Le fond d'écran bouge
                 moveBackground();
 
                 //l'oiseau vole
@@ -295,35 +386,6 @@ public class Main extends Application {
                 // L'oiseau subit en permanance la gravité quand le jeu est en cours
                 bird.undergoGravity(birdGravity);
 
-                //Le couple 0 bouge
-                couplesList.get(0).move(PIPE_SPEED);
-                //Le couple 1 bouge
-                if (t > 1.9) {
-                    couplesList.get(1).move(PIPE_SPEED);
-                }
-                //le couple 2 bouge
-                if (t > 3.8) {
-                    couplesList.get(2).move(PIPE_SPEED);
-                }
-                //le couple 3 bouge
-                if (t > 5.7) {
-                    couplesList.get(3).move(PIPE_SPEED);
-                }
-                //le couple 4 bouge
-                if (t > 7.6) {
-                    couplesList.get(4).move(PIPE_SPEED);
-                }
-
-                if (isHardMode) {
-                    birdGravity = 9;
-                    couplesList.get(0).verticalPipeMove();
-                    couplesList.get(1).verticalPipeMove();
-                    couplesList.get(2).verticalPipeMove();
-                    couplesList.get(3).verticalPipeMove();
-                    couplesList.get(4).verticalPipeMove();
-                } else {
-                    birdGravity = 8;
-                }
 
                 // tue l'oiseau si trop haut ou trop bas
                 if (checkBounds()) {
@@ -337,7 +399,14 @@ public class Main extends Application {
 
                 //Tant que l'oiseau est en vie, compte les couples de tuyau
                 if (bird.isAlive()) {
-                    coutingPipes();
+                    switch (selectedGameMode){
+                        case NORMAL:
+                        case HARD:
+                            coutingPipes();
+                            break;
+                        case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                            break;
+                    }
                 } else {
                     endGame();
                     impactSound.play();
@@ -369,25 +438,6 @@ public class Main extends Application {
             bird.refreshBirdSprite();
             txtInformation.setText(TXT_START_MESSAGE);
         }
-    }
-
-    /**
-     * Initialisation de la pane
-     * @return root La Stackpane à utiliser dans la scene
-     */
-    private Parent createContent() {
-        //ID de la pane
-        root.setId("pane");
-        //Timer basé sur 1 seconde
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> update()));
-        //nombbre de fois qu'elle se répète
-        timeline.setCycleCount(Animation.INDEFINITE);
-        //lancer la timeline
-        timeline.play();
-        // vitesse 60 = 60 images par seconde
-        timeline.setRate(FPS);
-
-        return root;
     }
 
     /**
@@ -510,21 +560,27 @@ public class Main extends Application {
         //remet les compteurs à 0
         t = 0;
         frame = 0;
-        replayTimer = 3;
 
         //Si le score n'a pas été encore inscrit
         if (!scoreHasBeenWrited) {
             //Écrit le score dans le fichier du mode jouer et met à jour le tablau des scores
-            if (isHardMode) {
-                ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
-                txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
-            } else {
-                ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
-                txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+            switch (selectedGameMode) {
+                case NORMAL:
+                    ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
+                    txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+                    break;
+                case HARD:
+                    ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
+                    txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
+                    break;
+                case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                    ScoreBoard.writeInTxtFile(thirdModeFile, Integer.toString(score.getPts()));
+                    txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                    break;
+
             }
-
             isGameRunning = false;
-
+            replayTimer = 3;
         }
         //Affichage du score
         StackPane.setAlignment(score.getText(), Pos.CENTER);
@@ -552,6 +608,9 @@ public class Main extends Application {
         bird.refreshBirdSprite();
         bird.refreshCoord();
         bird.getBirdSprite().setRotate(0);
+        if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
+            thirdModeLogo.setVisible(false);
+        }
         //Le jeu est à nouveau déclaré comme "en cours"
         isGameRunning = true;
         scoreHasBeenWrited = false;
@@ -581,6 +640,50 @@ public class Main extends Application {
             if (background.getTranslateX() <= -MAX_WIDTH) {
                 background.setTranslateX(MAX_WIDTH);
             }
+        }
+    }
+
+    /**
+     * Effectue un changement entre chacun des modes
+     *
+     * @param selectedGameMode mode de jeu sélectionné
+     */
+    public void switchBetweenModes(gameMode selectedGameMode) {
+        switch (selectedGameMode) {
+
+            case NORMAL:
+                backgroundList.get(0).setImage(new Image(PATH_DIR_SPRITES + "cloudbg1.png"));
+                backgroundList.get(1).setImage(new Image(PATH_DIR_SPRITES + "cloudbg2.png"));
+
+                if (scoreFile.exists()) {
+                    txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+                } else {
+                    txtScoreBoard.setText("");
+                }
+                birdGravity = 8;
+                break;
+
+            case HARD:
+                if (hardModeScoreFile.exists()) {
+                    txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
+                } else {
+                    txtScoreBoard.setText("");
+                }
+                birdGravity = 9;
+                break;
+
+            case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                backgroundList.get(0).setImage(new Image(PATH_DIR_SPRITES + "spacebg1.png"));
+                backgroundList.get(1).setImage(new Image(PATH_DIR_SPRITES + "spacebg2.png"));
+
+                if (thirdModeFile.exists()) {
+                    txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                } else {
+                    txtScoreBoard.setText("");
+                }
+                birdGravity = 7;
+                bird.setLossMomentum(0.2f);
+                break;
         }
     }
 }
