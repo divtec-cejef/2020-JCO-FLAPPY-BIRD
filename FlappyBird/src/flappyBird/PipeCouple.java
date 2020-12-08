@@ -1,5 +1,10 @@
 package flappyBird;
 
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+
 import static java.lang.Math.abs;
 
 /**
