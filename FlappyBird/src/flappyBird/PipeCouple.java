@@ -67,8 +67,8 @@ public class PipeCouple {
         //Décale le tuyau du bas
         this.bottomPipe.setTranslateY(this.bottomPipe.getTranslateY() + rndNum + spaceBetween / 2);
         //Replacer les sprites sur les tuyaux
-        this.topPipe.refreshPipeSprite();
-        this.bottomPipe.refreshPipeSprite();
+        this.topPipe.refreshSprite();
+        this.bottomPipe.refreshSprite();
     }
 
     /**
@@ -85,9 +85,9 @@ public class PipeCouple {
         //Pas arrivé
         else {
             this.topPipe.moveLeft(speed);
-            this.topPipe.refreshPipeSprite();
+            this.topPipe.refreshSprite();
             this.bottomPipe.moveLeft(speed);
-            this.bottomPipe.refreshPipeSprite();
+            this.bottomPipe.refreshSprite();
         }
     }
 
@@ -168,13 +168,5 @@ public class PipeCouple {
      */
     public boolean setAreMoving(){
         return getRandomNumber(1,4) == 2;
-    }
-
-    /**
-     *
-     * @return si le couple bouge ou non
-     */
-    public boolean AreMoving() {
-        return areMoving;
     }
 }

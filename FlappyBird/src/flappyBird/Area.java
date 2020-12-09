@@ -40,6 +40,7 @@ public class Area {
 
     /**
      * Assigné une nouvelle valeur à topLeft
+     *
      * @param topLeft coin bas gauche
      */
     public void setTopLeft(CoordXY topLeft) {
@@ -57,6 +58,7 @@ public class Area {
 
     /**
      * Assigner une nouvelle valeur à topRight
+     *
      * @param topRight coin haut droite
      */
     public void setTopRight(CoordXY topRight) {
@@ -74,6 +76,7 @@ public class Area {
 
     /**
      * Assigner une nouvelle valeur à downLEft
+     *
      * @param downLeft coin bad gauche
      */
     public void setDownLeft(CoordXY downLeft) {
@@ -91,9 +94,46 @@ public class Area {
 
     /**
      * Assigner une nouvelle valeur à downRight
+     *
      * @param downRight coin bas droit
      */
     public void setDownRight(CoordXY downRight) {
         this.downRight = downRight;
+    }
+
+    /**
+     * Check si l'area de l'oiseau touche l'area passée en paramètre         *
+     *
+     * @param birdArea  Area de l'oiseau qu'on surveille
+     * @param otherArea autre Area qu'on suvreille
+     * @return true = l'oiseau a touché / false l'oiseau n'a pas touché
+     */
+    public static boolean isHit(Area birdArea, Area otherArea) {
+        boolean isTouched = false;
+        if (
+            //Haut-droite de l'oiseau
+                birdArea.getTopRight().getX() < otherArea.getDownRight().getX()
+                        && birdArea.getTopRight().getX() > otherArea.getDownLeft().getX()
+                        && birdArea.getTopRight().getY() < otherArea.getDownLeft().getY()
+                        && birdArea.getTopRight().getY() > otherArea.getTopLeft().getY()
+                        //Haut-gauche de l'oiseau
+                        || birdArea.getTopLeft().getX() < otherArea.getDownRight().getX()
+                        && birdArea.getTopLeft().getX() > otherArea.getDownLeft().getX()
+                        && birdArea.getTopLeft().getY() < otherArea.getDownLeft().getY()
+                        && birdArea.getTopLeft().getY() > otherArea.getTopLeft().getY()
+                        //Bas-gauche de l'oiseau
+                        || birdArea.getDownRight().getX() < otherArea.getDownRight().getX()
+                        && birdArea.getDownRight().getX() > otherArea.getDownLeft().getX()
+                        && birdArea.getDownRight().getY() < otherArea.getDownLeft().getY()
+                        && birdArea.getDownRight().getY() > otherArea.getTopLeft().getY()
+                        //Bas-droit de l'oiseau
+                        || birdArea.getDownLeft().getX() < otherArea.getDownRight().getX()
+                        && birdArea.getDownLeft().getX() > otherArea.getDownLeft().getX()
+                        && birdArea.getDownLeft().getY() < otherArea.getDownLeft().getY()
+                        && birdArea.getDownLeft().getY() > otherArea.getTopLeft().getY()
+        ) {
+            isTouched = true;
+        }
+        return isTouched;
     }
 }

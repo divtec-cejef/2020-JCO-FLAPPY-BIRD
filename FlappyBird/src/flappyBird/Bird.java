@@ -2,7 +2,9 @@ package flappyBird;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+
 import static flappyBird.Constant.*;
 
 /**
@@ -12,10 +14,7 @@ import static flappyBird.Constant.*;
  */
 public class Bird extends Shape {
     //Si l'oiseau est vivant ou mort
-    private boolean isAlive;
-    //Sprite de la classe Bird
-    private ImageView birdSprite;
-    private Image birdImage;
+    private boolean isAlive = true;
 
     //Définit si l'oiseau est en train de volé ou non
     private boolean flying = false;
@@ -24,21 +23,20 @@ public class Bird extends Shape {
     private float lossMomentum = 0.5f;
 
     /**
-     * Crée et instantie un oiseau à la position, la taille et la couleur voulue
-     * Un sprite et une vie lui sont automatiquement assigné
+     * Crée et instantie une Shape à la position, la taille et la couleur voulue
      *
-     * @param x     coordonnée X
-     * @param y     coordonnée Y
-     * @param w     Largeur
-     * @param h     Hauteur
-     * @param color Couleur
+     * @param x          coordonnée X
+     * @param y          coordonnée Y
+     * @param w          Largeur
+     * @param h          Hauteur
+     * @param color      Couleur
+     * @param stackpane
+     * @param spritePath
      */
-    public Bird(int x, int y, int w, int h, Color color) {
-        super(x, y, w, h, color);
-        this.isAlive = true;
-        birdImage = new Image(PATH_DIR_SPRITES + "flappy.png");
-        birdSprite = new ImageView(birdImage);
+    Bird(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
+        super(x, y, w, h, color, stackpane, spritePath);
     }
+
 
     /**
      * Permet d'accéder à l'état de santé de l'oiseau
@@ -68,27 +66,10 @@ public class Bird extends Shape {
      */
     public void undergoGravity(int gravity) {
         this.moveDown(gravity);
-        if (birdSprite.getRotate() < 80) {
-            birdSprite.setRotate(birdSprite.getRotate() + 5);
+        if (getSprite().getRotate() < 80) {
+            getSprite().setRotate(getSprite().getRotate() + 5);
         }
-        refreshBirdSprite();
-    }
-
-    /**
-     * Permet d'accéder au sprite
-     *
-     * @return birdSprite
-     */
-    public ImageView getBirdSprite() {
-        return birdSprite;
-    }
-
-    /**
-     * Assigne la position X et Y du sprite à la position X et Y de l'objet
-     */
-    public void refreshBirdSprite() {
-        birdSprite.setTranslateX(this.getTranslateX());
-        birdSprite.setTranslateY(this.getTranslateY());
+        refreshSprite();
     }
 
     /**
@@ -98,8 +79,8 @@ public class Bird extends Shape {
         if (momentum > 0) {
             this.moveUp((int) momentum);
             momentum -= lossMomentum;
-            birdSprite.setRotate(-20);
-            refreshBirdSprite();
+            getSprite().setRotate(-20);
+            refreshSprite();
         } else {
             flying = false;
         }
@@ -126,6 +107,7 @@ public class Bird extends Shape {
     public void setMomentum(float momentum) {
         this.momentum = momentum;
     }
+
     public void setLossMomentum(float lossMomentum) {
         this.lossMomentum = lossMomentum;
     }

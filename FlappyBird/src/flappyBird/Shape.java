@@ -1,5 +1,8 @@
 package flappyBird;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -10,7 +13,9 @@ import javafx.scene.shape.Rectangle;
  */
 public class Shape extends Rectangle {
 
-    private flappyBird.Area area = new flappyBird.Area();
+    private Area area = new flappyBird.Area();
+    private StackPane stackpane;
+    private ImageView sprite;
 
     /**
      * Crée et instantie une Shape à la position, la taille et la couleur voulue
@@ -20,15 +25,19 @@ public class Shape extends Rectangle {
      * @param w     Largeur
      * @param h     Hauteur
      * @param color Couleur
+     * @param stackpane StackPane ou sera stocké l'objet
+     * @param spritePath chemin d'accès vers le sprite de l'objet
      */
-    Shape(int x, int y, int w, int h, Color color) {
+    Shape(int x, int y, int w, int h, Color color, StackPane stackpane,String spritePath) {
         super(w, h, color);
-
+        this.stackpane = stackpane;
+        this.sprite = new ImageView(new Image(spritePath));
         setTranslateX(x);
         setTranslateY(y);
-
         //Mise à jours des coins
         refreshCoord();
+        //L'object créé est directement intégré dans la stackpane
+        insertIntoStackPane();
     }
 
     /**
@@ -80,17 +89,16 @@ public class Shape extends Rectangle {
      */
     public void refreshCoord() {
         //Y
-        area.getTopLeft().setY((int) getTranslateY() - ((int)this.getHeight() / 2));
-        area.getTopRight().setY((int) getTranslateY() - ((int)this.getHeight()  / 2));
-        area.getDownLeft().setY((int) getTranslateY() + ((int)this.getHeight()  / 2));
-        area.getDownRight().setY((int) getTranslateY() + ((int)this.getHeight()  / 2));
+        area.getTopLeft().setY((int) getTranslateY() - ((int) this.getHeight() / 2));
+        area.getTopRight().setY((int) getTranslateY() - ((int) this.getHeight() / 2));
+        area.getDownLeft().setY((int) getTranslateY() + ((int) this.getHeight() / 2));
+        area.getDownRight().setY((int) getTranslateY() + ((int) this.getHeight() / 2));
 
         //X
-        area.getTopLeft().setX((int) getTranslateX() - ((int)this.getWidth() / 2));
-        area.getTopRight().setX((int) getTranslateX() + ((int)this.getWidth() / 2));
-        area.getDownLeft().setX((int) getTranslateX() - ((int)this.getWidth() / 2));
-        area.getDownRight().setX((int) getTranslateX() + ((int)this.getWidth() / 2));
-
+        area.getTopLeft().setX((int) getTranslateX() - ((int) this.getWidth() / 2));
+        area.getTopRight().setX((int) getTranslateX() + ((int) this.getWidth() / 2));
+        area.getDownLeft().setX((int) getTranslateX() - ((int) this.getWidth() / 2));
+        area.getDownRight().setX((int) getTranslateX() + ((int) this.getWidth() / 2));
     }
 
     /**
@@ -102,4 +110,25 @@ public class Shape extends Rectangle {
         return area;
     }
 
+    private void insertIntoStackPane(){
+        stackpane.getChildren().add(this.sprite);
+        stackpane.getChildren().add(this);
+    }
+
+    public void setSprite(String spritePath) {
+        this.sprite = new ImageView(new Image(spritePath));
+    }
+
+    public void refreshSprite(){
+        getSprite().setTranslateX(this.getTranslateX());
+        getSprite().setTranslateY(this.getTranslateY());
+    }
+
+    public ImageView getSprite() {
+        return sprite;
+    }
+
+    public StackPane getStackpane() {
+        return stackpane;
+    }
 }

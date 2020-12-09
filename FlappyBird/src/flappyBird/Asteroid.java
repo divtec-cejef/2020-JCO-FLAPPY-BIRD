@@ -5,38 +5,38 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
+import java.sql.Statement;
+import java.util.ArrayList;
+
 import static flappyBird.Constant.PATH_DIR_SPRITES;
 
-public class Asteroid extends Shape{
-    //sprite du tuyau
-    private final ImageView asteroidSprite;
+public class Asteroid extends Shape {
     boolean isAlive = true;
     double lifeLine = 8;
-    private StackPane root;
+    ImageView asteroidSprite;
 
     /**
-     * Crée et instantie un tuyau à la position, la taille et la couleur voulue
-     * Un sprite lui est automatiquement assigné
+     * Crée et instantie une Shape à la position, la taille et la couleur voulue
      *
-     * @param x     coordonée X
-     * @param y     coordonnée Y
-     * @param w     Largeur
-     * @param h     Hauteur
-     * @param color Couleur
+     * @param x          coordonnée X
+     * @param y          coordonnée Y
+     * @param w          Largeur
+     * @param h          Hauteur
+     * @param color      Couleur
+     * @param stackpane  StackPane ou sera stocké l'objet
+     * @param spritePath chemin d'accès vers le sprite de l'objet
      */
-    Asteroid(int x, int y, int w, int h, Color color, StackPane root) {
-        super(x, y, w, h, color);
-        this.root = root;
-        Image asteroidImage = pickImage(getRandomNumber(1,4));
-        asteroidSprite = new ImageView(asteroidImage);
-        addInRoot();
-        refreshAsteroidSprite();
+    Asteroid(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
+        super(x, y, w, h, color, stackpane, spritePath);
+
+        setSprite(pickImage(getRandomNumber(1,4)));
+        getSprite().setFitHeight(h);
+        getSprite().setFitWidth(w);
+        asteroidSprite = getSprite();
     }
 
-    private Image pickImage(int numeroImage){
-        Image image = new Image(PATH_DIR_SPRITES + "ennemy" + numeroImage + ".png");
-        System.out.println(PATH_DIR_SPRITES + "ennemy" + numeroImage + ".png");
-        return image;
+    private String pickImage(int numeroImage) {
+        return PATH_DIR_SPRITES + "ennemy" + numeroImage + ".png";
     }
 
     /**
@@ -59,37 +59,30 @@ public class Asteroid extends Shape{
         return this.getTranslateX() < -600;
     }
 
-    public StackPane getRoot() {
-        return root;
-    }
-    private void addInRoot(){
-        root.getChildren().add(this);
-        root.getChildren().add(this.asteroidSprite);
-    }
-
-    public static void checkBounds(Asteroid ennemy){
-        if(ennemy.isOut()){
-            ennemy.getRoot().getChildren().remove(ennemy);
+    public void checkBounds() {
+        if (isOut()) {
+            getStackpane().getChildren().remove(getAsteroidSprite());
+            getStackpane().getChildren().remove(this);
         }
     }
-    /**
-     * Replace le spritre du tyau sur le tuyau
-     */
-    public void refreshAsteroidSprite() {
-        asteroidSprite.setTranslateX(this.getTranslateX());
-        asteroidSprite.setTranslateY(this.getTranslateY());
-    }
 
-    public void Rotate(){
-        this.setRotate(this.getRotate() + 1);
-        this.asteroidSprite.setRotate(this.asteroidSprite.getRotate() + 1);
+    public static void killThemAll(ArrayList<Asteroid> list, StackPane stackpane) {
+        for (Asteroid asteroid : list) {
+            stackpane.getChildren().remove(asteroid.getAsteroidSprite());
+            stackpane.getChildren().remove(asteroid);
+        }
     }
 
     @Override
     void moveLeft(int speed) {
         super.moveLeft(speed);
-        Rotate();
-        refreshAsteroidSprite();
+        refreshSprite();
         refreshCoord();
     }
+
+    public ImageView getAsteroidSprite() {
+        return asteroidSprite;
+    }
+
+
 }

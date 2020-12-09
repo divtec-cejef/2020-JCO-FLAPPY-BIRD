@@ -50,9 +50,11 @@ public class Main extends Application {
     //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
     int birdGravity = 8;
     //Pane principale
-    StackPane root = new StackPane();
+    StackPane stackPane = new StackPane();
     //L'oiseau
-    flappyBird.Bird bird = new flappyBird.Bird(-250, 0, 35, 35, Color.TRANSPARENT);
+    flappyBird.Bird bird;
+    //Spacebird
+    SpaceBird spaceBird;
     //LeScore
     Score score = new Score(0, 0);
     //Text d'information
@@ -79,8 +81,8 @@ public class Main extends Application {
     //fichiers musicaux
     Sound flapSound = new Sound(PATH_DIR_FLAP_SOUNDS);
     Sound impactSound = new Sound(PATH_DIR_IMPACT_SOUNDS);
-    //Ennemis
-    Asteroid ennemi;
+    //Liste d'ennemis
+    ArrayList<Asteroid> asteroidArrayList = new ArrayList<>();
 
     //Enumération du mode de jeu
     public enum gameMode {
@@ -97,10 +99,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-
-        //Initialisé la liste de couple de tuyau
-        couplesList = createCouplesList(6);
-
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
 
@@ -167,7 +165,7 @@ public class Main extends Application {
                         //l'oiseau vole
                         bird.setFlying(true);
                         //l'oiseau repprend son élan
-                        switch(selectedGameMode){
+                        switch (selectedGameMode) {
                             case NORMAL:
                             case HARD:
                                 bird.setMomentum(19.5f);
@@ -177,7 +175,7 @@ public class Main extends Application {
                                 break;
                         }
                         //on change le sprite de l'oiseau
-                        bird.getBirdSprite().setImage(new Image(IMG_FLAPPY));
+                        bird.getSprite().setImage(new Image(IMG_FLAPPY));
                         //l'Input ne sera fait q'une seule fois, pour le refaire il faut lacher espace, et réappuyer
                         isSpacePressed = true;
                     }
@@ -191,6 +189,15 @@ public class Main extends Application {
                     if (!isGameStarted) {
                         startGame();
                         txtInformation.setText("");
+                        switch (selectedGameMode) {
+                            case NORMAL:
+                            case HARD:
+                                bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane,IMG_FLAPPY);
+                                break;
+                            case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                                spaceBird = new SpaceBird(-250, 0, 35, 35, Color.RED, stackPane,IMG_SPACE_FLAPPY);
+                                break;
+                        }
                         if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
                             thirdModeLogo.setVisible(false);
                         }
@@ -253,7 +260,7 @@ public class Main extends Application {
             //Si SPACE est relâché
             if (keyCode.equals(KeyCode.SPACE)) {
                 isSpacePressed = false;
-                bird.getBirdSprite().setImage(new Image(IMG_FLAPPY_FLAP));
+                bird.getSprite().setImage(new Image(IMG_FLAPPY_FLAP));
             }
             //N'est pas disponnible en cours de jeu
             if (!isGameRunning) {
@@ -268,28 +275,25 @@ public class Main extends Application {
         AJOUT DANS LA STACKPANE
          */
         // Ajout des backgrounds en premier pour qu'ils soient automatiquement en arrière plan
-        root.getChildren().add(backgroundList.get(1));
-        root.getChildren().add(backgroundList.get(0));
-        //Ajout de tout les couple de tuyaux
-        addCouples(root);
-        //Ajout de l'oiseau
-        root.getChildren().add(bird);
-        root.getChildren().add(bird.getBirdSprite());
+        stackPane.getChildren().add(backgroundList.get(1));
+        stackPane.getChildren().add(backgroundList.get(0));
+        //Initialisé la liste de couple de tuyau
+        couplesList = createCouplesList(6);
         //Ajout du score
-        root.getChildren().add(score.getText());
+        stackPane.getChildren().add(score.getText());
         //Ajout du text d'info
-        root.getChildren().add(txtInformation);
+        stackPane.getChildren().add(txtInformation);
         //Ajout de l'image du hardmode
-        root.getChildren().add(skull);
+        stackPane.getChildren().add(skull);
         //Ajout le logo du 3eme mode
-        root.getChildren().add(thirdModeLogo);
+        stackPane.getChildren().add(thirdModeLogo);
         //Ajout du tableau de score
-        root.getChildren().add(txtScoreBoard);
+        stackPane.getChildren().add(txtScoreBoard);
         if (scoreFile.exists()) {
             txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
         }
 
-        ennemi = new Asteroid(600,0,100,100,Color.RED,root);
+
 
 
 
@@ -318,7 +322,7 @@ public class Main extends Application {
      */
     private Parent createContent() {
         //ID de la pane
-        root.setId("pane");
+        stackPane.setId("pane");
         //Timer basé sur 1 seconde
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> update()));
         //nombbre de fois qu'elle se répète
@@ -328,7 +332,7 @@ public class Main extends Application {
         // vitesse 60 = 60 images par seconde
         timeline.setRate(FPS);
 
-        return root;
+        return stackPane;
     }
 
     /**
@@ -353,26 +357,41 @@ public class Main extends Application {
                         break;
 
                     case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                        ennemi.moveLeft(3);
+                        if (t % 60 == 0) {
+                            int randomSize = getRandomNumber(40, 150);
+                            Asteroid asteroid = new Asteroid(600, getRandomNumber(-300, 300), randomSize, randomSize, Color.RED, stackPane,IMG_DEFAULT_ASTEROID);
+                            asteroidArrayList.add(asteroid);
+                        }
+
+                        if (asteroidArrayList != null) {
+                            for (Asteroid asteroid : asteroidArrayList) {
+                                asteroid.moveLeft(2);
+                            }
+                            if (isAAsteroidTouched(asteroidArrayList, bird)) {
+                                bird.kill();
+                            }
+                        }
+                        score.getText().toFront();
+                        txtInformation.toFront();
                         break;
                 }
-                if(selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD){
+                if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
                     //Le couple 0 bouge
                     couplesList.get(0).move(PIPE_SPEED);
                     //Le couple 1 bouge
-                    if (t > 1.9) {
+                    if (t > 114) {
                         couplesList.get(1).move(PIPE_SPEED);
                     }
                     //le couple 2 bouge
-                    if (t > 3.8) {
+                    if (t > 228) {
                         couplesList.get(2).move(PIPE_SPEED);
                     }
                     //le couple 3 bouge
-                    if (t > 5.7) {
+                    if (t > 342) {
                         couplesList.get(3).move(PIPE_SPEED);
                     }
                     //le couple 4 bouge
-                    if (t > 7.6) {
+                    if (t > 456) {
                         couplesList.get(4).move(PIPE_SPEED);
                     }
                 }
@@ -399,7 +418,7 @@ public class Main extends Application {
 
                 //Tant que l'oiseau est en vie, compte les couples de tuyau
                 if (bird.isAlive()) {
-                    switch (selectedGameMode){
+                    switch (selectedGameMode) {
                         case NORMAL:
                         case HARD:
                             coutingPipes();
@@ -415,7 +434,7 @@ public class Main extends Application {
                 //Incrémentation des indice de frame et de temps
                 //Quand t atteint 1, une seconde sera écoulée
                 //Quand frame atteint 60, une seconde sera écoulée
-                t += 1 / 60f;
+                t += 1;
                 frame += 1;
             }
             //Fin de partie
@@ -434,8 +453,6 @@ public class Main extends Application {
         }
         //Une partie n'a pas été encore lancée
         else {
-            //De base, place l'oiseau au milleu gauche de l'écran
-            bird.refreshBirdSprite();
             txtInformation.setText(TXT_START_MESSAGE);
         }
     }
@@ -453,8 +470,8 @@ public class Main extends Application {
                     new PipeCouple(
                             //Les pipes sont formaté à leur création, donc pas besoin de donnée de position
                             //Parcontre la taille est importante vu que l'area d'un sprite se génére lors de la création
-                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT),
-                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT)
+                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT, stackPane,IMG_PIPE),
+                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT, stackPane,IMG_PIPE)
                     ));
         }
         return list;
@@ -467,28 +484,24 @@ public class Main extends Application {
      * @param bird       qui peut ou non toucher un tuyau
      * @return true = touché // False = non touché
      */
-    public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, flappyBird.Bird bird) {
+    public boolean isAPipeTouched(ArrayList<PipeCouple> coupleList, Bird bird) {
         boolean isTouched = false;
         for (PipeCouple couple : coupleList) {
-            if (couple.topPipe.isHit(bird) || couple.bottomPipe.isHit(bird)) {
+            if (Area.isHit(bird.getArea(), couple.topPipe.getArea()) || Area.isHit(bird.getArea(), couple.bottomPipe.getArea())) {
                 isTouched = true;
             }
         }
         return isTouched;
     }
 
-    /**
-     * Ajout chaque tuyaux de chaque couple à la pane
-     *
-     * @param root la pane
-     */
-    public void addCouples(StackPane root) {
-        for (PipeCouple couple : couplesList) {
-            root.getChildren().add(couple.topPipe);
-            root.getChildren().add(couple.topPipe.getPipeSprite());
-            root.getChildren().add(couple.bottomPipe);
-            root.getChildren().add(couple.bottomPipe.getPipeSprite());
+    public boolean isAAsteroidTouched(ArrayList<Asteroid> list, Bird bird) {
+        boolean isTouched = false;
+        for (Asteroid asteroid : list) {
+            if (Area.isHit(bird.getArea(), asteroid.getArea())) {
+                isTouched = true;
+            }
         }
+        return isTouched;
     }
 
     /**
@@ -505,7 +518,6 @@ public class Main extends Application {
      * si le couple passe par le Y de l'oiseau, il donne un point et passe en état "ne peuveunt plus donner de points"
      * dès qu'il reviennent à leur position de départ, ils peuvent a nouveau donner des points.
      * on en profite pour que tous les 10 points, le score score s'allume en jaune
-     * IncreaseSpeed augmenet la vitesse des tuyaux de 1 tout les 10 points
      */
     public void coutingPipes() {
         for (PipeCouple couple : couplesList) {
@@ -513,7 +525,6 @@ public class Main extends Application {
                 if (couple.CanGivePts()) {
                     if ((score.getPts() + 1) % 10 == 0 && score.getPts() > 1) {
                         score.getText().setFill(Color.GOLD);
-                        //increaseSpeed();
                     } else {
                         score.getText().setFill(Color.WHITESMOKE);
                     }
@@ -568,22 +579,34 @@ public class Main extends Application {
                 case NORMAL:
                     ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
                     txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
+                    //Affichage du score
+                    StackPane.setAlignment(score.getText(), Pos.CENTER);
+                    stackPane.getChildren().remove(bird.getSprite());
+                    stackPane.getChildren().remove(bird);
                     break;
                 case HARD:
                     ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
                     txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
+                    //Affichage du score
+                    StackPane.setAlignment(score.getText(), Pos.CENTER);
+                    stackPane.getChildren().remove(bird.getSprite());
+                    stackPane.getChildren().remove(bird);
                     break;
                 case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
                     ScoreBoard.writeInTxtFile(thirdModeFile, Integer.toString(score.getPts()));
                     txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                    //Tuer et faire disparâitre tout les astéroïdes
+                    Asteroid.killThemAll(asteroidArrayList, stackPane);
+                    stackPane.getChildren().remove(spaceBird.getSprite());
+                    stackPane.getChildren().remove(spaceBird);
                     break;
 
             }
+            asteroidArrayList = new ArrayList<>();
             isGameRunning = false;
             replayTimer = 3;
         }
         //Affichage du score
-        StackPane.setAlignment(score.getText(), Pos.CENTER);
         score.getText().setFill(Color.WHITESMOKE);
         score.getText().setStroke(Color.BLACK);
         //Les score sont déclaré comme écrit et ne seront pas réécrit
@@ -599,17 +622,16 @@ public class Main extends Application {
         resetScore();
         //Reinitialisation des tuyaux
         resetPipe();
-        //Réssucite l'oiseau
-        bird.revive();
-        //Si l'oiseau était en vole, le stop
-        bird.setFlying(false);
-        //Replacer l'oiseau
-        bird.setTranslateY(-100);
-        bird.refreshBirdSprite();
-        bird.refreshCoord();
-        bird.getBirdSprite().setRotate(0);
-        if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
-            thirdModeLogo.setVisible(false);
+
+        switch (selectedGameMode){
+            case NORMAL:
+            case HARD:
+                bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane,IMG_FLAPPY);
+                break;
+            case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                spaceBird = new SpaceBird(-250, 0, 35, 35, Color.RED, stackPane,IMG_SPACE_FLAPPY);
+                thirdModeLogo.setVisible(false);
+                break;
         }
         //Le jeu est à nouveau déclaré comme "en cours"
         isGameRunning = true;
@@ -661,6 +683,8 @@ public class Main extends Application {
                     txtScoreBoard.setText("");
                 }
                 birdGravity = 8;
+                bird.setMomentum(19.5f);
+                bird.setLossMomentum(0.5f);
                 break;
 
             case HARD:
@@ -685,6 +709,17 @@ public class Main extends Application {
                 bird.setLossMomentum(0.2f);
                 break;
         }
+    }
+
+    /**
+     * Génère un nombre aléatoire entre une range donnée
+     *
+     * @param min range inférieure
+     * @param max range supérieure
+     * @return un nombre aléatoire
+     */
+    private int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 }
 

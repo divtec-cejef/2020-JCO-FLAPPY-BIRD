@@ -7,12 +7,7 @@ import javafx.scene.paint.Color;
 
 import static flappyBird.Constant.*;
 
-/**
- * Classe qui représente un tuyau
- *
- * @author Louis Bovay
- */
-public class Pipe extends Shape {
+public class Projectile extends Shape{
 
     /**
      * Crée et instantie une Shape à la position, la taille et la couleur voulue
@@ -25,8 +20,28 @@ public class Pipe extends Shape {
      * @param stackpane  StackPane ou sera stocké l'objet
      * @param spritePath chemin d'accès vers le sprite de l'objet
      */
-    Pipe(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
+    Projectile(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
         super(x, y, w, h, color, stackpane, spritePath);
     }
 
+    @Override
+    void moveRight(int speed) {
+        super.moveRight(speed);
+        refreshSprite();
+        refreshCoord();
+    }
+
+    /**
+     * La balle se déplace
+     * @param currentLifeTime
+     * @param speed
+     */
+    public void travel(int currentLifeTime,int speed){
+        if(currentLifeTime < PROJECTILE_LIFE_TIME){
+            moveRight(speed);
+        }else{
+            getStackpane().getChildren().remove(getSprite());
+            getStackpane().getChildren().remove(this);
+        }
+    }
 }

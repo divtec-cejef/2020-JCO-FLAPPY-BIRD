@@ -33,6 +33,10 @@ public class Constant {
     public final static int PIPE_SPEED = 2;
     //Nombre d'images par seconde
     public final static int FPS = 60;
+    //durée de vie d'un projectile
+    public final static int PROJECTILE_LIFE_TIME = 60;
+    //Vitesse des prjectiles
+    public final static int PROJECTILE_SPEED = 2;
 
     /************************
      TEXT
@@ -69,4 +73,14 @@ public class Constant {
     public final static String IMG_FLAPPY_FLAP = PATH_DIR_SPRITES + "flappyFlap.png";
     //Icon de l'application
     public final static String IMG_ICON = PATH_DIR_SPRITES + "icon.png";
+    //Sprite de SpaceFlappyBird
+    public final static String IMG_SPACE_FLAPPY = PATH_DIR_SPRITES + "spaceFlappy.png";
+    //Sprite de SpaceFlappyBird qui bat des ailes
+    public final static String IMG_SPACE_FLAPPY_FLAP = PATH_DIR_SPRITES + "spaceFlappyFlap.png";
+    //Sprite de projectile
+    public final static String IMG_PROJECTILE = PATH_DIR_SPRITES + "ammo.png";
+    //Sprite du tuyau
+    public final static String IMG_PIPE = PATH_DIR_SPRITES + "longpipe.png";
+    //Sprite par défaut des astéroïdes
+    public final static String IMG_DEFAULT_ASTEROID = PATH_DIR_SPRITES + "ennemy1.png";
 }
