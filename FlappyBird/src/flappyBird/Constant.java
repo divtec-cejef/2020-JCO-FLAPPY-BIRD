@@ -35,8 +35,22 @@ public class Constant {
     public final static int FPS = 60;
     //durée de vie d'un projectile
     public final static int PROJECTILE_LIFE_TIME = 60;
-    //Vitesse des prjectiles
+    //Vitesse des projectiles
     public final static int PROJECTILE_SPEED = 2;
+    //Elan de l'oiseau en mode normal et hard
+    public final static float BIRD_MOMENTUM_NORMAL_HARD = 19.5f;
+    //Elan de l'oiseau de l'espace
+    public final static float SPACEBIRD_MOMENTUM = 15f;
+    //Gravité de l'oiseau en mode normal
+    public final static int BIRD_GRAVITY_NORMAL = 8;
+    //Gravité de l'oiseau en mode hard
+    public final static int BIRD_GRAVITY_HARD = 9;
+    //Gravité de l'oiseau en thirdMode
+    public final static int SPACEBIRD_GRAVITY = 7;
+    //Perte d'élan de l'oiseau en mode normal et hard
+    public final static float BIRD_LOSSMOMENTUM_NORMAL_HARD = 0.5f;
+    //Perte d'élan de l'oiseau en thirdMode
+    public final static float SPACEBIRD_LOSSMOMENTUM = 0.2f;
 
     /************************
      TEXT

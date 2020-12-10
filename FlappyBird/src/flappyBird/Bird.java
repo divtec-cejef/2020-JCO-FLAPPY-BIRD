@@ -69,7 +69,6 @@ public class Bird extends Shape {
         if (getSprite().getRotate() < 80) {
             getSprite().setRotate(getSprite().getRotate() + 5);
         }
-        refreshSprite();
     }
 
     /**
@@ -80,7 +79,6 @@ public class Bird extends Shape {
             this.moveUp((int) momentum);
             momentum -= lossMomentum;
             getSprite().setRotate(-20);
-            refreshSprite();
         } else {
             flying = false;
         }

@@ -36,7 +36,8 @@ public class Shape extends Rectangle {
         setTranslateY(y);
         //Mise à jours des coins
         refreshCoord();
-        //L'object créé est directement intégré dans la stackpane
+        refreshSprite();
+        //L'object créé est directement intégré dans la stackpane avec son sprite
         insertIntoStackPane();
     }
 
@@ -49,6 +50,7 @@ public class Shape extends Rectangle {
         setTranslateX(getTranslateX() - speed);
         //Mise à jours des coordonnées des quatre coins
         refreshCoord();
+        refreshSprite();
     }
 
     /**
@@ -60,6 +62,7 @@ public class Shape extends Rectangle {
         setTranslateX(getTranslateX() + speed);
         //Mise à jours des coordonnées des quatre coins
         refreshCoord();
+        refreshSprite();
     }
 
     /**
@@ -71,6 +74,7 @@ public class Shape extends Rectangle {
         setTranslateY(getTranslateY() - speed);
         //Mise à jours des coordonnées des quatre coins
         refreshCoord();
+        refreshSprite();
     }
 
     /**
@@ -82,6 +86,7 @@ public class Shape extends Rectangle {
         setTranslateY(getTranslateY() + speed);
         //Mise à jours des coordonnées des quatre coins
         refreshCoord();
+        refreshSprite();
     }
 
     /**
@@ -116,12 +121,12 @@ public class Shape extends Rectangle {
     }
 
     public void setSprite(String spritePath) {
-        this.sprite = new ImageView(new Image(spritePath));
+        this.getSprite().setImage(new Image(spritePath));
     }
 
     public void refreshSprite(){
-        getSprite().setTranslateX(this.getTranslateX());
-        getSprite().setTranslateY(this.getTranslateY());
+        this.getSprite().setTranslateX(this.getTranslateX());
+        this.getSprite().setTranslateY(this.getTranslateY());
     }
 
     public ImageView getSprite() {

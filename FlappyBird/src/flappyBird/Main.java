@@ -48,11 +48,11 @@ public class Main extends Application {
     //Si oui ou non le score à été écrit
     boolean scoreHasBeenWrited = false;
     //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
-    int birdGravity = 8;
+    int birdGravity = BIRD_GRAVITY_NORMAL;
     //Pane principale
     StackPane stackPane = new StackPane();
     //L'oiseau
-    flappyBird.Bird bird;
+    Bird bird;
     //Spacebird
     SpaceBird spaceBird;
     //LeScore
@@ -75,7 +75,7 @@ public class Main extends Application {
     //Tableau de score
     Text txtScoreBoard = new Text(0, 0, "");
     //Chrono pour relancer le jeu
-    double replayTimer = 6;
+    double replayTimer = 3;
     //format des décimal
     DecimalFormat df = new DecimalFormat("#");
     //fichiers musicaux
@@ -161,23 +161,23 @@ public class Main extends Application {
                     //Durant la partie
                     if (isGameRunning) {
                         //Un son est joué
-                        flapSound.play();
-                        //l'oiseau vole
-                        bird.setFlying(true);
-                        //l'oiseau repprend son élan
+                        //flapSound.play();
                         switch (selectedGameMode) {
                             case NORMAL:
                             case HARD:
-                                bird.setMomentum(19.5f);
+                                //on change le sprite de l'oiseau
+                                bird.getSprite().setImage(new Image(IMG_FLAPPY));
+                                //l'oiseau vole
+                                bird.setFlying(true);
+                                //L'oiseau repprend son élan
+                                bird.setMomentum(BIRD_MOMENTUM_NORMAL_HARD);
                                 break;
                             case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                                bird.setMomentum(15f);
+                                spaceBird.setFlying(true);
+                                spaceBird.setMomentum(SPACEBIRD_MOMENTUM);
+                                spaceBird.setSprite(IMG_SPACE_FLAPPY);
                                 break;
                         }
-                        //on change le sprite de l'oiseau
-                        bird.getSprite().setImage(new Image(IMG_FLAPPY));
-                        //l'Input ne sera fait q'une seule fois, pour le refaire il faut lacher espace, et réappuyer
-                        isSpacePressed = true;
                     }
                     //Relancer une partie
                     else {
@@ -192,16 +192,20 @@ public class Main extends Application {
                         switch (selectedGameMode) {
                             case NORMAL:
                             case HARD:
-                                bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane,IMG_FLAPPY);
+                                bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane, IMG_FLAPPY);
                                 break;
                             case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                                spaceBird = new SpaceBird(-250, 0, 35, 35, Color.RED, stackPane,IMG_SPACE_FLAPPY);
+                                spaceBird = new SpaceBird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane, IMG_SPACE_FLAPPY);
                                 break;
                         }
+                        refreshSmoothFlapVariable();
+
                         if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
                             thirdModeLogo.setVisible(false);
                         }
                     }
+                    //l'Input ne sera fait q'une seule fois, pour le refaire il faut lacher espace, et réappuyer
+                    isSpacePressed = true;
                 }
             }
             //N'est pas disponible en cours de jeu
@@ -226,24 +230,22 @@ public class Main extends Application {
                         }
                     }
                 }
-                //Si G est appuyé, active/désactive le hardmode
+                //Si G est appuyé, switch entre le mode normal, hard et thirdmode
                 if (keyCode.equals(KeyCode.G)) {
                     switch (selectedGameMode) {
                         case NORMAL:
-
                             selectedGameMode = gameMode.HARD;
                             break;
                         case HARD:
                             selectedGameMode = gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K;
                             break;
                         case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-
                             selectedGameMode = gameMode.NORMAL;
                             break;
                     }
-                    switchBetweenModes(selectedGameMode);
                     skull.setVisible(selectedGameMode == gameMode.HARD);
                     thirdModeLogo.setVisible(selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K);
+                    switchBetweenModesDisplay(selectedGameMode);
                 }
                 //Si TAB est appuyé, active/désactive le hardmode
                 if (keyCode.equals(KeyCode.TAB)) {
@@ -259,8 +261,12 @@ public class Main extends Application {
             KeyCode keyCode = event.getCode();
             //Si SPACE est relâché
             if (keyCode.equals(KeyCode.SPACE)) {
+                if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
+                    bird.setSprite(IMG_FLAPPY_FLAP);
+                } else if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
+                    spaceBird.setSprite(IMG_SPACE_FLAPPY_FLAP);
+                }
                 isSpacePressed = false;
-                bird.getSprite().setImage(new Image(IMG_FLAPPY_FLAP));
             }
             //N'est pas disponnible en cours de jeu
             if (!isGameRunning) {
@@ -292,10 +298,6 @@ public class Main extends Application {
         if (scoreFile.exists()) {
             txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
         }
-
-
-
-
 
         /*
         GESTION ET LANCEMENT DE LA SCÈNE
@@ -346,90 +348,93 @@ public class Main extends Application {
             if (isGameRunning) {
                 switch (selectedGameMode) {
                     case NORMAL:
-                        break;
-
                     case HARD:
-                        couplesList.get(0).verticalPipeMove();
-                        couplesList.get(1).verticalPipeMove();
-                        couplesList.get(2).verticalPipeMove();
-                        couplesList.get(3).verticalPipeMove();
-                        couplesList.get(4).verticalPipeMove();
+                        //Le couple 0 bouge
+                        couplesList.get(0).move(PIPE_SPEED);
+                        //Le couple 1 bouge
+                        if (t > 114) {
+                            couplesList.get(1).move(PIPE_SPEED);
+                        }
+                        //le couple 2 bouge
+                        if (t > 228) {
+                            couplesList.get(2).move(PIPE_SPEED);
+                        }
+                        //le couple 3 bouge
+                        if (t > 342) {
+                            couplesList.get(3).move(PIPE_SPEED);
+                        }
+                        //le couple 4 bouge
+                        if (t > 456) {
+                            couplesList.get(4).move(PIPE_SPEED);
+                        }
+                        //l'oiseau vole
+                        if (bird.isFlying()) {
+                            bird.smoothFlap();
+                        }
+                        // L'oiseau subit en permanance la gravité quand le jeu est en cours
+                        bird.undergoGravity(birdGravity);
+                        // tue l'oiseau si trop haut ou trop bas
+                        if (checkBounds(bird)) {
+                            bird.kill();
+                        }
+                        // si l'oiseau touche un tuyau, il meurt
+                        if (isAPipeTouched(couplesList, bird)) {
+                            bird.kill();
+                        }
+                        //Tant que l'oiseau est en vie, compte les couples de tuyau
+                        if (bird.isAlive()) {
+                            coutingPipes();
+                        } else {
+                            endGame();
+                            impactSound.play();
+                        }
                         break;
 
                     case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
                         if (t % 60 == 0) {
                             int randomSize = getRandomNumber(40, 150);
-                            Asteroid asteroid = new Asteroid(600, getRandomNumber(-300, 300), randomSize, randomSize, Color.RED, stackPane,IMG_DEFAULT_ASTEROID);
+                            Asteroid asteroid = new Asteroid(600, getRandomNumber(-300, 300), randomSize, randomSize, Color.TRANSPARENT, stackPane, IMG_DEFAULT_ASTEROID);
                             asteroidArrayList.add(asteroid);
                         }
 
                         if (asteroidArrayList != null) {
                             for (Asteroid asteroid : asteroidArrayList) {
                                 asteroid.moveLeft(2);
+                                asteroid.checkBounds();
                             }
-                            if (isAAsteroidTouched(asteroidArrayList, bird)) {
-                                bird.kill();
+                            //l'oiseau vole
+                            if (spaceBird.isFlying()) {
+                                spaceBird.smoothFlap();
+                            }
+                            // L'oiseau subit en permanance la gravité quand le jeu est en cours
+                            spaceBird.undergoGravity(birdGravity);
+                            // tue l'oiseau si trop haut ou trop bas
+                            if (checkBounds(spaceBird)) {
+                                spaceBird.kill();
+                            }
+                            if (isAAsteroidTouched(asteroidArrayList, spaceBird)) {
+                                spaceBird.kill();
+                            }
+                            if (spaceBird.isAlive()) {
+                                //compter les points
+                            } else {
+                                endGame();
+                                impactSound.play();
                             }
                         }
                         score.getText().toFront();
                         txtInformation.toFront();
                         break;
                 }
-                if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
-                    //Le couple 0 bouge
-                    couplesList.get(0).move(PIPE_SPEED);
-                    //Le couple 1 bouge
-                    if (t > 114) {
-                        couplesList.get(1).move(PIPE_SPEED);
-                    }
-                    //le couple 2 bouge
-                    if (t > 228) {
-                        couplesList.get(2).move(PIPE_SPEED);
-                    }
-                    //le couple 3 bouge
-                    if (t > 342) {
-                        couplesList.get(3).move(PIPE_SPEED);
-                    }
-                    //le couple 4 bouge
-                    if (t > 456) {
-                        couplesList.get(4).move(PIPE_SPEED);
-                    }
+                if (selectedGameMode == gameMode.HARD) {
+                    couplesList.get(0).verticalPipeMove();
+                    couplesList.get(1).verticalPipeMove();
+                    couplesList.get(2).verticalPipeMove();
+                    couplesList.get(3).verticalPipeMove();
+                    couplesList.get(4).verticalPipeMove();
                 }
                 //Le fond d'écran bouge
                 moveBackground();
-
-                //l'oiseau vole
-                if (bird.isFlying()) {
-                    bird.smoothFlap();
-                }
-                // L'oiseau subit en permanance la gravité quand le jeu est en cours
-                bird.undergoGravity(birdGravity);
-
-
-                // tue l'oiseau si trop haut ou trop bas
-                if (checkBounds()) {
-                    bird.kill();
-                }
-
-                // si l'oiseau touche un tuyau, il meurt
-                if (isAPipeTouched(couplesList, bird)) {
-                    bird.kill();
-                }
-
-                //Tant que l'oiseau est en vie, compte les couples de tuyau
-                if (bird.isAlive()) {
-                    switch (selectedGameMode) {
-                        case NORMAL:
-                        case HARD:
-                            coutingPipes();
-                            break;
-                        case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                            break;
-                    }
-                } else {
-                    endGame();
-                    impactSound.play();
-                }
 
                 //Incrémentation des indice de frame et de temps
                 //Quand t atteint 1, une seconde sera écoulée
@@ -455,6 +460,7 @@ public class Main extends Application {
         else {
             txtInformation.setText(TXT_START_MESSAGE);
         }
+
     }
 
     /**
@@ -470,8 +476,8 @@ public class Main extends Application {
                     new PipeCouple(
                             //Les pipes sont formaté à leur création, donc pas besoin de donnée de position
                             //Parcontre la taille est importante vu que l'area d'un sprite se génére lors de la création
-                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT, stackPane,IMG_PIPE),
-                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT, stackPane,IMG_PIPE)
+                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT, stackPane, IMG_PIPE),
+                            new Pipe(0, 0, 60, 700, Color.TRANSPARENT, stackPane, IMG_PIPE)
                     ));
         }
         return list;
@@ -494,10 +500,10 @@ public class Main extends Application {
         return isTouched;
     }
 
-    public boolean isAAsteroidTouched(ArrayList<Asteroid> list, Bird bird) {
+    public boolean isAAsteroidTouched(ArrayList<Asteroid> list, SpaceBird spaceBird) {
         boolean isTouched = false;
         for (Asteroid asteroid : list) {
-            if (Area.isHit(bird.getArea(), asteroid.getArea())) {
+            if (Area.isHit(spaceBird.getArea(), asteroid.getArea())) {
                 isTouched = true;
             }
         }
@@ -509,7 +515,7 @@ public class Main extends Application {
      *
      * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
      */
-    public boolean checkBounds() {
+    public boolean checkBounds(Bird bird) {
         return bird.getTranslateY() > MAX_HEIGHT / 2 || bird.getTranslateY() < -MAX_HEIGHT / 2;
     }
 
@@ -596,9 +602,9 @@ public class Main extends Application {
                     ScoreBoard.writeInTxtFile(thirdModeFile, Integer.toString(score.getPts()));
                     txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
                     //Tuer et faire disparâitre tout les astéroïdes
-                    Asteroid.killThemAll(asteroidArrayList, stackPane);
                     stackPane.getChildren().remove(spaceBird.getSprite());
                     stackPane.getChildren().remove(spaceBird);
+                    Asteroid.killThemAll(asteroidArrayList,stackPane);
                     break;
 
             }
@@ -615,6 +621,7 @@ public class Main extends Application {
         txtInformation.setVisible(true);
     }
 
+
     /**
      * Redémarre le jeu
      */
@@ -623,16 +630,17 @@ public class Main extends Application {
         //Reinitialisation des tuyaux
         resetPipe();
 
-        switch (selectedGameMode){
+        switch (selectedGameMode) {
             case NORMAL:
             case HARD:
-                bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane,IMG_FLAPPY);
+                bird = new Bird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane, IMG_FLAPPY);
                 break;
             case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                spaceBird = new SpaceBird(-250, 0, 35, 35, Color.RED, stackPane,IMG_SPACE_FLAPPY);
+                spaceBird = new SpaceBird(-250, 0, 35, 35, Color.TRANSPARENT, stackPane, IMG_SPACE_FLAPPY);
                 thirdModeLogo.setVisible(false);
                 break;
         }
+        refreshSmoothFlapVariable();
         //Le jeu est à nouveau déclaré comme "en cours"
         isGameRunning = true;
         scoreHasBeenWrited = false;
@@ -670,9 +678,8 @@ public class Main extends Application {
      *
      * @param selectedGameMode mode de jeu sélectionné
      */
-    public void switchBetweenModes(gameMode selectedGameMode) {
+    public void switchBetweenModesDisplay(gameMode selectedGameMode) {
         switch (selectedGameMode) {
-
             case NORMAL:
                 backgroundList.get(0).setImage(new Image(PATH_DIR_SPRITES + "cloudbg1.png"));
                 backgroundList.get(1).setImage(new Image(PATH_DIR_SPRITES + "cloudbg2.png"));
@@ -682,9 +689,6 @@ public class Main extends Application {
                 } else {
                     txtScoreBoard.setText("");
                 }
-                birdGravity = 8;
-                bird.setMomentum(19.5f);
-                bird.setLossMomentum(0.5f);
                 break;
 
             case HARD:
@@ -693,7 +697,6 @@ public class Main extends Application {
                 } else {
                     txtScoreBoard.setText("");
                 }
-                birdGravity = 9;
                 break;
 
             case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
@@ -705,8 +708,26 @@ public class Main extends Application {
                 } else {
                     txtScoreBoard.setText("");
                 }
-                birdGravity = 7;
-                bird.setLossMomentum(0.2f);
+                break;
+        }
+    }
+
+    public void refreshSmoothFlapVariable() {
+        switch (selectedGameMode) {
+            case NORMAL:
+                birdGravity = BIRD_GRAVITY_NORMAL;
+                bird.setMomentum(BIRD_MOMENTUM_NORMAL_HARD);
+                bird.setLossMomentum(BIRD_LOSSMOMENTUM_NORMAL_HARD);
+                break;
+            case HARD:
+                birdGravity = BIRD_GRAVITY_HARD;
+                bird.setMomentum(BIRD_MOMENTUM_NORMAL_HARD);
+                bird.setLossMomentum(BIRD_LOSSMOMENTUM_NORMAL_HARD);
+                break;
+            case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                birdGravity = SPACEBIRD_GRAVITY;
+                spaceBird.setMomentum(SPACEBIRD_MOMENTUM);
+                spaceBird.setLossMomentum(SPACEBIRD_LOSSMOMENTUM);
                 break;
         }
     }

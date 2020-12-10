@@ -13,7 +13,6 @@ import static flappyBird.Constant.PATH_DIR_SPRITES;
 public class Asteroid extends Shape {
     boolean isAlive = true;
     double lifeLine = 8;
-    ImageView asteroidSprite;
 
     /**
      * Crée et instantie une Shape à la position, la taille et la couleur voulue
@@ -32,7 +31,6 @@ public class Asteroid extends Shape {
         setSprite(pickImage(getRandomNumber(1,4)));
         getSprite().setFitHeight(h);
         getSprite().setFitWidth(w);
-        asteroidSprite = getSprite();
     }
 
     private String pickImage(int numeroImage) {
@@ -76,12 +74,10 @@ public class Asteroid extends Shape {
     @Override
     void moveLeft(int speed) {
         super.moveLeft(speed);
-        refreshSprite();
-        refreshCoord();
     }
 
     public ImageView getAsteroidSprite() {
-        return asteroidSprite;
+        return this.getSprite();
     }
 
 
