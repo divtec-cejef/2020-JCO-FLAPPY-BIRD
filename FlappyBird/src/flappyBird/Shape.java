@@ -11,10 +11,10 @@ import javafx.scene.shape.Rectangle;
  *
  * @author Louis Bovay
  */
-public class Shape extends Rectangle {
+public abstract class Shape extends Rectangle {
 
-    private Area area = new flappyBird.Area();
-    private StackPane stackpane;
+    private Area area = new Area();
+    private final StackPane stackpane;
     private ImageView sprite;
 
     /**
@@ -44,7 +44,7 @@ public class Shape extends Rectangle {
     /**
      * Déplace la Shape vers la gauche
      *
-     * @param speed distance entre le point de départ et de fin
+     * @param speed vitesse de déplacement
      */
     void moveLeft(int speed) {
         setTranslateX(getTranslateX() - speed);
@@ -56,7 +56,7 @@ public class Shape extends Rectangle {
     /**
      * Déplace la Shape vers la droite
      *
-     * @param speed distance entre le point de départ et de fin
+     * @param speed vitesse de déplacement
      */
     void moveRight(int speed) {
         setTranslateX(getTranslateX() + speed);
@@ -68,7 +68,7 @@ public class Shape extends Rectangle {
     /**
      * Déplace la Shape vers le haut
      *
-     * @param speed distance entre le point de départ et de fin
+     * @param speed vitesse de déplacement
      */
     void moveUp(int speed) {
         setTranslateY(getTranslateY() - speed);
@@ -80,7 +80,7 @@ public class Shape extends Rectangle {
     /**
      * Déplace la Shape vers le bas
      *
-     * @param speed distance entre le point de départ et de fin
+     * @param speed vitesse de déplacement
      */
     void moveDown(int speed) {
         setTranslateY(getTranslateY() + speed);
@@ -120,25 +120,39 @@ public class Shape extends Rectangle {
         stackpane.getChildren().add(this);
     }
 
+    /**
+     *
+     * @param spritePath Chemin vers le sprite qu'on souhaiterais mettre
+     */
     public void setSprite(String spritePath) {
         this.getSprite().setImage(new Image(spritePath));
     }
 
+    /**
+     * Rafraichit la position du sprite
+     */
     public void refreshSprite(){
         this.getSprite().setTranslateX(this.getTranslateX());
         this.getSprite().setTranslateY(this.getTranslateY());
     }
 
+    /**
+     *
+     * @return le sprite de l'objet
+     */
     public ImageView getSprite() {
         return sprite;
     }
 
+    /**
+     *
+     * @return la stackpane
+     */
     public StackPane getStackpane() {
         return stackpane;
     }
 
     /**
-     * Supprime la zone de collision de l'objet
      * Le sprite ainsi que l'objet sont enlevé de la stackpane
      */
     public void delete(){
