@@ -35,18 +35,20 @@ public class SpaceBird extends Bird {
 
 
     /**
-     * Ajoute une balle au chargeur
+     * Ajoute un nouveau projectile au chargeur
      */
     private void getAmmo(){
         magazine.add(new Projectile((int)this.getTranslateX() + 40,(int)this.getTranslateY(),PROJECTILE_SIZE,PROJECTILE_SIZE,Color.TRANSPARENT,getStackpane(),IMG_PROJECTILE));
     }
 
     /**
-     * Tire une balle du chargeur
-     * Supprime toute les balles perdues de la liste
+     * Tire un projectile du chargeur
+     * Supprime tous les projectiles perdus de la liste
      */
     public void shoot(){
+        //Liste qui contiendra tous les projectiles perdus
         ArrayList<Projectile> found = new ArrayList<>();
+
         if(magazine !=null) {
             if (!magazine.isEmpty()) {
                 for (Projectile ammo : magazine) {
@@ -57,13 +59,14 @@ public class SpaceBird extends Bird {
                 }
             }
         }
+        //Suppresson des projectiles perdus
         if(!found.isEmpty()) {
             magazine.removeAll(found);
         }
     }
 
     /**
-     * Met une balle dans le chargeur et lance le temps de recharge
+     * Met un projectile dans le chargeur et lance le temps de recharge
      */
     public void reload(){
         if(reloadCooldown == 0){
@@ -88,7 +91,7 @@ public class SpaceBird extends Bird {
     }
 
     /**
-     * Vide et supprimer les balles du chargeur
+     * Vide et supprimer les projectiles du chargeur
      */
     public void emptyMagazine(){
         for(Projectile ammo : magazine){
