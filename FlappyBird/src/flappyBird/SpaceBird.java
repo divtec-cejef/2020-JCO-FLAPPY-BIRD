@@ -25,8 +25,8 @@ public class SpaceBird extends Bird {
      * @param w          Largeur
      * @param h          Hauteur
      * @param color      Couleur
-     * @param stackpane
-     * @param spritePath
+     * @param stackpane StackPane
+     * @param spritePath    Chemin du sprite
      */
     SpaceBird(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
         super(x, y, w, h, color, stackpane, spritePath);

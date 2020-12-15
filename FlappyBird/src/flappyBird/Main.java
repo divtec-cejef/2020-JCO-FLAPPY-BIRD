@@ -557,7 +557,7 @@ public class Main extends Application {
 
     /**
      * Regarde si l'oiseau ne sort pas des limites vertical de la fenêtre
-     *
+     * @param bird Oiseau
      * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
      */
     public boolean checkBounds(Bird bird) {
