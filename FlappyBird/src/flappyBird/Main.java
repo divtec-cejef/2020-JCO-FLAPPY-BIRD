@@ -34,9 +34,7 @@ import static flappyBird.Constant.*;
 public class Main extends Application {
 
     //Indice de temps, 1 = 60 frame
-    double t = 0;
-    //Indice de frame, 60 = 1 seconde
-    int frame = 0;
+    double timeSpend = 0;
     //Si oui ou non la barre espace est appuyée
     boolean isSpacePressed = false;
     //Si oui ou non la touche Q est appuyée
@@ -47,8 +45,12 @@ public class Main extends Application {
     boolean isGameStarted = false;
     //Si oui ou non le score à été écrit
     boolean scoreHasBeenWrited = false;
+    //Si oui ou non la touche P à été relachée
+    boolean PHasBeenReleased = true;
     //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
     int birdGravity = BIRD_GRAVITY_NORMAL;
+    //Fréquence d'apparition des ennemis (60 = 1 seconde)
+    int frequence = 120;
     //Pane principale
     StackPane stackPane = new StackPane();
     //L'oiseau
@@ -208,6 +210,14 @@ public class Main extends Application {
                     isSpacePressed = true;
                 }
             }
+            if(isGameRunning) {
+                if (keyCode.equals(KeyCode.P)) {
+                    if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K && PHasBeenReleased) {
+                        spaceBird.reload();
+                        PHasBeenReleased = !PHasBeenReleased;
+                    }
+                }
+            }
             //N'est pas disponible en cours de jeu
             if (!isGameRunning) {
                 if (isGameStarted) {
@@ -267,6 +277,10 @@ public class Main extends Application {
                     spaceBird.setSprite(IMG_SPACE_FLAPPY_FLAP);
                 }
                 isSpacePressed = false;
+            }
+            //Si P est relaché
+            if (keyCode.equals(KeyCode.P)) {
+                PHasBeenReleased = true;
             }
             //N'est pas disponnible en cours de jeu
             if (!isGameRunning) {
@@ -352,19 +366,19 @@ public class Main extends Application {
                         //Le couple 0 bouge
                         couplesList.get(0).move(PIPE_SPEED);
                         //Le couple 1 bouge
-                        if (t > 114) {
+                        if (timeSpend > 114) {
                             couplesList.get(1).move(PIPE_SPEED);
                         }
                         //le couple 2 bouge
-                        if (t > 228) {
+                        if (timeSpend > 228) {
                             couplesList.get(2).move(PIPE_SPEED);
                         }
                         //le couple 3 bouge
-                        if (t > 342) {
+                        if (timeSpend > 342) {
                             couplesList.get(3).move(PIPE_SPEED);
                         }
                         //le couple 4 bouge
-                        if (t > 456) {
+                        if (timeSpend > 456) {
                             couplesList.get(4).move(PIPE_SPEED);
                         }
                         //l'oiseau vole
@@ -389,17 +403,27 @@ public class Main extends Application {
                             impactSound.play();
                         }
                         break;
-
                     case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                        if (t % 60 == 0) {
+                        //Spawn d'asteroide
+                        if (timeSpend % frequence == 0) {
                             int randomSize = getRandomNumber(40, 150);
-                            Asteroid asteroid = new Asteroid(600, getRandomNumber(-300, 300), randomSize, randomSize, Color.TRANSPARENT, stackPane, IMG_DEFAULT_ASTEROID);
+                            Asteroid asteroid = new Asteroid(getRandomNumber(700, 900), getRandomNumber(-300, 300), randomSize, randomSize, Color.TRANSPARENT, stackPane, IMG_DEFAULT_ASTEROID);
                             asteroidArrayList.add(asteroid);
                         }
-
+                        //Augmente la cadence d'apparition des astéroides
+                        if(frequence > 50){
+                            //toutes les 10 secondes
+                            if(timeSpend % 600 == 0){
+                                frequence -= 10;
+                            }
+                        }
+                        //Bouger et vérifier si les astéroide sortent de l'écran
                         if (asteroidArrayList != null) {
                             for (Asteroid asteroid : asteroidArrayList) {
-                                asteroid.moveLeft(2);
+                                asteroid.moveLeft(asteroid.getSpeed());
+                                if(asteroid.isMoving()) {
+                                    asteroid.verticalMove();
+                                }
                                 asteroid.checkBounds();
                             }
                             //l'oiseau vole
@@ -412,18 +436,28 @@ public class Main extends Application {
                             if (checkBounds(spaceBird)) {
                                 spaceBird.kill();
                             }
-                            if (isAAsteroidTouched(asteroidArrayList, spaceBird)) {
+                            //Tue l'oiseau s'il touche une astéroide
+                            if (isAsteroidTouchedByBird(asteroidArrayList, spaceBird)) {
                                 spaceBird.kill();
                             }
-                            if (spaceBird.isAlive()) {
-                                //compter les points
-                            } else {
+                            //Supprimer les astéroide
+                            checkKills();
+                            //Fin de partie
+                            if (!spaceBird.isAlive()) {
                                 endGame();
                                 impactSound.play();
                             }
                         }
+                        //Le cooldown se met à zéro
+                        if(spaceBird.getReloadCooldown() > 0){
+                            spaceBird.decreaseReloadCooldown();
+                        }
+                        //Tire s'il y a des balle de le chargeur
+                        spaceBird.shoot();
+                        spaceBird.getSprite().toFront();
                         score.getText().toFront();
                         txtInformation.toFront();
+
                         break;
                 }
                 if (selectedGameMode == gameMode.HARD) {
@@ -439,8 +473,7 @@ public class Main extends Application {
                 //Incrémentation des indice de frame et de temps
                 //Quand t atteint 1, une seconde sera écoulée
                 //Quand frame atteint 60, une seconde sera écoulée
-                t += 1;
-                frame += 1;
+                timeSpend += 1;
             }
             //Fin de partie
             else {
@@ -500,7 +533,7 @@ public class Main extends Application {
         return isTouched;
     }
 
-    public boolean isAAsteroidTouched(ArrayList<Asteroid> list, SpaceBird spaceBird) {
+    public boolean isAsteroidTouchedByBird(ArrayList<Asteroid> list, SpaceBird spaceBird) {
         boolean isTouched = false;
         for (Asteroid asteroid : list) {
             if (Area.isHit(spaceBird.getArea(), asteroid.getArea())) {
@@ -510,13 +543,26 @@ public class Main extends Application {
         return isTouched;
     }
 
+    public void checkKills(){
+        ArrayList<Asteroid> found = new ArrayList<>();
+
+        for(Asteroid asteroid : asteroidArrayList){
+            if(asteroid.isHit(spaceBird.magazine)){
+                found.add(asteroid);
+                incrementScore();
+                asteroid.delete();
+            }
+        }
+        asteroidArrayList.removeAll(found);
+    }
+
     /**
      * Regarde si l'oiseau ne sort pas des limites vertical de la fenêtre
      *
      * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
      */
     public boolean checkBounds(Bird bird) {
-        return bird.getTranslateY() > MAX_HEIGHT / 2 || bird.getTranslateY() < -MAX_HEIGHT / 2;
+        return bird.getTranslateY() > MAX_HEIGHT / 2 + 100 || bird.getTranslateY() < -MAX_HEIGHT / 2 - 100;
     }
 
     /**
@@ -534,12 +580,16 @@ public class Main extends Application {
                     } else {
                         score.getText().setFill(Color.WHITESMOKE);
                     }
-                    score.incrementScore();
-                    score.write("Score : " + score.getPts());
+                    incrementScore();
                     couple.setCanGivePts(false);
                 }
             }
         }
+    }
+
+    public void incrementScore(){
+        score.incrementScore();
+        score.write("Score : " + score.getPts());
     }
 
     /**
@@ -575,8 +625,7 @@ public class Main extends Application {
      */
     public void endGame() {
         //remet les compteurs à 0
-        t = 0;
-        frame = 0;
+        timeSpend = 0;
 
         //Si le score n'a pas été encore inscrit
         if (!scoreHasBeenWrited) {
@@ -587,24 +636,20 @@ public class Main extends Application {
                     txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
                     //Affichage du score
                     StackPane.setAlignment(score.getText(), Pos.CENTER);
-                    stackPane.getChildren().remove(bird.getSprite());
-                    stackPane.getChildren().remove(bird);
                     break;
                 case HARD:
                     ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
                     txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
                     //Affichage du score
                     StackPane.setAlignment(score.getText(), Pos.CENTER);
-                    stackPane.getChildren().remove(bird.getSprite());
-                    stackPane.getChildren().remove(bird);
                     break;
                 case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
                     ScoreBoard.writeInTxtFile(thirdModeFile, Integer.toString(score.getPts()));
                     txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
-                    //Tuer et faire disparâitre tout les astéroïdes
-                    stackPane.getChildren().remove(spaceBird.getSprite());
-                    stackPane.getChildren().remove(spaceBird);
-                    Asteroid.killThemAll(asteroidArrayList,stackPane);
+                    //Faire disparâitre tout les astéroïdes
+                    Asteroid.killThemAll(asteroidArrayList, stackPane);
+                    //Vider le chargeur
+                    spaceBird.emptyMagazine();
                     break;
 
             }
@@ -629,6 +674,14 @@ public class Main extends Application {
         resetScore();
         //Reinitialisation des tuyaux
         resetPipe();
+
+        //Supprimer les anciens oiseaux s'ils existent
+        if (stackPane.getChildren().contains(bird)) {
+            bird.delete();
+        }
+        if (stackPane.getChildren().contains(spaceBird)) {
+            spaceBird.delete();
+        }
 
         switch (selectedGameMode) {
             case NORMAL:
