@@ -33,7 +33,7 @@ import static flappyBird.Constant.*;
  */
 public class Main extends Application {
 
-    //Indice de temps, 1 = 60 frame
+    //Indice de temps, 60 = 1 secondes
     double timeSpend = 0;
     //Si oui ou non la barre espace est appuyée
     boolean isSpacePressed = false;
@@ -47,10 +47,10 @@ public class Main extends Application {
     boolean scoreHasBeenWrited = false;
     //Si oui ou non la touche P à été relachée
     boolean PHasBeenReleased = true;
-    //Gravité appliquée à l'oiseau (8 jeu normal, 10 avec les tuyaux qui bougent)
+    //Gravité appliquée à l'oiseau de base
     int birdGravity = BIRD_GRAVITY_NORMAL;
     //Fréquence d'apparition des ennemis (60 = 1 seconde)
-    int frequence = 120;
+    int asteroidSpawnRate = ASTEROID_SPAWN_RATE;
     //Pane principale
     StackPane stackPane = new StackPane();
     //L'oiseau
@@ -67,6 +67,7 @@ public class Main extends Application {
     ArrayList<ImageView> backgroundList = new ArrayList<>();
     //Image du hardmode
     ImageView skull = new ImageView(new Image(PATH_DIR_SPRITES + "skull.png"));
+    //logo du 3eme mode de jeu
     ImageView thirdModeLogo = new ImageView(new Image(PATH_DIR_SPRITES + "thirdModeLogo.png"));
     //Fichier de score
     File scoreFile = new File(PATH_FILE_SCORES);
@@ -405,23 +406,23 @@ public class Main extends Application {
                         break;
                     case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
                         //Spawn d'asteroide
-                        if (timeSpend % frequence == 0) {
+                        if (timeSpend % asteroidSpawnRate == 0) {
                             int randomSize = getRandomNumber(40, 150);
                             Asteroid asteroid = new Asteroid(getRandomNumber(700, 900), getRandomNumber(-300, 300), randomSize, randomSize, Color.TRANSPARENT, stackPane, IMG_DEFAULT_ASTEROID);
                             asteroidArrayList.add(asteroid);
                         }
                         //Augmente la cadence d'apparition des astéroides
-                        if(frequence > 50){
+                        if(asteroidSpawnRate > 50){
                             //toutes les 10 secondes
                             if(timeSpend % 600 == 0){
-                                frequence -= 10;
+                                asteroidSpawnRate -= 10;
                             }
                         }
                         //Bouger et vérifier si les astéroide sortent de l'écran
                         if (asteroidArrayList != null) {
                             for (Asteroid asteroid : asteroidArrayList) {
                                 asteroid.moveLeft(asteroid.getSpeed());
-                                if(asteroid.isMoving()) {
+                                if(asteroid.hasVerticalsMovements()) {
                                     asteroid.verticalMove();
                                 }
                                 asteroid.checkBounds();
@@ -470,9 +471,7 @@ public class Main extends Application {
                 //Le fond d'écran bouge
                 moveBackground();
 
-                //Incrémentation des indice de frame et de temps
-                //Quand t atteint 1, une seconde sera écoulée
-                //Quand frame atteint 60, une seconde sera écoulée
+                //Incrément du temps (60 = 1 secondes)
                 timeSpend += 1;
             }
             //Fin de partie
@@ -650,6 +649,8 @@ public class Main extends Application {
                     Asteroid.killThemAll(asteroidArrayList, stackPane);
                     //Vider le chargeur
                     spaceBird.emptyMagazine();
+                    //Remettre la fréquence d'aparition des astéroide à la normale
+                    asteroidSpawnRate = ASTEROID_SPAWN_RATE;
                     break;
 
             }
