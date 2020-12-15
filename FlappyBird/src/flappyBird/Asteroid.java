@@ -1,7 +1,5 @@
 package flappyBird;
 
-
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -25,7 +23,7 @@ public class Asteroid extends Shape {
     //Vitesse variable verticale
     private float variableSpeed = 30;
     //Si oui ou non il se déplacera en vertical
-    private boolean isMoving;
+    private boolean hasVerticalsMovements;
     //vitesse de l'asteroide
     private int speed = 6;
 
@@ -43,7 +41,7 @@ public class Asteroid extends Shape {
     Asteroid(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
         super(x, y, w, h, color, stackpane, spritePath);
 
-        //Attribuer l'un des 9 sprite aléatoire
+        //Attribuer l'un des 9 sprites aléatoire
         setSprite(pickImage(getRandomNumber(1, 10)));
         //Faire correspondre les dimensions du sprites à la taille de l'objet
         getSprite().setFitHeight(h);
@@ -52,16 +50,20 @@ public class Asteroid extends Shape {
         setMaxYAndMinY();
         //Détermine s'il bougera en vertical ou non
         if (getRandomNumber(0, 2) == 0) {
-            isMoving = true;
+            hasVerticalsMovements = true;
             speed = 3;
         }else{
             //rotation aléatoire
             randomRotate(getRandomNumber(0, 4));
         }
-        System.out.println(getRandomNumber(0, 2));
 
     }
 
+    /**
+     * Choisit une image parmis les 9 disponnible (asteroide(1 à 9).png)
+     * @param numeroImage numéro de l'image (de 1 à 9)
+     * @return le chemin vers le sprite choisit
+     */
     private String pickImage(int numeroImage) {
         return PATH_DIR_SPRITES + "asteroide" + numeroImage + ".png";
     }
@@ -86,35 +88,51 @@ public class Asteroid extends Shape {
         return this.getTranslateX() < -600;
     }
 
+    /**
+     * Observe si l'astéroïde sort de l'écran, si c'est le cas, le supprime
+     */
     public void checkBounds() {
         if (isOut()) {
-            getStackpane().getChildren().remove(getAsteroidSprite());
+            getStackpane().getChildren().remove(getSprite());
             getStackpane().getChildren().remove(this);
         }
     }
 
+    /**
+     * supprime et retire tout les astéroïdes présents en jeu
+     * @param list liste d'astéroïdes
+     * @param stackpane stackpane où sont présents les astéroïdes
+     */
     public static void killThemAll(ArrayList<Asteroid> list, StackPane stackpane) {
         for (Asteroid asteroid : list) {
-            stackpane.getChildren().remove(asteroid.getAsteroidSprite());
+            stackpane.getChildren().remove(asteroid.getSprite());
             stackpane.getChildren().remove(asteroid);
         }
+        list.clear();
     }
 
+    /**
+     * l'astéroide se déplace de droite à gauche <br>
+     *     s'il ne se déplace pas verticalement, il tourne sur lui-même
+     * @param speed vitesse de déplacement
+     */
     @Override
     void moveLeft(int speed) {
         super.moveLeft(speed);
-        if (!isMoving) {
+        if (!hasVerticalsMovements) {
             getSprite().setRotate(getSprite().getRotate() - 1);
             this.setRotate(this.getRotate() - 1);
         }
     }
 
-    public ImageView getAsteroidSprite() {
-        return this.getSprite();
-    }
-
+    /**
+     * Check si un astéroide est touché par un projectile présent dans un liste de projectile
+     * @param projectileArrayList liste de projectiles
+     * @return true = l'astéroide est touché / false = l'astéroide n'est pas touché
+     */
     public boolean isHit(ArrayList<Projectile> projectileArrayList) {
         boolean isTouched = false;
+        //Liste qui contiendra tous les prjectil a suprimés
         ArrayList<Projectile> found = new ArrayList<>();
 
         for (Projectile projectile : projectileArrayList) {
@@ -128,8 +146,12 @@ public class Asteroid extends Shape {
         return isTouched;
     }
 
-    private void randomRotate(int random) {
-        switch (random) {
+    /**
+     * Effecture une rotation d'un quart
+     * @param randomNumber nombre aléatoire
+     */
+    private void randomRotate(int randomNumber) {
+        switch (randomNumber) {
             case 0:
                 getSprite().setRotate(0);
                 break;
@@ -146,11 +168,17 @@ public class Asteroid extends Shape {
         }
     }
 
+    /**
+     * Assigne les valeurs max et min des déplacements verticaux de l'astéroide
+     */
     private void setMaxYAndMinY() {
         maxY = this.getTranslateY() - 100;
         minY = this.getTranslateY() + 100;
     }
 
+    /**
+     *
+     */
     private void setGoingUp() {
         if (this.getTranslateY() < maxY) {
             isGoingUp = false;
@@ -160,13 +188,13 @@ public class Asteroid extends Shape {
             isGoingUp = true;
             variableSpeed = 1f;
         }
-        if (variableSpeed < 5) {
-            variableSpeed += 0.1f;
-        } else if (variableSpeed < 10) {
-            variableSpeed += 0.1f;
-        }
+        //lorsqu'il change de sens, va de plus en plus vite
+        variableSpeed += 0.1;
     }
 
+    /**
+     * Effectue un mouvement vertical de haut en bas
+     */
     public void verticalMove() {
         setGoingUp();
 
@@ -177,10 +205,18 @@ public class Asteroid extends Shape {
         }
     }
 
-    public boolean isMoving() {
-        return isMoving;
+    /**
+     * Décrit si oui ou non l'astéroide effectue des mouvements verticaux
+     * @return si oui ou non il effectue un mouvement vertical
+     */
+    public boolean hasVerticalsMovements() {
+        return hasVerticalsMovements;
     }
 
+    /**
+     *
+     * @return la vitesse de déplacement horizontal
+     */
     public int getSpeed() {
         return speed;
     }
