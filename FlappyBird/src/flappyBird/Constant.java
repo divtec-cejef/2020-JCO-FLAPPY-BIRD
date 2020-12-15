@@ -53,6 +53,8 @@ public abstract class Constant {
     public final static int SPACEBIRD_RELOAD_COOLDOWN = 30;
     //taille de projectile
     public final static int PROJECTILE_SIZE = 35;
+    //fréquence d'aparition des astéroides
+    public final static int ASTEROID_SPAWN_RATE = 120;
 
     /************************
      TEXT
