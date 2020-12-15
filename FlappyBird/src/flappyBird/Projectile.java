@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import static flappyBird.Constant.*;
 
 /**
- * Classe qui représente un projectil
+ * Classe qui représente un projectile
  *
  * @author Louis Bovay
  */
@@ -36,42 +36,47 @@ public class Projectile extends Shape {
 
     }
 
-    @Override
-    void moveRight(int speed) {
-        super.moveRight(speed);
-        refreshSprite();
-        refreshCoord();
-    }
-
     /**
-     * La balle se déplace
+     * Le projectile se déplace temps qu'il possède de la durée de vie
      *
      * @param speed vitesse de déplacement du projectile
      */
     public void travel(int speed) {
+        //la durée de vie diminue
         if (lifeTime > 0) {
-            lifeTime -=1;
+            lifeTime -= 1;
         } else {
             kill();
         }
         moveRight(speed);
+        //Rotation pour donner de l'effet
+        getSprite().setRotate(getSprite().getRotate() + 5);
     }
 
+    /**
+     * Le projectil meurt, ce qui le fait rapetissir et disparaître
+     */
     private void kill() {
-        if(currentSize < 1){
+        if (currentSize >= 1) {
+            shrink();
+        } else {
             isDead = true;
             this.delete();
-        }else{
-            shrink();
         }
     }
 
+    /**
+     *
+     * @return si le projectil est mort ou non
+     */
     public boolean isDead() {
         return isDead;
     }
 
-    //Fait rapetissir le projectil, puis disparaît
-    private void shrink(){
+    /**
+     * Fait rapetissir le projectil ainsi que son sprite
+     */
+    private void shrink() {
         getSprite().setFitWidth(currentSize);
         getSprite().setFitHeight(currentSize);
         this.setWidth(currentSize);
