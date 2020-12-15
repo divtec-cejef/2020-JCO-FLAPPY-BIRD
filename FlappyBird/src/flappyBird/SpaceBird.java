@@ -1,7 +1,5 @@
 package flappyBird;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -9,9 +7,15 @@ import java.util.ArrayList;
 
 import static flappyBird.Constant.*;
 
+/**
+ * Classe qui représente un oiseau de l'espace pouvant tirer
+ *
+ * @author Louis Bovay
+ */
 public class SpaceBird extends Bird {
 
-    ArrayList<Projectile> ammo = new ArrayList<>();
+    ArrayList<Projectile> magazine = new ArrayList<>();
+    private int reloadCooldown = 0;
 
     /**
      * Crée et instantie une Shape à la position, la taille et la couleur voulue
@@ -30,15 +34,68 @@ public class SpaceBird extends Bird {
     }
 
 
-    public void getAmmo(){
-        ammo.add(new Projectile((int)this.getTranslateX(),(int)this.getTranslateY(),68,13,Color.RED,getStackpane(),IMG_PROJECTILE));
+    /**
+     * Ajoute une balle au chargeur
+     */
+    private void getAmmo(){
+        magazine.add(new Projectile((int)this.getTranslateX() + 40,(int)this.getTranslateY(),PROJECTILE_SIZE,PROJECTILE_SIZE,Color.TRANSPARENT,getStackpane(),IMG_PROJECTILE));
     }
 
+    /**
+     * Tire une balle du chargeur
+     * Supprime toute les balles perdues de la liste
+     */
     public void shoot(){
-        if(ammo!=null) {
-            for (Projectile ammo : ammo) {
-                ammo.travel(PROJECTILE_LIFE_TIME, PROJECTILE_SPEED);
+        ArrayList<Projectile> found = new ArrayList<>();
+        if(magazine !=null) {
+            if (!magazine.isEmpty()) {
+                for (Projectile ammo : magazine) {
+                    ammo.travel(PROJECTILE_SPEED);
+                    if(ammo.isDead()){
+                        found.add(ammo);
+                    }
+                }
             }
         }
+        if(!found.isEmpty()) {
+            magazine.removeAll(found);
+        }
+    }
+
+    /**
+     * Met une balle dans le chargeur et lance le temps de recharge
+     */
+    public void reload(){
+        if(reloadCooldown == 0){
+            getAmmo();
+            reloadCooldown = SPACEBIRD_RELOAD_COOLDOWN;
+        }
+    }
+
+    /**
+     * Fait diminuer le temps de recharge
+     */
+    public void decreaseReloadCooldown(){
+        this.reloadCooldown -=1;
+    }
+
+    /**
+     * renvoie le temps de recharge
+     * @return le temps de recharge
+     */
+    public int getReloadCooldown() {
+        return reloadCooldown;
+    }
+
+    /**
+     * Vide et supprimer les balles du chargeur
+     */
+    public void emptyMagazine(){
+        for(Projectile ammo : magazine){
+            ammo.delete();
+        }
+        magazine.clear();
     }
 }
+
+
