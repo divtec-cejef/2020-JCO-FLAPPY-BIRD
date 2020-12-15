@@ -136,4 +136,13 @@ public class Shape extends Rectangle {
     public StackPane getStackpane() {
         return stackpane;
     }
+
+    /**
+     * Supprime la zone de collision de l'objet
+     * Le sprite ainsi que l'objet sont enlevé de la stackpane
+     */
+    public void delete(){
+        stackpane.getChildren().remove(this.getSprite());
+        stackpane.getChildren().remove(this);
+    }
 }
