@@ -2,7 +2,7 @@ package flappyBird;
 
 import java.nio.file.Paths;
 
-public class Constant {
+public abstract class Constant {
 
     /************************
      PATH
@@ -33,10 +33,8 @@ public class Constant {
     public final static int PIPE_SPEED = 2;
     //Nombre d'images par seconde
     public final static int FPS = 60;
-    //durée de vie d'un projectile
-    public final static int PROJECTILE_LIFE_TIME = 60;
     //Vitesse des projectiles
-    public final static int PROJECTILE_SPEED = 2;
+    public final static int PROJECTILE_SPEED = 5;
     //Elan de l'oiseau en mode normal et hard
     public final static float BIRD_MOMENTUM_NORMAL_HARD = 19.5f;
     //Elan de l'oiseau de l'espace
@@ -51,6 +49,10 @@ public class Constant {
     public final static float BIRD_LOSSMOMENTUM_NORMAL_HARD = 0.5f;
     //Perte d'élan de l'oiseau en thirdMode
     public final static float SPACEBIRD_LOSSMOMENTUM = 0.2f;
+    //Temps de recharge de l'oiseau de l'espace
+    public final static int SPACEBIRD_RELOAD_COOLDOWN = 30;
+    //taille de projectile
+    public final static int PROJECTILE_SIZE = 35;
 
     /************************
      TEXT
