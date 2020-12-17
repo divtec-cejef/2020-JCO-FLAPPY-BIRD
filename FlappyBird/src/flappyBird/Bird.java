@@ -77,7 +77,7 @@ public class Bird extends Shape {
             momentum -= lossMomentum;
             getSprite().setRotate(-20);
         } else {
-            flying = false;
+            this.flying = false;
         }
     }
 
