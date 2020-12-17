@@ -95,10 +95,23 @@ public abstract class Constant {
     public final static String IMG_SPACE_FLAPPY = PATH_DIR_SPRITES + "spaceFlappy.png";
     //Sprite de SpaceFlappyBird qui bat des ailes
     public final static String IMG_SPACE_FLAPPY_FLAP = PATH_DIR_SPRITES + "spaceFlappyFlap.png";
+    //Sprite de SpaceFlappyBird qui tire
+    public final static String IMG_SPACE_FLAPPY_SHOOT = PATH_DIR_SPRITES + "spaceFlappyShoot.png";
     //Sprite de projectile
     public final static String IMG_PROJECTILE = PATH_DIR_SPRITES + "ammo.png";
     //Sprite du tuyau
     public final static String IMG_PIPE = PATH_DIR_SPRITES + "longpipe.png";
     //Sprite par défaut des astéroïdes
     public final static String IMG_DEFAULT_ASTEROID = PATH_DIR_SPRITES + "ennemy1.png";
+
+    /**
+     * Génère un nombre aléatoire entre une range donnée
+     *
+     * @param min range inférieure
+     * @param max range supérieure
+     * @return un nombre aléatoire
+     */
+    public static int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
 }
