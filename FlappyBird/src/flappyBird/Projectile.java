@@ -1,5 +1,6 @@
 package flappyBird;
 
+import com.sun.javafx.scene.traversal.Direction;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -41,14 +42,18 @@ public class Projectile extends Shape {
      *
      * @param speed vitesse de déplacement du projectile
      */
-    public void travel(int speed) {
+    public void travel(int speed, Direction direction) {
         //la durée de vie diminue
         if (lifeTime > 0) {
             lifeTime -= 1;
         } else {
             kill();
         }
-        moveRight(speed);
+        if(direction == Direction.RIGHT) {
+            moveRight(speed);
+        }else if(direction == Direction.LEFT){
+            moveLeft(speed);
+        }
         //Rotation pour donner de l'effet
         getSprite().setRotate(getSprite().getRotate() + 5);
     }

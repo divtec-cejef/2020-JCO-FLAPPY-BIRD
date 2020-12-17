@@ -1,5 +1,6 @@
 package flappyBird;
 
+import com.sun.javafx.scene.traversal.Direction;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -45,14 +46,14 @@ public class SpaceBird extends Bird {
      * Tire un projectile du chargeur
      * Supprime tous les projectiles perdus de la liste
      */
-    public void shoot(){
+    public void shoot(Direction direction){
         //Liste qui contiendra tous les projectiles perdus
         ArrayList<Projectile> found = new ArrayList<>();
 
         if(magazine !=null) {
             if (!magazine.isEmpty()) {
                 for (Projectile ammo : magazine) {
-                    ammo.travel(PROJECTILE_SPEED);
+                    ammo.travel(PROJECTILE_SPEED, direction);
                     if(ammo.isDead()){
                         found.add(ammo);
                     }
