@@ -1,5 +1,6 @@
 package flappyBird;
 
+import com.sun.javafx.scene.traversal.Direction;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -23,13 +24,12 @@ import java.util.ArrayList;
 
 import static flappyBird.Constant.*;
 
-
 /**
  * @author Louis Bovay
  * @version 3.0 - 04.11.2020
  * FLAPPY BIRD
- * Projet d'atelier 26.10.2020 au 16.12.2020
- * "Création d'un petit jeu en programmation avancée"
+ * Projet d'atelier 26.10.2020 au 22.01.2021
+ * "Création d'un petit jeu en programmation orientée objet"
  */
 public class Main extends Application {
 
@@ -46,7 +46,7 @@ public class Main extends Application {
     //Si oui ou non le score à été écrit
     boolean scoreHasBeenWrited = false;
     //Si oui ou non la touche P à été relachée
-    boolean PHasBeenReleased = true;
+    boolean pHasBeenPressed = false;
     //Gravité appliquée à l'oiseau de base
     int birdGravity = BIRD_GRAVITY_NORMAL;
     //Fréquence d'apparition des ennemis (60 = 1 seconde)
@@ -211,11 +211,12 @@ public class Main extends Application {
                     isSpacePressed = true;
                 }
             }
-            if(isGameRunning) {
+            if (isGameRunning) {
                 if (keyCode.equals(KeyCode.P)) {
-                    if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K && PHasBeenReleased) {
+                    if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K && spaceBird.getReloadCooldown() <= 0 && !pHasBeenPressed) {
                         spaceBird.reload();
-                        PHasBeenReleased = !PHasBeenReleased;
+                        spaceBird.setSprite(IMG_SPACE_FLAPPY_SHOOT);
+                        pHasBeenPressed = !pHasBeenPressed;
                     }
                 }
             }
@@ -281,7 +282,10 @@ public class Main extends Application {
             }
             //Si P est relaché
             if (keyCode.equals(KeyCode.P)) {
-                PHasBeenReleased = true;
+                if(pHasBeenPressed) {
+                    spaceBird.setSprite(IMG_SPACE_FLAPPY);
+                    pHasBeenPressed = !pHasBeenPressed;
+                }
             }
             //N'est pas disponnible en cours de jeu
             if (!isGameRunning) {
@@ -335,7 +339,7 @@ public class Main extends Application {
     /**
      * Initialisation de la pane
      *
-     * @return root La Stackpane à utiliser dans la scene
+     * @return stackPane La Stackpane à utiliser dans la scene
      */
     private Parent createContent() {
         //ID de la pane
@@ -412,9 +416,9 @@ public class Main extends Application {
                             asteroidArrayList.add(asteroid);
                         }
                         //Augmente la cadence d'apparition des astéroides
-                        if(asteroidSpawnRate > 50){
+                        if (asteroidSpawnRate > 50) {
                             //toutes les 10 secondes
-                            if(timeSpend % 600 == 0){
+                            if (timeSpend % 600 == 0) {
                                 asteroidSpawnRate -= 10;
                             }
                         }
@@ -422,7 +426,7 @@ public class Main extends Application {
                         if (asteroidArrayList != null) {
                             for (Asteroid asteroid : asteroidArrayList) {
                                 asteroid.moveLeft(asteroid.getSpeed());
-                                if(asteroid.hasVerticalsMovements()) {
+                                if (asteroid.hasVerticalsMovements()) {
                                     asteroid.verticalMove();
                                 }
                                 asteroid.checkBounds();
@@ -450,11 +454,11 @@ public class Main extends Application {
                             }
                         }
                         //Le cooldown se met à zéro
-                        if(spaceBird.getReloadCooldown() > 0){
+                        if (spaceBird.getReloadCooldown() > 0) {
                             spaceBird.decreaseReloadCooldown();
                         }
                         //Tire s'il y a des balle de le chargeur
-                        spaceBird.shoot();
+                        spaceBird.shoot(Direction.RIGHT);
                         spaceBird.getSprite().toFront();
                         score.getText().toFront();
                         txtInformation.toFront();
@@ -532,6 +536,13 @@ public class Main extends Application {
         return isTouched;
     }
 
+    /**
+     * Vérifie si une astéroide est heurté par l'oiseau
+     *
+     * @param list      liste d'astéroide présents en jeu
+     * @param spaceBird l'oiseau de l'espace
+     * @return true = touché / false = pas touché
+     */
     public boolean isAsteroidTouchedByBird(ArrayList<Asteroid> list, SpaceBird spaceBird) {
         boolean isTouched = false;
         for (Asteroid asteroid : list) {
@@ -542,11 +553,16 @@ public class Main extends Application {
         return isTouched;
     }
 
-    public void checkKills(){
+    /**
+     * Vérifie si un astéroide à été touché par un projectile<br>
+     * supprime l'astéroide touché<br>
+     * incrémente le score
+     */
+    public void checkKills() {
         ArrayList<Asteroid> found = new ArrayList<>();
 
-        for(Asteroid asteroid : asteroidArrayList){
-            if(asteroid.isHit(spaceBird.magazine)){
+        for (Asteroid asteroid : asteroidArrayList) {
+            if (asteroid.isHit(spaceBird.magazine)) {
                 found.add(asteroid);
                 incrementScore();
                 asteroid.delete();
@@ -557,6 +573,7 @@ public class Main extends Application {
 
     /**
      * Regarde si l'oiseau ne sort pas des limites vertical de la fenêtre
+     *
      * @param bird Oiseau
      * @return true = l'oiseau sort de l'écran, false = il est toujours dedans
      */
@@ -586,7 +603,10 @@ public class Main extends Application {
         }
     }
 
-    public void incrementScore(){
+    /**
+     * Incrémente et écrit le score
+     */
+    public void incrementScore() {
         score.incrementScore();
         score.write("Score : " + score.getPts());
     }
@@ -766,6 +786,9 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Pour chaque mode de jeu, change les variables concernant le bon déroulement du SmoothJump
+     */
     public void refreshSmoothFlapVariable() {
         switch (selectedGameMode) {
             case NORMAL:
