@@ -51,10 +51,22 @@ public abstract class Constant {
     public final static float SPACEBIRD_LOSSMOMENTUM = 0.2f;
     //Temps de recharge de l'oiseau de l'espace
     public final static int SPACEBIRD_RELOAD_COOLDOWN = 30;
+    //Temps de trajet de projectil du spacebird
+    public final static int SPACEBIRD_PROJECTILE_LIFETIME = 60;
     //taille de projectile
     public final static int PROJECTILE_SIZE = 35;
     //fréquence d'aparition des astéroides
     public final static int ASTEROID_SPAWN_RATE = 120;
+    //Temps de recharge du tire du boss
+    public final static int BOSS_SHOOT_COOLDOWN = 90;
+    //Vie du boss
+    public final static int BOSS_MAX_HEALTH = 2;
+    //temps de trajet de projectile du boss
+    public final static int BOSS_PROJECTILE_LIFETIME = 90;
+    //vitesse de féliement du background classique
+    public final static int BACKGROUND_SPEED = 1;
+    //vitesse de féliement du background lorsque le boss arrive
+    public final static int BACKGROUND_BOSS_SPEED = 10;
 
     /************************
      TEXT
@@ -103,6 +115,8 @@ public abstract class Constant {
     public final static String IMG_PIPE = PATH_DIR_SPRITES + "longpipe.png";
     //Sprite par défaut des astéroïdes
     public final static String IMG_DEFAULT_ASTEROID = PATH_DIR_SPRITES + "ennemy1.png";
+    //Sprite du boss
+    public final static String IMG_BOSS = PATH_DIR_SPRITES + "boss.png";
 
     /**
      * Génère un nombre aléatoire entre une range donnée
