@@ -13,7 +13,7 @@ import static flappyBird.Constant.*;
  */
 public class Projectile extends Shape {
 
-    private int lifeTime = 60;
+    private int lifeTime;
     private boolean isDead = false;
     private double currentSize;
 
@@ -28,12 +28,13 @@ public class Projectile extends Shape {
      * @param stackpane  StackPane ou sera stocké l'objet
      * @param spritePath chemin d'accès vers le sprite de l'objet
      */
-    Projectile(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath) {
+    Projectile(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath,int lifeTime) {
         super(x, y, w, h, color, stackpane, spritePath);
 
-        currentSize = PROJECTILE_SIZE;
+        currentSize = w;
         getSprite().setFitWidth(currentSize);
         getSprite().setFitHeight(currentSize);
+        this.lifeTime = lifeTime;
 
     }
 
