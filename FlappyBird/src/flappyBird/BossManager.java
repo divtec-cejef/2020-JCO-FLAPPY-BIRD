@@ -1,15 +1,18 @@
 package flappyBird;
 
 import com.sun.javafx.scene.traversal.Direction;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
 
 import static flappyBird.Constant.*;
 
 /**
  * Représente la partie du jeu où le joueur affronte un boss
  */
-public class bossManager {
+public class BossManager {
     enum Phases {
         CREATION,
         ENTRANCE,
@@ -17,13 +20,17 @@ public class bossManager {
         END
     }
 
-    private final int BOSS_PLACE = 400;
+    private final int BOSS_PLACE = 200;
     public SpaceBird boss;
     private Phases bossPhases = Phases.CREATION;
-    private int bossFlyCooldown = 0;
-    private int bossShootCooldown = 60;
-    private int bossHealth = 5;
+    private int bossFlyCooldown;
+    private int bossHealth;
     private boolean isBossDead = false;
+    private int hitmarkerCooldown = 30;
+    private boolean effectON = false;
+
+    ColorAdjust baseColorAdjust = new ColorAdjust();
+    ColorAdjust colorAdjust = createColorAdjust();
 
     /**
      * Déroulement de toute la phase du boss, de la création à la fin
@@ -32,7 +39,6 @@ public class bossManager {
      * @param spaceBird l'oiseau de l'espace contre lequel il se bat
      */
     public void bossUpdate(StackPane stackPane, SpaceBird spaceBird) {
-
         if (!isBossDead) {
             switch (bossPhases) {
                 //Crée le boss
@@ -50,21 +56,24 @@ public class bossManager {
 
                 //Le boss combat
                 case FIGHT:
-                    bossFly();
                     bossShoot();
+                    bossFly();
                     checkHealth(spaceBird);
                     if (bossHealth == 0) {
+                        boss.emptyMagazine();
                         bossPhases = Phases.END;
                     }
+                    checkBossDmg(spaceBird);
                     break;
 
                 //Le boss meurt
                 case END:
                     if (bossFalling()) {
-                        destroyBoss();
+                        spaceBird.kill();
                     }
                     break;
             }
+            boss.getSprite().toFront();
         }
     }
 
@@ -74,7 +83,7 @@ public class bossManager {
      * @return si oui ou non le boss a fini d'entrer
      */
     private boolean bossEntrance() {
-        if (boss.getTranslateX() > BOSS_PLACE) {
+        if (boss.getTranslateX() >= BOSS_PLACE) {
             boss.moveLeft(5);
         }
         return boss.getTranslateX() < BOSS_PLACE;
@@ -86,19 +95,25 @@ public class bossManager {
      * @param stackPane stackpane où se trouvera le boss
      */
     private void createBoss(StackPane stackPane) {
-        boss = new SpaceBird(700, 0, 200, 200, Color.OLIVEDRAB, stackPane, IMG_FLAPPY);
+        bossHealth = BOSS_MAX_HEALTH;
+        isBossDead = false;
+        boss = new SpaceBird(700, 0, 200, 200, Color.TRANSPARENT, stackPane, IMG_BOSS);
         boss.getSprite().setFitHeight(boss.getHeight());
         boss.getSprite().setFitWidth(boss.getWidth());
     }
 
     private void bossFly() {
-        if (bossFlyCooldown == 0) {
+        if (bossFlyCooldown == 0 || boss.getTranslateY() > 300) {
             //le boss vole
             boss.setFlying(true);
             //le boss repprend son élan
-            boss.setMomentum(SPACEBIRD_MOMENTUM);
+            boss.setMomentum(25);
             //le cooldown repprend
-            bossFlyCooldown = 90;
+            if (boss.getTranslateY() > 300) {
+                bossFlyCooldown = 30;
+            } else {
+                bossFlyCooldown = 100;
+            }
         }
         //le boss vole
         if (boss.isFlying()) {
@@ -114,27 +129,30 @@ public class bossManager {
      * Le boss tire lorsque son cooldown est à zéro
      */
     private void bossShoot() {
-        if (bossShootCooldown == 0) {
-            boss.reload();
-            System.out.println("BOSS : TIRE");
-            bossShootCooldown = Constant.getRandomNumber(30, 200);
-        }
+        boss.reload((int) boss.getTranslateX() - 60, (int) boss.getTranslateY(), 30, IMG_PROJECTILE,BOSS_PROJECTILE_LIFETIME,BOSS_SHOOT_COOLDOWN);
         if (!boss.magazine.isEmpty()) {
             boss.shoot(Direction.LEFT);
+            boss.decreaseReloadCooldown();
         }
-        bossShootCooldown--;
     }
 
     /**
      * Check si le boss se fait touché par les projectile de l'oiseau de l'espace
+     *
      * @param spaceBird l'oiseau de l'espace contre lequel il se bat
      */
     private void checkHealth(SpaceBird spaceBird) {
+        ArrayList<Projectile> found = new ArrayList<>();
+
         for (Projectile spaceBirdProjectile : spaceBird.magazine) {
-            if (Area.isHit(boss.getArea(), spaceBirdProjectile.getArea())) {
+            if (Area.isHit(spaceBirdProjectile.getArea(), boss.getArea())) {
                 bossHealth--;
+                found.add(spaceBirdProjectile);
+                spaceBirdProjectile.delete();
             }
         }
+        hitmarker();
+        spaceBird.magazine.removeAll(found);
     }
 
     /**
@@ -143,21 +161,74 @@ public class bossManager {
      * @return si oui ou non le boss est sortit de l'écran
      */
     private boolean bossFalling() {
-        boss.getSprite().setRotate(boss.getRotate() + 3);
-        boss.undergoGravity(SPACEBIRD_GRAVITY);
+        boss.getSprite().setRotate(boss.getSprite().getRotate() - 10);
+        boss.moveLeft(10);
+        boss.moveUp( 5);
 
-        return boss.getTranslateY() > 500;
+        return boss.getTranslateY() < -500;
     }
 
     /**
      * détruit le boss
      */
-    private void destroyBoss() {
+    public void destroyBoss() {
         boss.delete();
+        boss.emptyMagazine();
         isBossDead = true;
+        boss = null;
     }
 
     public boolean isBossDead() {
         return isBossDead;
     }
+
+    public void setBossPhases(Phases bossPhases) {
+        this.bossPhases = bossPhases;
+    }
+    private void checkBossDmg(SpaceBird spaceBird) {
+        for (Projectile bossProjectile : boss.magazine) {
+            if (Area.isHit(bossProjectile.getArea(), spaceBird.getArea())) {
+                spaceBird.kill();
+            }
+        }
+    }
+
+    public void setBossDead(boolean bossDead) {
+        isBossDead = bossDead;
+    }
+
+    private ColorAdjust createColorAdjust(){
+        ColorAdjust colorAdjust = new ColorAdjust();
+
+        //Setting the contrast value
+        colorAdjust.setContrast(0.4);
+
+        //Setting the hue value
+        colorAdjust.setHue(-0.05);
+
+        //Setting the brightness value
+        colorAdjust.setBrightness(0.9);
+
+        //Setting the saturation value
+        colorAdjust.setSaturation(0.8);
+
+        return colorAdjust;
+    }
+
+    private void hitmarker(){
+        if(hitmarkerCooldown <= 0){
+            if(!effectON){
+            boss.getSprite().setEffect(colorAdjust);
+            }
+            else{
+                boss.getSprite().setEffect(baseColorAdjust);
+            }
+
+            effectON = ! effectON;
+            hitmarkerCooldown = 30;
+        }
+        hitmarkerCooldown--;
+    }
 }
+
+
