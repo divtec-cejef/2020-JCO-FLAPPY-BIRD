@@ -86,6 +86,10 @@ public class Main extends Application {
     Sound impactSound = new Sound(PATH_DIR_IMPACT_SOUNDS);
     //Liste d'ennemis
     ArrayList<Asteroid> asteroidArrayList = new ArrayList<>();
+    //boss
+    BossManager bossManager = new BossManager();
+    //vitesse de fond d'écran
+    int backgroundSpeed = BACKGROUND_SPEED;
 
     //Enumération du mode de jeu
     public enum gameMode {
@@ -214,7 +218,7 @@ public class Main extends Application {
             if (isGameRunning) {
                 if (keyCode.equals(KeyCode.P)) {
                     if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K && spaceBird.getReloadCooldown() <= 0 && !pHasBeenPressed) {
-                        spaceBird.reload();
+                        spaceBird.reload((int) spaceBird.getTranslateX() + 40, (int) spaceBird.getTranslateY(), PROJECTILE_SIZE, IMG_PROJECTILE, SPACEBIRD_PROJECTILE_LIFETIME,SPACEBIRD_RELOAD_COOLDOWN);
                         spaceBird.setSprite(IMG_SPACE_FLAPPY_SHOOT);
                         pHasBeenPressed = !pHasBeenPressed;
                     }
@@ -282,7 +286,7 @@ public class Main extends Application {
             }
             //Si P est relaché
             if (keyCode.equals(KeyCode.P)) {
-                if(pHasBeenPressed) {
+                if (pHasBeenPressed) {
                     spaceBird.setSprite(IMG_SPACE_FLAPPY);
                     pHasBeenPressed = !pHasBeenPressed;
                 }
@@ -409,12 +413,19 @@ public class Main extends Application {
                         }
                         break;
                     case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                        //Spawn d'asteroide
-                        if (timeSpend % asteroidSpawnRate == 0) {
-                            int randomSize = getRandomNumber(40, 150);
-                            Asteroid asteroid = new Asteroid(getRandomNumber(700, 900), getRandomNumber(-300, 300), randomSize, randomSize, Color.TRANSPARENT, stackPane, IMG_DEFAULT_ASTEROID);
-                            asteroidArrayList.add(asteroid);
+                        if (score.getPts() <= 0) {
+                            //Spawn d'asteroide
+                            if (timeSpend % asteroidSpawnRate == 0) {
+                                int randomSize = getRandomNumber(40, 150);
+                                Asteroid asteroid = new Asteroid(getRandomNumber(700, 900), getRandomNumber(-300, 300), randomSize, randomSize, Color.TRANSPARENT, stackPane, IMG_DEFAULT_ASTEROID);
+                                asteroidArrayList.add(asteroid);
+                            }
+                        } else {
+
+                            bossManager.bossUpdate(stackPane, spaceBird);
+                            backgroundSpeed = BACKGROUND_BOSS_SPEED;
                         }
+
                         //Augmente la cadence d'apparition des astéroides
                         if (asteroidSpawnRate > 50) {
                             //toutes les 10 secondes
@@ -457,6 +468,7 @@ public class Main extends Application {
                         if (spaceBird.getReloadCooldown() > 0) {
                             spaceBird.decreaseReloadCooldown();
                         }
+
                         //Tire s'il y a des balle de le chargeur
                         spaceBird.shoot(Direction.RIGHT);
                         spaceBird.getSprite().toFront();
@@ -473,7 +485,7 @@ public class Main extends Application {
                     couplesList.get(4).verticalPipeMove();
                 }
                 //Le fond d'écran bouge
-                moveBackground();
+                moveBackground(backgroundSpeed);
 
                 //Incrément du temps (60 = 1 secondes)
                 timeSpend += 1;
@@ -669,8 +681,13 @@ public class Main extends Application {
                     Asteroid.killThemAll(asteroidArrayList, stackPane);
                     //Vider le chargeur
                     spaceBird.emptyMagazine();
+                    if (bossManager.boss != null) {
+                        bossManager.destroyBoss();
+                        bossManager.setBossDead(false);
+                    }
                     //Remettre la fréquence d'aparition des astéroide à la normale
                     asteroidSpawnRate = ASTEROID_SPAWN_RATE;
+                    bossManager.setBossPhases(BossManager.Phases.CREATION);
                     break;
 
             }
@@ -685,6 +702,7 @@ public class Main extends Application {
         scoreHasBeenWrited = true;
         //Affichage d'information
         txtInformation.setVisible(true);
+        backgroundSpeed = BACKGROUND_SPEED;
     }
 
 
@@ -735,10 +753,11 @@ public class Main extends Application {
      * Bouge une liste de backgrounds de droit à gauche, s'ils sortent totalement de la fenêtre, ils sont replacés
      * à droite
      */
-    public void moveBackground() {
+    public void moveBackground(int speed
+    ) {
         // Les backgrounds bougent
-        backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() - 1);
-        backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() - 1);
+        backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() - speed);
+        backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() - speed);
         //Replace les background s'il sort de la fenêtre
         for (ImageView background : backgroundList) {
             if (background.getTranslateX() <= -MAX_WIDTH) {
@@ -819,5 +838,7 @@ public class Main extends Application {
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
+
+
 }
 
