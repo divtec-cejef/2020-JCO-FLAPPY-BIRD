@@ -38,8 +38,8 @@ public class SpaceBird extends Bird {
     /**
      * Ajoute un nouveau projectile au chargeur
      */
-    private void getAmmo(){
-        magazine.add(new Projectile((int)this.getTranslateX() + 40,(int)this.getTranslateY(),PROJECTILE_SIZE,PROJECTILE_SIZE,Color.TRANSPARENT,getStackpane(),IMG_PROJECTILE));
+    private void getAmmo(int x, int y, int size, String sprite,int lifeTime){
+        magazine.add(new Projectile(x,y,size,size,Color.TRANSPARENT,getStackpane(),sprite,lifeTime));
     }
 
     /**
@@ -69,10 +69,10 @@ public class SpaceBird extends Bird {
     /**
      * Met un projectile dans le chargeur et lance le temps de recharge
      */
-    public void reload(){
-        if(reloadCooldown == 0){
-            getAmmo();
-            reloadCooldown = SPACEBIRD_RELOAD_COOLDOWN;
+    public void reload(int x, int y, int size, String sprite,int lifetime,int reloadCooldown){
+        if(this.reloadCooldown == 0){
+            getAmmo(x,y,size,sprite,lifetime);
+            this.reloadCooldown = reloadCooldown;
         }
     }
 
