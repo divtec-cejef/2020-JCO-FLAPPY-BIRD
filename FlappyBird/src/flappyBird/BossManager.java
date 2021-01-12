@@ -1,11 +1,13 @@
 package flappyBird;
 
 import com.sun.javafx.scene.traversal.Direction;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static flappyBird.Constant.*;
 
@@ -28,6 +30,7 @@ public class BossManager {
     private boolean isBossDead = false;
     private int hitmarkerCooldown = 30;
     private boolean effectON = false;
+    private boolean isHit = false;
 
     ColorAdjust baseColorAdjust = new ColorAdjust();
     ColorAdjust colorAdjust = createColorAdjust();
@@ -58,12 +61,15 @@ public class BossManager {
                 case FIGHT:
                     bossShoot();
                     bossFly();
-                    checkHealth(spaceBird);
+                    checkBossHealth(spaceBird);
                     if (bossHealth == 0) {
                         boss.emptyMagazine();
                         bossPhases = Phases.END;
                     }
-                    checkBossDmg(spaceBird);
+                    if (isHit) {
+                        hitmarker();
+                    }
+                    isSpaceBirdHit(spaceBird);
                     break;
 
                 //Le boss meurt
@@ -129,7 +135,8 @@ public class BossManager {
      * Le boss tire lorsque son cooldown est à zéro
      */
     private void bossShoot() {
-        boss.reload((int) boss.getTranslateX() - 60, (int) boss.getTranslateY(), 30, IMG_PROJECTILE,BOSS_PROJECTILE_LIFETIME,BOSS_SHOOT_COOLDOWN);
+
+        boss.reload((int) boss.getTranslateX() - 60, (int) boss.getTranslateY() + getRandomNumber(-100, 100), 60, IMG_PROJECTILE, BOSS_PROJECTILE_LIFETIME, getRandomNumber(10, 60));
         if (!boss.magazine.isEmpty()) {
             boss.shoot(Direction.LEFT);
             boss.decreaseReloadCooldown();
@@ -141,17 +148,17 @@ public class BossManager {
      *
      * @param spaceBird l'oiseau de l'espace contre lequel il se bat
      */
-    private void checkHealth(SpaceBird spaceBird) {
+    private void checkBossHealth(SpaceBird spaceBird) {
         ArrayList<Projectile> found = new ArrayList<>();
 
         for (Projectile spaceBirdProjectile : spaceBird.magazine) {
             if (Area.isHit(spaceBirdProjectile.getArea(), boss.getArea())) {
                 bossHealth--;
+                isHit = true;
                 found.add(spaceBirdProjectile);
                 spaceBirdProjectile.delete();
             }
         }
-        hitmarker();
         spaceBird.magazine.removeAll(found);
     }
 
@@ -163,7 +170,7 @@ public class BossManager {
     private boolean bossFalling() {
         boss.getSprite().setRotate(boss.getSprite().getRotate() - 10);
         boss.moveLeft(10);
-        boss.moveUp( 5);
+        boss.moveUp(5);
 
         return boss.getTranslateY() < -500;
     }
@@ -178,14 +185,28 @@ public class BossManager {
         boss = null;
     }
 
+    /**
+     * @return si oui ou non le boss est mort
+     */
     public boolean isBossDead() {
         return isBossDead;
     }
 
+    /**
+     * permet de choisir la phase de jeu du boss
+     *
+     * @param bossPhases la phase de jeu que l'on souhaite mettre
+     */
     public void setBossPhases(Phases bossPhases) {
         this.bossPhases = bossPhases;
     }
-    private void checkBossDmg(SpaceBird spaceBird) {
+
+    /**
+     * Vérifier si l'oiseau de l'espace est touché
+     *
+     * @param spaceBird l'oiseau de l'espace
+     */
+    private void isSpaceBirdHit(SpaceBird spaceBird) {
         for (Projectile bossProjectile : boss.magazine) {
             if (Area.isHit(bossProjectile.getArea(), spaceBird.getArea())) {
                 spaceBird.kill();
@@ -193,11 +214,21 @@ public class BossManager {
         }
     }
 
+    /**
+     * définir l'était de vie du boss
+     *
+     * @param bossDead true : mort, false : vivant
+     */
     public void setBossDead(boolean bossDead) {
         isBossDead = bossDead;
     }
 
-    private ColorAdjust createColorAdjust(){
+    /**
+     * Effet de clignotement du boss
+     *
+     * @return un effet de couleur
+     */
+    private ColorAdjust createColorAdjust() {
         ColorAdjust colorAdjust = new ColorAdjust();
 
         //Setting the contrast value
@@ -215,19 +246,31 @@ public class BossManager {
         return colorAdjust;
     }
 
-    private void hitmarker(){
-        if(hitmarkerCooldown <= 0){
-            if(!effectON){
-            boss.getSprite().setEffect(colorAdjust);
-            }
-            else{
+    /**
+     * fait clognoter le boss
+     */
+    private void hitmarker() {
+        if (hitmarkerCooldown <= 0) {
+            if (!effectON) {
+                boss.getSprite().setEffect(colorAdjust);
+            } else {
                 boss.getSprite().setEffect(baseColorAdjust);
             }
-
-            effectON = ! effectON;
-            hitmarkerCooldown = 30;
+            effectON = !effectON;
+            hitmarkerCooldown = 10;
         }
         hitmarkerCooldown--;
+    }
+
+    /**
+     * Génère un nombre aléatoire entre une range donnée
+     *
+     * @param min range inférieure
+     * @param max range supérieure
+     * @return un nombre aléatoire
+     */
+    private int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
     }
 }
 
