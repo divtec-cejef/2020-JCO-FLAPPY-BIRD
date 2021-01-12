@@ -114,7 +114,7 @@ public abstract class Constant {
     //Sprite du tuyau
     public final static String IMG_PIPE = PATH_DIR_SPRITES + "longpipe.png";
     //Sprite par défaut des astéroïdes
-    public final static String IMG_DEFAULT_ASTEROID = PATH_DIR_SPRITES + "ennemy1.png";
+    public final static String IMG_DEFAULT_ASTEROID = PATH_DIR_SPRITES + "asteroide1.png";
     //Sprite du boss
     public final static String IMG_BOSS = PATH_DIR_SPRITES + "boss.png";
 

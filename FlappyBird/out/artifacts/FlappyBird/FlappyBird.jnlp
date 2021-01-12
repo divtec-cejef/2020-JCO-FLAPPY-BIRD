@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="FlappyBird.jnlp">
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="flappyBird.jnlp">
   <information>
-    <title>FlappyBird</title>
+    <title>flappyBird</title>
     <vendor>Unknown</vendor>
-    <description>FlappyBird</description>
+    <description>flappyBird</description>
     <offline-allowed/>
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="FlappyBird.jar" size="274122" download="eager" />
+    <jar href="flappyBird.jar" size="1167693" download="eager" />
   </resources>
-  <jfx:javafx-desc  width="600" height="400" main-class="flappyBird.Main"  name="FlappyBird" />
+  <jfx:javafx-desc  width="600" height="400" main-class="flappyBird.Main"  name="flappyBird" />
   <update check="background"/>
 </jnlp>

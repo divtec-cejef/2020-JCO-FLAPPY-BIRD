@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" name="FlappyBird">
-    <output-path>$PROJECT_DIR$/out/artifacts/FlappyBird</output-path>
+  <artifact type="javafx" name="flappyBird">
+    <output-path>$PROJECT_DIR$/out/artifacts/flappyBird</output-path>
     <properties id="javafx-properties">
       <options>
         <option name="appClass" value="flappyBird.Main" />
@@ -13,8 +13,8 @@
       </options>
     </properties>
     <root id="root">
-      <element id="archive" name="FlappyBird.jar">
-        <element id="module-output" name="FlappyBird" />
+      <element id="archive" name="flappyBird.jar">
+        <element id="module-output" name="flappyBird" />
       </element>
     </root>
   </artifact>

@@ -112,7 +112,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
-stage.setTitle("LOL");
+        stage.setTitle("LOL");
         //Ajouter la police d'écriture
         try {
             Font.loadFont(Main.class.getResource(PATH_DIR_FONT + TXT_POLICE_FILE_NAME).toExternalForm(), 100);
@@ -280,13 +280,15 @@ stage.setTitle("LOL");
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
             //Si SPACE est relâché
-            if (keyCode.equals(KeyCode.SPACE)) {
-                if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
-                    bird.setSprite(IMG_FLAPPY_FLAP);
-                } else if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
-                    spaceBird.setSprite(IMG_SPACE_FLAPPY_FLAP);
+            if(isGameRunning) {
+                if (keyCode.equals(KeyCode.SPACE)) {
+                    if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
+                        bird.setSprite(IMG_FLAPPY_FLAP);
+                    } else if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
+                        spaceBird.setSprite(IMG_SPACE_FLAPPY_FLAP);
+                    }
+                    isSpacePressed = false;
                 }
-                isSpacePressed = false;
             }
             //Si P est relaché
             if (keyCode.equals(KeyCode.P)) {

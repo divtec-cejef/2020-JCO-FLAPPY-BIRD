@@ -3,7 +3,7 @@
 <script>
     function launchApplication(jnlpfile) {
         dtjava.launch(            {
-                url : 'FlappyBird.jnlp'
+                url : 'flappyBird.jnlp'
             },
             {
                 javafx : '8.0+'
@@ -15,11 +15,11 @@
 </script>
 
 <script>
-    function javafxEmbedFlappyBird_id() {
+    function javafxEmbedflappyBird_id() {
         dtjava.embed(
             {
-                id : 'FlappyBird_id',
-                url : 'FlappyBird.jnlp',
+                id : 'flappyBird_id',
+                url : 'flappyBird.jnlp',
                 placeholder : 'javafx-app-placeholder',
                 width : '600',
                 height : '400'
@@ -31,12 +31,12 @@
         );
     }
     <!-- Embed FX application into web page once page is loaded -->
-    dtjava.addOnloadCallback(javafxEmbedFlappyBird_id);
+    dtjava.addOnloadCallback(javafxEmbedflappyBird_id);
 </script>
 
 </head><body>
-<h2>Test page for <b>FlappyBird</b></h2>
-  <b>Webstart:</b> <a href='FlappyBird.jnlp' onclick="return launchApplication('FlappyBird.jnlp');">click to launch this app as webstart</a><br><hr><br>
+<h2>Test page for <b>flappyBird</b></h2>
+  <b>Webstart:</b> <a href='flappyBird.jnlp' onclick="return launchApplication('flappyBird.jnlp');">click to launch this app as webstart</a><br><hr><br>
 
   <!-- Applet will be inserted here -->
   <div id='javafx-app-placeholder'></div>

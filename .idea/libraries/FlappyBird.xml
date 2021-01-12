@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="FlappyBird">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/FlappyBird/out/artifacts/FlappyBird/bundles/FlappyBird/app/FlappyBird.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
