@@ -222,7 +222,7 @@ public class Main extends Application {
             if (isGameRunning) {
                 if (keyCode.equals(KeyCode.P)) {
                     if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K && spaceBird.getReloadCooldown() <= 0 && !pHasBeenPressed) {
-                        spaceBird.reload((int) spaceBird.getTranslateX() + 40, (int) spaceBird.getTranslateY(), PROJECTILE_SIZE, IMG_PROJECTILE, SPACEBIRD_PROJECTILE_LIFETIME,SPACEBIRD_RELOAD_COOLDOWN);
+                        spaceBird.reload((int) spaceBird.getTranslateX() + 40, (int) spaceBird.getTranslateY(), PROJECTILE_SIZE, IMG_PROJECTILE, SPACEBIRD_PROJECTILE_LIFETIME, SPACEBIRD_RELOAD_COOLDOWN);
                         spaceBird.setSprite(IMG_SPACE_FLAPPY_SHOOT);
                         pHasBeenPressed = !pHasBeenPressed;
                     }
@@ -280,7 +280,7 @@ public class Main extends Application {
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
             //Si SPACE est relâché
-            if(isGameRunning) {
+            if (isGameRunning) {
                 if (keyCode.equals(KeyCode.SPACE)) {
                     if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
                         bird.setSprite(IMG_FLAPPY_FLAP);
@@ -351,15 +351,15 @@ public class Main extends Application {
 
         //Attends de recevoir un nom
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
+        if (result.isPresent()) {
             //Si aucun nom n'est saisit, le nom sera un nom par défaut
-            if(result.get().equals("")){
+            if (result.get().equals("")) {
                 playerName = "deflautName";
             }
             //On nettoie le nom pour éviter l'injection de score frauduleux
-            else{
-                for(int i = 0; i < result.get().length();i++){
-                    if(result.get().charAt(i) != '=' && result.get().charAt(i) != ';'){
+            else {
+                for (int i = 0; i < result.get().length(); i++) {
+                    if (result.get().charAt(i) != '=' && result.get().charAt(i) != ';') {
                         playerName += result.get().charAt(i);
                     }
                 }
@@ -452,7 +452,7 @@ public class Main extends Application {
                         } else {
 
                             bossManager.bossUpdate(stackPane, spaceBird);
-                            Asteroid.killThemAll(asteroidArrayList,stackPane);
+                            Asteroid.killThemAll(asteroidArrayList, stackPane);
                             backgroundSpeed = BACKGROUND_BOSS_SPEED;
                         }
 
@@ -675,7 +675,7 @@ public class Main extends Application {
         //Enlève le text d'info
         txtInformation.setVisible(false);
         //Affiche le score
-        switch (selectedGameMode){
+        switch (selectedGameMode) {
             case NORMAL:
             case HARD:
                 score.getText().setVisible(true);
@@ -701,7 +701,7 @@ public class Main extends Application {
             //Écrit le score dans le fichier du mode jouer et met à jour le tablau des scores
             switch (selectedGameMode) {
                 case NORMAL:
-                    ScoreBoard.writeInTxtFile(scoreFile,new PlayerScore(playerName, score.getPts()));
+                    ScoreBoard.writeInTxtFile(scoreFile, new PlayerScore(playerName, score.getPts()));
                     txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
                     //Affichage du score
                     StackPane.setAlignment(score.getText(), Pos.CENTER);
@@ -792,9 +792,10 @@ public class Main extends Application {
     /**
      * Bouge une liste de backgrounds de droit à gauche, s'ils sortent totalement de la fenêtre, ils sont replacés
      * à droite
+     *
+     * @param speed vitesse de défilement du background
      */
-    public void moveBackground(int speed
-    ) {
+    public void moveBackground(int speed) {
         // Les backgrounds bougent
         backgroundList.get(1).setTranslateX(backgroundList.get(1).getTranslateX() - speed);
         backgroundList.get(0).setTranslateX(backgroundList.get(0).getTranslateX() - speed);

@@ -27,8 +27,9 @@ public class Projectile extends Shape {
      * @param color      Couleur
      * @param stackpane  StackPane ou sera stocké l'objet
      * @param spritePath chemin d'accès vers le sprite de l'objet
+     * @param lifeTime durée de vie du projectile
      */
-    Projectile(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath,int lifeTime) {
+    Projectile(int x, int y, int w, int h, Color color, StackPane stackpane, String spritePath, int lifeTime) {
         super(x, y, w, h, color, stackpane, spritePath);
 
         currentSize = w;
@@ -42,6 +43,7 @@ public class Projectile extends Shape {
      * Le projectile se déplace temps qu'il possède de la durée de vie
      *
      * @param speed vitesse de déplacement du projectile
+     * @param direction direction du projectile
      */
     public void travel(int speed, Direction direction) {
         //la durée de vie diminue
@@ -50,9 +52,9 @@ public class Projectile extends Shape {
         } else {
             kill();
         }
-        if(direction == Direction.RIGHT) {
+        if (direction == Direction.RIGHT) {
             moveRight(speed);
-        }else if(direction == Direction.LEFT){
+        } else if (direction == Direction.LEFT) {
             moveLeft(speed);
         }
         //Rotation pour donner de l'effet
@@ -72,7 +74,6 @@ public class Projectile extends Shape {
     }
 
     /**
-     *
      * @return si le projectil est mort ou non
      */
     public boolean isDead() {

@@ -37,6 +37,11 @@ public class SpaceBird extends Bird {
 
     /**
      * Ajoute un nouveau projectile au chargeur
+     * @param x position x
+     * @param y position y
+     * @param size taille du projectile
+     * @param sprite sprite du projectile
+     * @param lifeTime durée de vie du projectile
      */
     private void getAmmo(int x, int y, int size, String sprite,int lifeTime){
         magazine.add(new Projectile(x,y,size,size,Color.TRANSPARENT,getStackpane(),sprite,lifeTime));
@@ -45,6 +50,7 @@ public class SpaceBird extends Bird {
     /**
      * Tire un projectile du chargeur
      * Supprime tous les projectiles perdus de la liste
+     * @param direction sens dans lequel le projectile doit partir
      */
     public void shoot(Direction direction){
         //Liste qui contiendra tous les projectiles perdus
@@ -68,6 +74,12 @@ public class SpaceBird extends Bird {
 
     /**
      * Met un projectile dans le chargeur et lance le temps de recharge
+     * @param x position x
+     * @param y position y
+     * @param size taille de projectile
+     * @param sprite sprite du projectile
+     * @param lifetime durée de vie du projectile
+     * @param reloadCooldown temps de recharge
      */
     public void reload(int x, int y, int size, String sprite,int lifetime,int reloadCooldown){
         if(this.reloadCooldown == 0){
