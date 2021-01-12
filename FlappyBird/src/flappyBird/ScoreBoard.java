@@ -1,8 +1,7 @@
 package flappyBird;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Gère le tableau des scores
@@ -10,19 +9,21 @@ import java.util.Collections;
  * Lit le fichier text pour ne garder que les 5 meilleurs
  * Concactène les 5 meilleur score pour l'affichage
  */
-public class ScoreBoard {
+public class ScoreBoard{
+
+    ArrayList<PlayerScore> playerScores = new ArrayList<>();
 
     /**
-     * Écrit dans un fichier text
+     * Écrit dans un fichier score
      *
-     * @param file fichier à créer si inexistant et dans lequel écrire
-     * @param text Text à écrir dans le fichier de text
+     * @param file        fichier à créer si inexistant et dans lequel écrire
+     * @param playerScore Score du joueur a écrire dans le fichier texte
      */
-    public static void writeInTxtFile(File file, String text) {
+    public static void writeInTxtFile(File file, PlayerScore playerScore) {
         try {
             FileWriter writer = new FileWriter(file, true);
             PrintWriter printWriter = new PrintWriter(writer);
-            printWriter.print(text + ";");
+            printWriter.print(playerScore.getName() + "=" + playerScore.getScore() + ";");
             printWriter.close();
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -30,53 +31,69 @@ public class ScoreBoard {
     }
 
     /**
-     * Convertit la chaîne de caractère en Integer et met le tout dans une liste triée décroissante
+     * Trie et retourne une liste de score contenant score et nom
      *
      * @param file Fichier dans lequel écrire
-     * @return une liste d'Integer triée, retourne une liste vide si le fichier est vide
+     * @return une liste triée, retourne une liste vide si le fichier est vide
      */
-    private static ArrayList<Integer> getScoreList(File file) {
+    private static ArrayList<PlayerScore> getScoreList(File file) {
         //Récupère la ligne de text dans le fichier
         String line = getTxtFileLine(file);
         //Crée une Arraylist à partir de cette ligne de text
-        ArrayList<Integer> list = createScoreList(line);
+        ArrayList<PlayerScore> list = createScoreList(line);
         //Trier la liste par ordre décroissant
         list.sort(Collections.reverseOrder());
         return list;
     }
 
     /**
-     * Crée une liste de score non-triée à partir du ligne de texte structurée
+     * Crée une liste de score non-triée contenant score et nom à partir d'une ligne de texte structurée
      *
      * @param line ligne de texte à transformer
-     * @return une liste de score non-triée
+     * @return une liste de score contenant score et nom non-triée
      */
-    private static ArrayList<Integer> createScoreList(String line) {
-        ArrayList<Integer> list = new ArrayList<>();
+    private static ArrayList<PlayerScore> createScoreList(String line) {
 
-        StringBuilder currentWord = new StringBuilder();
-        //Si le fichier est vide, la liste sera vide
+        ArrayList<PlayerScore> listOfScores = new ArrayList<>();
+        Boolean nameIsWrited = false;
+
+        StringBuilder currentName = new StringBuilder();
+        StringBuilder currentScore = new StringBuilder();
+
         if (line != null) {
-            //Parcourir tout les caractère de la ligne de texte
+            //la ligne de texte
             for (int i = 0; i < line.length(); i++) {
-                //Tant qu'un point virgule n'est pas atteint
-                if (line.charAt(i) != ';') {
-                    //Assemblage du nombre
-                    currentWord.append(line.charAt(i));
-                }
-                //Si un point virgule est atteint
-                else {
-                    //Vérifier que le mot ne soit pas vide
-                    if (!currentWord.toString().equals("")) {
-                        //Ajout du mot transformer en Integer dans la liste
-                        list.add(Integer.parseInt(currentWord.toString()));
+                //Si le nom n'est pas écrit
+                if(!nameIsWrited){
+                    //Tant qu'un signe égale n'est pas atteint
+                    if(line.charAt(i) != '='){
+                        currentName.append(line.charAt(i));
                     }
-                    //Nettoyer le mot
-                    currentWord = new StringBuilder();
+                    //si le caractère est un signe égale
+                    else{
+                        nameIsWrited = true;
+                    }
+
+                }
+                //Le nom est écrit, donc écriture du score
+                else{
+                    //tant qu'un virgule n'est pas atteinte
+                    if(line.charAt(i) != ';'){
+                        currentScore.append(line.charAt(i));
+                    }
+                    //le nom et le score on été lu, donc enregistrement
+                    else{
+                        nameIsWrited = false;
+                        listOfScores.add(new PlayerScore(currentName.toString(),Integer.parseInt(currentScore.toString())));
+                        //On vide les variables
+                        currentScore.setLength(0);
+                        currentName.setLength(0);
+                    }
                 }
             }
         }
-        return list;
+
+        return listOfScores;
     }
 
     /**
@@ -104,14 +121,14 @@ public class ScoreBoard {
     }
 
     /**
-     * Créer une chaîne de charactère formatée pour afficher un tableau de 5 scores
+     * Créer une chaîne de charactère formatée pour afficher un tableau de 5 scores avec le nom des joueurs
      *
      * @param file fichier à ouvrir
      * @return une chaîne de caractère formatée
      */
     public static String getscoreBoard(File file) {
         StringBuilder scoreBoard = new StringBuilder();
-        ArrayList<Integer> listScores;
+        ArrayList<PlayerScore> listScores;
         listScores = getScoreList(file);
 
         for (int i = 0; i < 5; i++) {
@@ -122,7 +139,7 @@ public class ScoreBoard {
             scoreBoard.append("   ").append(i + 1).append(".\t  ");
             //Insérer les scores
             if (i < listScores.size()) {
-                scoreBoard.append(listScores.get(i).toString());
+                scoreBoard.append(listScores.get(i).getScore()).append("\t").append(listScores.get(i).getName());
             }
         }
         return scoreBoard.toString();
