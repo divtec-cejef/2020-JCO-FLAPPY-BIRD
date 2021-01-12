@@ -58,9 +58,9 @@ public abstract class Constant {
     //fréquence d'aparition des astéroides
     public final static int ASTEROID_SPAWN_RATE = 120;
     //Temps de recharge du tire du boss
-    public final static int BOSS_SHOOT_COOLDOWN = 90;
+    public final static int BOSS_SHOOT_COOLDOWN = 50;
     //Vie du boss
-    public final static int BOSS_MAX_HEALTH = 2;
+    public final static int BOSS_MAX_HEALTH = 50;
     //temps de trajet de projectile du boss
     public final static int BOSS_PROJECTILE_LIFETIME = 90;
     //vitesse de féliement du background classique
