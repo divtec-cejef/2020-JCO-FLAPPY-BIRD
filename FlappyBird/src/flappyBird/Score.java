@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
  */
 public class Score {
     private int pts = 0;
+    private int kills = 0;
     private Text text = new Text();
 
     /**
@@ -23,7 +24,7 @@ public class Score {
     public Score(double x, double y) {
         this.text.setTranslateX(x);
         this.text.setTranslateY(y);
-        text.setFont(Font.font("Arial Rounded MT Bold",FontWeight.BOLD, FontPosture.REGULAR, 50));
+        text.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, FontPosture.REGULAR, 50));
     }
 
     /**
@@ -61,10 +62,28 @@ public class Score {
     }
 
     /**
+     * Incrémente les kills de 1
+     */
+    public void incrementKills() {
+        this.kills++;
+    }
+
+    /**
      * Remet le score à zéro
      */
     public void resetScore() {
         this.pts = 0;
         this.text.setText("Score : 0");
+    }
+
+    /**
+     * Remet les kills à zéro
+     */
+    public void resetKills(){
+        this.kills = 0;
+    }
+
+    public int getKills() {
+        return kills;
     }
 }
