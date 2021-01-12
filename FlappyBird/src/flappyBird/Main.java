@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -21,6 +22,7 @@ import javafx.util.Duration;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static flappyBird.Constant.*;
 
@@ -90,6 +92,8 @@ public class Main extends Application {
     BossManager bossManager = new BossManager();
     //vitesse de fond d'écran
     int backgroundSpeed = BACKGROUND_SPEED;
+    //Nom du joueur
+    String playerName = "";
 
     //Enumération du mode de jeu
     public enum gameMode {
@@ -108,7 +112,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
-
+stage.setTitle("LOL");
         //Ajouter la police d'écriture
         try {
             Font.loadFont(Main.class.getResource(PATH_DIR_FONT + TXT_POLICE_FILE_NAME).toExternalForm(), 100);
@@ -150,7 +154,7 @@ public class Main extends Application {
         txtScoreBoard.setFill(Color.GOLD);
         txtScoreBoard.setStroke(Color.BLACK);
         txtScoreBoard.setStrokeWidth(2);
-        StackPane.setAlignment(txtScoreBoard, Pos.TOP_LEFT);
+        StackPane.setAlignment(txtScoreBoard, Pos.CENTER_LEFT);
         txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 30);
         txtScoreBoard.setTranslateY(txtScoreBoard.getTranslateY() + 30);
         txtScoreBoard.setFont(Font.font(TXT_POLICE_NAME, 40));
@@ -336,6 +340,29 @@ public class Main extends Application {
         //taille max
         stage.setHeight(MAX_HEIGHT);
         stage.setWidth(MAX_WIDTH);
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Nom du joueur");
+        dialog.setHeaderText("Veuillez entrer votre nom");
+        dialog.setContentText("votre nom:");
+        dialog.setResizable(false);
+
+        //Attends de recevoir un nom
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            //Si aucun nom n'est saisit, le nom sera un nom par défaut
+            if(result.get().equals("")){
+                playerName = "deflautName";
+            }
+            //On nettoie le nom pour éviter l'injection de score frauduleux
+            else{
+                for(int i = 0; i < result.get().length();i++){
+                    if(result.get().charAt(i) != '=' && result.get().charAt(i) != ';'){
+                        playerName += result.get().charAt(i);
+                    }
+                }
+            }
+        }
         // Lancer la scène
         stage.show();
     }
@@ -413,7 +440,7 @@ public class Main extends Application {
                         }
                         break;
                     case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                        if (score.getPts() <= 0) {
+                        if (score.getKills() <= 15) {
                             //Spawn d'asteroide
                             if (timeSpend % asteroidSpawnRate == 0) {
                                 int randomSize = getRandomNumber(40, 150);
@@ -423,6 +450,7 @@ public class Main extends Application {
                         } else {
 
                             bossManager.bossUpdate(stackPane, spaceBird);
+                            Asteroid.killThemAll(asteroidArrayList,stackPane);
                             backgroundSpeed = BACKGROUND_BOSS_SPEED;
                         }
 
@@ -576,7 +604,7 @@ public class Main extends Application {
         for (Asteroid asteroid : asteroidArrayList) {
             if (asteroid.isHit(spaceBird.magazine)) {
                 found.add(asteroid);
-                incrementScore();
+                score.incrementKills();
                 asteroid.delete();
             }
         }
@@ -645,7 +673,15 @@ public class Main extends Application {
         //Enlève le text d'info
         txtInformation.setVisible(false);
         //Affiche le score
-        score.getText().setVisible(true);
+        switch (selectedGameMode){
+            case NORMAL:
+            case HARD:
+                score.getText().setVisible(true);
+                break;
+            case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
+                score.getText().setVisible(false);
+                break;
+        }
     }
 
     /**
@@ -663,20 +699,21 @@ public class Main extends Application {
             //Écrit le score dans le fichier du mode jouer et met à jour le tablau des scores
             switch (selectedGameMode) {
                 case NORMAL:
-                    ScoreBoard.writeInTxtFile(scoreFile, Integer.toString(score.getPts()));
+                    ScoreBoard.writeInTxtFile(scoreFile,new PlayerScore(playerName, score.getPts()));
                     txtScoreBoard.setText(TXT_SCORES_TITLE + ScoreBoard.getscoreBoard(scoreFile));
                     //Affichage du score
                     StackPane.setAlignment(score.getText(), Pos.CENTER);
                     break;
                 case HARD:
-                    ScoreBoard.writeInTxtFile(hardModeScoreFile, Integer.toString(score.getPts()));
+                    ScoreBoard.writeInTxtFile(hardModeScoreFile, new PlayerScore(playerName, score.getPts()));
                     txtScoreBoard.setText(TXT_HARDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(hardModeScoreFile));
                     //Affichage du score
                     StackPane.setAlignment(score.getText(), Pos.CENTER);
                     break;
                 case FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K:
-                    ScoreBoard.writeInTxtFile(thirdModeFile, Integer.toString(score.getPts()));
-                    txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                    //ScoreBoard.writeInTxtFile(thirdModeFile, new PlayerScore(playerName, score.getPts()));
+                    //txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                    txtScoreBoard.setText(" ");
                     //Faire disparâitre tout les astéroïdes
                     Asteroid.killThemAll(asteroidArrayList, stackPane);
                     //Vider le chargeur
@@ -743,6 +780,7 @@ public class Main extends Application {
      */
     public void resetScore() {
         score.resetScore();
+        score.resetKills();
         score.getText().setStroke(Color.BLACK);
         score.getText().setFill(Color.WHITESMOKE);
         StackPane.setAlignment(score.getText(), Pos.TOP_LEFT);
@@ -782,6 +820,8 @@ public class Main extends Application {
                 } else {
                     txtScoreBoard.setText("");
                 }
+
+                score.getText().setVisible(true);
                 break;
 
             case HARD:
@@ -797,10 +837,13 @@ public class Main extends Application {
                 backgroundList.get(1).setImage(new Image(PATH_DIR_SPRITES + "spacebg2.png"));
 
                 if (thirdModeFile.exists()) {
-                    txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                    //txtScoreBoard.setText(TXT_THIRDMODE_SCORES_TITLE + ScoreBoard.getscoreBoard(thirdModeFile));
+                    txtScoreBoard.setText(" ");
                 } else {
                     txtScoreBoard.setText("");
                 }
+
+                score.getText().setVisible(false);
                 break;
         }
     }
