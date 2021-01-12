@@ -9,7 +9,7 @@ import java.util.*;
  * Lit le fichier text pour ne garder que les 5 meilleurs
  * Concactène les 5 meilleur score pour l'affichage
  */
-public class ScoreBoard{
+public class ScoreBoard {
 
     ArrayList<PlayerScore> playerScores = new ArrayList<>();
 
@@ -61,30 +61,30 @@ public class ScoreBoard{
         StringBuilder currentScore = new StringBuilder();
 
         if (line != null) {
-            //la ligne de texte
+            //parcourir la ligne de texte
             for (int i = 0; i < line.length(); i++) {
-                //Si le nom n'est pas écrit
-                if(!nameIsWrited){
+                //Si le nom n'a pas été écrit
+                if (!nameIsWrited) {
                     //Tant qu'un signe égale n'est pas atteint
-                    if(line.charAt(i) != '='){
+                    if (line.charAt(i) != '=') {
                         currentName.append(line.charAt(i));
                     }
                     //si le caractère est un signe égale
-                    else{
+                    else {
                         nameIsWrited = true;
                     }
 
                 }
                 //Le nom est écrit, donc écriture du score
-                else{
-                    //tant qu'un virgule n'est pas atteinte
-                    if(line.charAt(i) != ';'){
+                else {
+                    //tant qu'une virgule n'est pas atteinte
+                    if (line.charAt(i) != ';') {
                         currentScore.append(line.charAt(i));
                     }
-                    //le nom et le score on été lu, donc enregistrement
-                    else{
+                    //le nom et le score ont été lu, donc enregistrement
+                    else {
                         nameIsWrited = false;
-                        listOfScores.add(new PlayerScore(currentName.toString(),Integer.parseInt(currentScore.toString())));
+                        listOfScores.add(new PlayerScore(currentName.toString(), Integer.parseInt(currentScore.toString())));
                         //On vide les variables
                         currentScore.setLength(0);
                         currentName.setLength(0);
