@@ -154,7 +154,7 @@ public class Main extends Application {
         txtScoreBoard.setFill(Color.GOLD);
         txtScoreBoard.setStroke(Color.BLACK);
         txtScoreBoard.setStrokeWidth(2);
-        StackPane.setAlignment(txtScoreBoard, Pos.CENTER_LEFT);
+        StackPane.setAlignment(txtScoreBoard, Pos.TOP_LEFT);
         txtScoreBoard.setTranslateX(txtScoreBoard.getTranslateX() + 30);
         txtScoreBoard.setTranslateY(txtScoreBoard.getTranslateY() + 30);
         txtScoreBoard.setFont(Font.font(TXT_POLICE_NAME, 40));
