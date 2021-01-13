@@ -16,9 +16,6 @@ public class PipeCouple {
     public flappyBird.Pipe topPipe;
     public flappyBird.Pipe bottomPipe;
     private boolean canGivePts = true;
-    private final double VERTICAL_RANGE_EXPAND = 100;
-    private final double VERTICAL_RANGE_SHRINK = 20;
-    private final double MAX_HEIGHT = 700;
 
     private boolean goDown = false;
     private boolean goUp = true;
