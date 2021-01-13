@@ -1,1 +1,1 @@
-Azeroth=13;Aferoth=1;George=0;George=1;Gorille=4;Gorille=0;
+Azeroth=13;Aferoth=1;George=0;George=1;Gorille=4;Gorille=0;ouilol=0;bonjour=2;oui=0;oui=0;dfv=0;oui=0;oui=0;

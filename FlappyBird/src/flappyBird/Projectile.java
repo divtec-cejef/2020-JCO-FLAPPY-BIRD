@@ -4,8 +4,6 @@ import com.sun.javafx.scene.traversal.Direction;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-import static flappyBird.Constant.*;
-
 /**
  * Classe qui représente un projectile
  *

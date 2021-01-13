@@ -4,9 +4,7 @@ import java.nio.file.Paths;
 
 public abstract class Constant {
 
-    /************************
-     PATH
-     */
+
     //Chemin vert le dossier Sprites
     public final static String PATH_DIR_SPRITES = "/sprites/";
     //Chemin vers le dossier police
@@ -22,9 +20,7 @@ public abstract class Constant {
     //Chemin vers le fichier ThirdMode.txt
     public final static String PATH_FILE_SCORE_THIRDMODE = Paths.get(".").toAbsolutePath().normalize().toString() + "\\src\\scoreThirdMode.txt";
 
-    /************************
-     NUMERIC
-     */
+
     //Hauteur max de la fenêtre
     public final static float MAX_HEIGHT = 700;
     //Largeur max de la fenêtre
@@ -68,9 +64,7 @@ public abstract class Constant {
     //vitesse de féliement du background lorsque le boss arrive
     public final static int BACKGROUND_BOSS_SPEED = 10;
 
-    /************************
-     TEXT
-     */
+
     //Titre du jeu
     public final static String TXT_GAME_TITLE = "FLAPPY BIRD";
     //Message d'info de début de partie
@@ -90,9 +84,7 @@ public abstract class Constant {
     //Nom Windows de la police d'écriture
     public final static String TXT_POLICE_NAME = "KG HAPPY";
 
-    /************************
-     IMAGES
-     */
+
     //Première partie de l'arrière plan
     public final static String IMG_BACKGROUND_PT_1 = PATH_DIR_SPRITES + "cloudbg1.png";
     //Deuxième partie de l'arrière plan

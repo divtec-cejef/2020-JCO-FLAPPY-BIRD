@@ -172,7 +172,7 @@ public class Main extends Application {
                     //Durant la partie
                     if (isGameRunning) {
                         //Un son est joué
-                        //flapSound.play();
+                        flapSound.play();
                         switch (selectedGameMode) {
                             case NORMAL:
                             case HARD:
@@ -280,15 +280,15 @@ public class Main extends Application {
         scene.setOnKeyReleased(event -> {
             KeyCode keyCode = event.getCode();
             //Si SPACE est relâché
-            if (isGameRunning) {
-                if (keyCode.equals(KeyCode.SPACE)) {
+            if (keyCode.equals(KeyCode.SPACE)) {
+                if (isGameRunning) {
                     if (selectedGameMode == gameMode.NORMAL || selectedGameMode == gameMode.HARD) {
                         bird.setSprite(IMG_FLAPPY_FLAP);
                     } else if (selectedGameMode == gameMode.FLAPPY_BIRD_AGAINST_SPACE_VILLAINS_II_4K) {
                         spaceBird.setSprite(IMG_SPACE_FLAPPY_FLAP);
                     }
-                    isSpacePressed = false;
                 }
+                isSpacePressed = false;
             }
             //Si P est relaché
             if (keyCode.equals(KeyCode.P)) {
