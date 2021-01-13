@@ -1,0 +1,1 @@
+Hugo=10;Steven=25;Louis=15;Thomas=30;Teva=50;Oui allo=7;Oui allo=10;
