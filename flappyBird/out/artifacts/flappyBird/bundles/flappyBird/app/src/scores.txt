@@ -1,1 +1,1 @@
-Thomas=10;Hugo=20;Teva=30;Steven=50;Louis=70;Oui allo=4;
+Thomas=10;Hugo=20;Teva=30;Steven=50;Louis=70;Oui allo=4;louis=0;
