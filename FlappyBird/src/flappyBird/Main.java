@@ -112,7 +112,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         //Création d'une scène utilisant la pane
         Scene scene = new Scene(createContent());
-        stage.setTitle("LOL");
+        stage.setTitle("FlappyBird");
         //Ajouter la police d'écriture
         try {
             Font.loadFont(Main.class.getResource(PATH_DIR_FONT + TXT_POLICE_FILE_NAME).toExternalForm(), 100);
